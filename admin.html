@@ -4,20 +4,21 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"/>
-<title>لوحة إدارة AdVax</title>
+<title>لوحة إدارة AdVax — CraftCost Pro</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Cairo',sans-serif;direction:rtl;background:#08080F;color:#E4E4F0;min-height:100vh}
 input,select,textarea,button{font-family:'Cairo',sans-serif}
 input,select,textarea{background:#0E0E1C;border:1.5px solid #272750;color:#E4E4F0;padding:10px 14px;border-radius:10px;width:100%;outline:none;transition:border-color .2s;direction:rtl;font-size:15px}
 input:focus,select:focus,textarea:focus{border-color:#9D60FF;box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+input[type="email"]{direction:ltr;text-align:right}
 select option{background:#181830}
 button{cursor:pointer;user-select:none;border:none;font-family:'Cairo',sans-serif}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#272750;border-radius:4px}
 .top{background:#0E0E1C;border-bottom:1.5px solid #1C1C3A;padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
 .wrap{max-width:940px;margin:0 auto;padding:22px 16px}
-.lp{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.lb{background:#111124;border:1.5px solid #272750;border-radius:24px;padding:36px;width:100%;max-width:390px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+.lp{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 30% 50%,rgba(124,58,237,.06),transparent 60%)}
+.lb{background:#111124;border:1.5px solid #272750;border-radius:24px;padding:36px;width:100%;max-width:400px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5)}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:700;transition:all .2s;white-space:nowrap;cursor:pointer}
 .bp{background:linear-gradient(135deg,#7C3AED,#9D60FF);color:#fff;box-shadow:0 2px 10px rgba(124,58,237,.3)}
 .bp:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(124,58,237,.45)}
@@ -65,65 +66,98 @@ tr:hover td{background:rgba(255,255,255,.02)}
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script>
 'use strict';
-var _useState=React.useState,_useEffect=React.useEffect,_useCallback=React.useCallback,_Fragment=React.Fragment;
-function h(t,p){var args=Array.prototype.slice.call(arguments);return React.createElement.apply(React,args)}
+var _useState=React.useState,_useEffect=React.useEffect,_useCallback=React.useCallback;
+function h(){return React.createElement.apply(React,arguments)}
 
-/* CONFIG */
-var PASS='advax2025';
+/* ════════ CONFIG ════════ */
 var SUPA_URL='https://jqkmtqbhxsuvvumudgrj.supabase.co';
 var SUPA_KEY='sb_publishable_0KbQ1aL7rWoJCkk84OUVKQ_Krc4nvwS';
-var APP_URL='https://advax.github.io/craftcost-pro';
+var APP_URL ='https://advax.github.io/craftcost-pro';
 var GH_OWNER='Advax';
-var GH_REPO='craftcost-notification';
-var GH_FILE='latest.json';
-var GH_API='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_FILE;
+var GH_REPO ='craftcost-notification';
+var GH_FILE ='latest.json';
+var GH_API  ='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_FILE;
 
-/* Supabase helpers */
-function hdrs(){return{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY};}
-function supaGet(t,q){
-  return fetch(SUPA_URL+'/rest/v1/'+t+'?'+(q||''),{headers:hdrs()})
-    .then(function(r){return r.ok?r.json():null}).catch(function(){return null});
+/* ════════ Supabase Auth ════════ */
+function authHdrs(token){
+  return{
+    'apikey':SUPA_KEY,
+    'Authorization':'Bearer '+(token||SUPA_KEY),
+    'Content-Type':'application/json'
+  };
 }
-function supaPost(t,body){
-  return fetch(SUPA_URL+'/rest/v1/'+t,{
+
+/* Sign in with email + password — returns {ok, token, email, error} */
+function supaSignIn(email,password){
+  return fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{
     method:'POST',
-    headers:Object.assign({},hdrs(),{'Content-Type':'application/json','Prefer':'return=representation'}),
-    body:JSON.stringify(body)
-  }).then(function(r){return r.ok?r.json():null}).catch(function(){return null});
+    headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({email:email.trim(),password:password})
+  }).then(function(r){
+    return r.json().then(function(d){
+      if(d.access_token)return{ok:true,token:d.access_token,email:d.user&&d.user.email};
+      return{ok:false,error:d.error_description||d.msg||'بريد أو كلمة مرور غير صحيحة'};
+    });
+  }).catch(function(){return{ok:false,error:'خطأ في الاتصال — تحقق من الإنترنت'};});
 }
-function supaPatch(t,q,body){
-  return fetch(SUPA_URL+'/rest/v1/'+t+'?'+q,{
+
+/* Refresh session */
+function supaRefresh(refreshToken){
+  return fetch(SUPA_URL+'/auth/v1/token?grant_type=refresh_token',{
+    method:'POST',
+    headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({refresh_token:refreshToken})
+  }).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
+}
+
+/* Supabase REST — uses admin token */
+function dbGet(token,table,q){
+  return fetch(SUPA_URL+'/rest/v1/'+table+'?'+(q||''),{
+    headers:authHdrs(token)
+  }).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
+}
+function dbPost(token,table,body){
+  return fetch(SUPA_URL+'/rest/v1/'+table,{
+    method:'POST',
+    headers:Object.assign({},authHdrs(token),{Prefer:'return=representation'}),
+    body:JSON.stringify(body)
+  }).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
+}
+function dbPatch(token,table,q,body){
+  return fetch(SUPA_URL+'/rest/v1/'+table+'?'+q,{
     method:'PATCH',
-    headers:Object.assign({},hdrs(),{'Content-Type':'application/json','Prefer':'return=minimal'}),
+    headers:Object.assign({},authHdrs(token),{Prefer:'return=minimal'}),
     body:JSON.stringify(body)
   }).then(function(r){return r.ok;}).catch(function(){return false;});
 }
-function supaDel(t,q){
-  return fetch(SUPA_URL+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:hdrs()})
-    .then(function(r){return r.ok;}).catch(function(){return false;});
+function dbDel(token,table,q){
+  return fetch(SUPA_URL+'/rest/v1/'+table+'?'+q,{
+    method:'DELETE',
+    headers:authHdrs(token)
+  }).then(function(r){return r.ok;}).catch(function(){return false;});
 }
 
-/* GitHub notification */
+/* ════════ GitHub Notifications ════════ */
 function ghGetSha(token){
-  return fetch(GH_API,{headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}})
-    .then(function(r){
-      if(r.status===404)return null;
-      if(!r.ok)return 'ERR';
-      return r.json().then(function(d){return d.sha||null;});
-    }).catch(function(){return 'ERR';});
+  return fetch(GH_API,{
+    headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}
+  }).then(function(r){
+    if(r.status===404)return null;
+    if(!r.ok)return 'ERR';
+    return r.json().then(function(d){return d.sha||null;});
+  }).catch(function(){return 'ERR';});
 }
-function ghSend(token,title,body){
-  if(!token)return Promise.resolve({ok:false,msg:'أدخل GitHub Token أولاً'});
-  if(!title.trim())return Promise.resolve({ok:false,msg:'العنوان مطلوب'});
+function ghSend(ghToken,title,body){
+  if(!ghToken)return Promise.resolve({ok:false,msg:'أدخل GitHub Token أولاً'});
   var notif={id:'n_'+Date.now(),title:title.trim(),body:body.trim(),sentAt:new Date().toISOString()};
   var content=btoa(unescape(encodeURIComponent(JSON.stringify(notif,null,2))));
-  return ghGetSha(token).then(function(sha){
-    if(sha==='ERR')return{ok:false,msg:'خطأ في الاتصال بـ GitHub — تحقق من الـ Token'};
-    var payload={message:'إشعار: '+title.trim(),content:content};
+  return ghGetSha(ghToken).then(function(sha){
+    if(sha==='ERR')return{ok:false,msg:'خطأ في الاتصال بـ GitHub'};
+    var payload={message:'إشعار: '+title,content:content};
     if(sha)payload.sha=sha;
     return fetch(GH_API,{
       method:'PUT',
-      headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      headers:{'Authorization':'token '+ghToken,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
       body:JSON.stringify(payload)
     }).then(function(r){
       if(r.ok)return{ok:true,notif:notif};
@@ -132,14 +166,13 @@ function ghSend(token,title,body){
   });
 }
 
-/* Utils */
+/* ════════ Utils ════════ */
 function uid(){return Math.random().toString(36).slice(2,9);}
-function today(){return new Date().toISOString().slice(0,10);}
 function fmtD(d){return d?new Date(d).toLocaleDateString('ar-SA'):'—';}
 function dLeft(d){return Math.ceil((new Date(d)-new Date())/864e5);}
 function genCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length:8},function(){return c[Math.floor(Math.random()*c.length)];}).join('');}
-function expDate(months){var d=new Date();d.setMonth(d.getMonth()+months);return d.toISOString();}
-function expDateLabel(months){var d=new Date();d.setMonth(d.getMonth()+months);return d.toLocaleDateString('ar-SA');}
+function expDate(m){var d=new Date();d.setMonth(d.getMonth()+m);return d.toISOString();}
+function expLabel(m){var d=new Date();d.setMonth(d.getMonth()+m);return d.toLocaleDateString('ar-SA');}
 
 function useLS(k,d0){
   var s=_useState(function(){try{var x=localStorage.getItem(k);return x?JSON.parse(x):d0;}catch(e){return d0;}});
@@ -148,12 +181,12 @@ function useLS(k,d0){
   return[v,sv];
 }
 
-/* Toast */
+/* ════════ Toast ════════ */
 function useToast(){
   var s=_useState(null);var t=s[0],st=s[1];
   var show=_useCallback(function(msg,type){
     st({msg:msg,type:type||'ok'});
-    setTimeout(function(){st(null);},3200);
+    setTimeout(function(){st(null);},3500);
   },[]);
   return{t:t,show:show};
 }
@@ -163,36 +196,61 @@ function Toast(props){
   return h('div',{className:'toast',style:{background:C[props.t.type]||C.ok}},props.t.msg);
 }
 
-/* Login */
+/* ════════ Login — Supabase Auth ════════ */
 function Login(props){
+  var es=_useState('');var email=es[0],setEmail=es[1];
   var ps=_useState('');var pass=ps[0],setPass=ps[1];
-  var es=_useState('');var err=es[0],setErr=es[1];
+  var ls=_useState(false);var loading=ls[0],setL=ls[1];
+  var ers=_useState('');var err=ers[0],setErr=ers[1];
+  var ss=_useState(false);var showPass=ss[0],setSP=ss[1];
+
   function submit(){
-    if(pass===PASS){sessionStorage.setItem('cc-adm','1');props.onLogin();}
-    else{setErr('كلمة السر غير صحيحة');setPass('');}
+    if(!email.trim()||!pass)return;
+    setL(true);setErr('');
+    supaSignIn(email,pass).then(function(res){
+      setL(false);
+      if(res.ok){props.onLogin(res);}
+      else{setErr(res.error||'بريد أو كلمة مرور غير صحيحة');}
+    });
   }
+
   return h('div',{className:'lp'},
     h('div',{className:'lb'},
-      h('div',{style:{width:68,height:68,borderRadius:18,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:32,margin:'0 auto 16px'}},'🔐'),
+      h('div',{style:{width:72,height:72,borderRadius:18,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:32,margin:'0 auto 16px',boxShadow:'0 8px 28px rgba(124,58,237,.4)'}},'🔐'),
       h('h1',{style:{fontSize:22,fontWeight:900,marginBottom:4}},'لوحة إدارة AdVax'),
-      h('p',{style:{fontSize:13,color:'#7878A8',marginBottom:26}},'CraftCost Pro — المسؤولون فقط'),
-      h('div',{style:{textAlign:'right',marginBottom:err?0:14}},
-        h('label',{className:'lbl'},'كلمة السر'),
-        h('input',{type:'password',value:pass,onChange:function(e){setPass(e.target.value);},onKeyDown:function(e){if(e.key==='Enter')submit();},placeholder:'••••••••'})
+      h('p',{style:{fontSize:13,color:'#7878A8',marginBottom:6}},'CraftCost Pro'),
+      h('div',{style:{background:'rgba(16,185,129,.1)',border:'1px solid rgba(16,185,129,.2)',borderRadius:8,padding:'7px 12px',fontSize:11,color:'#10B981',marginBottom:24}},'🔒 محمية بـ Supabase Authentication'),
+
+      h('div',{style:{textAlign:'right',marginBottom:12}},
+        h('label',{className:'lbl'},'البريد الإلكتروني'),
+        h('input',{type:'email',value:email,onChange:function(e){setEmail(e.target.value);},onKeyDown:function(e){if(e.key==='Enter')submit();},placeholder:'admin@advax.com'})
       ),
-      err&&h('div',{className:'ebox',style:{margin:'10px 0'}},err),
-      h('button',{className:'btn bp',style:{width:'100%',justifyContent:'center',padding:'13px',marginTop:6},onClick:submit,disabled:!pass},'دخول ←')
+      h('div',{style:{textAlign:'right',marginBottom:err?0:16}},
+        h('label',{className:'lbl'},'كلمة المرور'),
+        h('div',{style:{position:'relative'}},
+          h('input',{type:showPass?'text':'password',value:pass,onChange:function(e){setPass(e.target.value);},onKeyDown:function(e){if(e.key==='Enter')submit();},placeholder:'••••••••',style:{paddingLeft:44}}),
+          h('button',{onClick:function(){setSP(!showPass);},style:{position:'absolute',left:10,top:'50%',transform:'translateY(-50%)',background:'none',color:'#7878A8',fontSize:16,padding:'2px 4px'}},showPass?'🙈':'👁')
+        )
+      ),
+      err&&h('div',{className:'ebox',style:{margin:'10px 0',borderRadius:9}},err),
+      h('button',{className:'btn bp',style:{width:'100%',justifyContent:'center',padding:'13px',marginTop:8,fontSize:15},onClick:submit,disabled:loading||!email.trim()||!pass},
+        loading?h('span',null,'جاري التحقق...'):'دخول ←'
+      ),
+      h('p',{style:{marginTop:16,fontSize:11,color:'#4C4C7A',lineHeight:1.7}},
+        'الدخول عبر Supabase Authentication فقط',h('br'),
+        'لا يوجد كلمة سر مكشوفة في الكود 🔒'
+      )
     )
   );
 }
 
-/* StatsBar */
+/* ════════ Stats ════════ */
 function StatsBar(props){
   var codes=props.codes;
-  var active=codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date();}).length;
-  var expired=codes.filter(function(c){return new Date(c.expires_at)<new Date();}).length;
-  var soon=codes.filter(function(c){return c.is_active&&dLeft(c.expires_at)<=7&&dLeft(c.expires_at)>0;}).length;
-  var stopped=codes.filter(function(c){return !c.is_active&&new Date(c.expires_at)>new Date();}).length;
+  var active  =codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date();}).length;
+  var expired =codes.filter(function(c){return new Date(c.expires_at)<new Date();}).length;
+  var soon    =codes.filter(function(c){return c.is_active&&dLeft(c.expires_at)<=7&&dLeft(c.expires_at)>0;}).length;
+  var stopped =codes.filter(function(c){return !c.is_active&&new Date(c.expires_at)>new Date();}).length;
   var stats=[
     {ic:'🔑',l:'إجمالي الأكواد',v:codes.length,c:'#9D60FF'},
     {ic:'✅',l:'نشط',v:active,c:'#10B981'},
@@ -213,7 +271,7 @@ function StatsBar(props){
   );
 }
 
-/* CodeMgr */
+/* ════════ Code Manager ════════ */
 var PLANS=[
   {v:'monthly',l:'شهري',m:1},
   {v:'quarterly',l:'ربع سنوي',m:3},
@@ -222,7 +280,7 @@ var PLANS=[
 ];
 
 function CodeMgr(props){
-  var codes=props.codes,setCodes=props.setCodes,showToast=props.showToast;
+  var token=props.token,codes=props.codes,setCodes=props.setCodes,showToast=props.showToast;
   var ns=_useState({code:'',label:'',note:'',plan:'monthly',months:1});var nc=ns[0],setNc=ns[1];
   var fs=_useState('all');var filter=fs[0],setF=fs[1];
   var ls=_useState(false);var loading=ls[0],setL=ls[1];
@@ -230,33 +288,38 @@ function CodeMgr(props){
   function addCode(){
     if(!nc.code.trim())return;
     setL(true);
-    var row={code:nc.code.toUpperCase(),label:nc.label,note:nc.note,plan:nc.plan,
-      expires_at:expDate(nc.months),is_active:true,device_id:'',use_count:0};
-    supaPost('subscription_codes',row).then(function(res){
+    var row={
+      code:nc.code.toUpperCase(),label:nc.label,note:nc.note,
+      plan:nc.plan,expires_at:expDate(nc.months),
+      is_active:true,device_id:'',use_count:0
+    };
+    dbPost(token,'subscription_codes',row).then(function(res){
+      setL(false);
       if(res&&res[0]){
         setCodes(function(p){return[res[0]].concat(p);});
-        showToast('✅ تم إنشاء الكود في Supabase');
+        showToast('✅ تم إنشاء الكود بنجاح');
         setNc({code:'',label:'',note:'',plan:'monthly',months:1});
       }else{
-        row.id=uid();row.created_at=new Date().toISOString();row.last_used_at=null;row.device_info='';
-        setCodes(function(p){return[row].concat(p);});
-        showToast('⚠️ حُفظ محلياً — Supabase غير متاح','warn');
+        showToast('❌ خطأ في الحفظ — تأكد من تشغيل SQL الأمان','err');
       }
-      setL(false);
     });
   }
 
   function toggle(id,cur){
-    supaPatch('subscription_codes','id=eq.'+id,{is_active:!cur}).then(function(){
-      setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{is_active:!cur}):c;});});
-      showToast(cur?'⛔ تم الإيقاف':'✅ تم التفعيل',cur?'warn':'ok');
+    dbPatch(token,'subscription_codes','id=eq.'+id,{is_active:!cur}).then(function(ok){
+      if(ok){
+        setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{is_active:!cur}):c;});});
+        showToast(cur?'⛔ تم الإيقاف':'✅ تم التفعيل',cur?'warn':'ok');
+      }else showToast('❌ فشل التحديث','err');
     });
   }
 
   function resetDev(id){
-    supaPatch('subscription_codes','id=eq.'+id,{device_id:'',device_info:''}).then(function(){
-      setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{device_id:'',device_info:''}):c;});});
-      showToast('✅ تم إعادة تعيين الجهاز');
+    dbPatch(token,'subscription_codes','id=eq.'+id,{device_id:'',device_info:''}).then(function(ok){
+      if(ok){
+        setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{device_id:'',device_info:''}):c;});});
+        showToast('✅ تم إعادة تعيين الجهاز');
+      }
     });
   }
 
@@ -265,21 +328,25 @@ function CodeMgr(props){
     var base=new Date(c.expires_at)>new Date()?new Date(c.expires_at):new Date();
     base.setMonth(base.getMonth()+months);
     var iso=base.toISOString();
-    supaPatch('subscription_codes','id=eq.'+id,{expires_at:iso,is_active:true}).then(function(){
-      setCodes(function(p){return p.map(function(x){return x.id===id?Object.assign({},x,{expires_at:iso,is_active:true}):x;});});
-      showToast('✅ تم التمديد '+months+' شهر');
+    dbPatch(token,'subscription_codes','id=eq.'+id,{expires_at:iso,is_active:true}).then(function(ok){
+      if(ok){
+        setCodes(function(p){return p.map(function(x){return x.id===id?Object.assign({},x,{expires_at:iso,is_active:true}):x;});});
+        showToast('✅ تم التمديد '+months+' شهر');
+      }
     });
   }
 
   function delCode(id){
-    if(!window.confirm('حذف هذا الكود نهائياً؟'))return;
-    supaDel('subscription_codes','id=eq.'+id).then(function(){
-      setCodes(function(p){return p.filter(function(c){return c.id!==id;});});
-      showToast('تم الحذف','err');
+    if(!window.confirm('حذف هذا الكود نهائياً؟ لا يمكن التراجع.'))return;
+    dbDel(token,'subscription_codes','id=eq.'+id).then(function(ok){
+      if(ok){setCodes(function(p){return p.filter(function(c){return c.id!==id;});});showToast('تم الحذف','err');}
+      else showToast('❌ فشل الحذف','err');
     });
   }
 
-  function copy(code){navigator.clipboard&&navigator.clipboard.writeText(code).then(function(){showToast('✅ تم النسخ');});}
+  function copy(code){
+    navigator.clipboard&&navigator.clipboard.writeText(code).then(function(){showToast('✅ تم نسخ الكود');});
+  }
 
   var list=codes.filter(function(c){
     if(filter==='active') return c.is_active&&new Date(c.expires_at)>new Date();
@@ -296,13 +363,16 @@ function CodeMgr(props){
         h('div',null,
           h('label',{className:'lbl'},'الكود'),
           h('div',{style:{display:'flex',gap:7}},
-            h('input',{value:nc.code,onChange:function(e){setNc(function(p){return Object.assign({},p,{code:e.target.value.toUpperCase()});});},
+            h('input',{value:nc.code,
+              onChange:function(e){setNc(function(p){return Object.assign({},p,{code:e.target.value.toUpperCase()});});},
               placeholder:'CRAFT2025',style:{letterSpacing:2,fontWeight:700,fontSize:14}}),
-            h('button',{className:'btn bo bsm',onClick:function(){setNc(function(p){return Object.assign({},p,{code:genCode()});});},style:{flexShrink:0}},'🔀')
+            h('button',{className:'btn bo bsm',
+              onClick:function(){setNc(function(p){return Object.assign({},p,{code:genCode()});});},
+              style:{flexShrink:0}},'🔀')
           )
         ),
         h('div',null,
-          h('label',{className:'lbl'},'التسمية / اسم العميل'),
+          h('label',{className:'lbl'},'اسم العميل'),
           h('input',{value:nc.label,onChange:function(e){setNc(function(p){return Object.assign({},p,{label:e.target.value});});},placeholder:'مثال: محمد أحمد'})
         ),
         h('div',null,
@@ -314,15 +384,17 @@ function CodeMgr(props){
         h('label',{className:'lbl'},'مدة الاشتراك'),
         h('div',{style:{display:'flex',gap:7,flexWrap:'wrap'}},
           PLANS.map(function(p){
-            return h('button',{key:p.v,onClick:function(){setNc(function(x){return Object.assign({},x,{plan:p.v,months:p.m});});},
+            return h('button',{key:p.v,
+              onClick:function(){setNc(function(x){return Object.assign({},x,{plan:p.v,months:p.m});});},
               className:'btn bsm '+(nc.plan===p.v?'bp':'bo')},p.l,' (',p.m,' شهر)');
           })
         )
       ),
       nc.code&&h('div',{style:{background:'rgba(124,58,237,.1)',border:'1px solid rgba(124,58,237,.25)',borderRadius:9,padding:'8px 14px',marginBottom:12,fontSize:13,color:'#9D60FF'}},
-        '📅 ينتهي في: ',h('b',null,expDateLabel(nc.months))
+        '📅 ينتهي في: ',h('b',null,expLabel(nc.months))
       ),
-      h('button',{className:'btn bp',onClick:addCode,disabled:!nc.code.trim()||loading},loading?'جاري..':'✅ إنشاء الكود')
+      h('button',{className:'btn bp',onClick:addCode,disabled:!nc.code.trim()||loading},
+        loading?'جاري الحفظ..':'✅ إنشاء الكود')
     ),
 
     h('div',{className:'sec'},
@@ -330,28 +402,31 @@ function CodeMgr(props){
         h('h3',{style:{fontSize:15,fontWeight:800}},'🔑 الأكواد (',codes.length,')'),
         h('div',{style:{display:'flex',gap:5,flexWrap:'wrap'}},
           [['all','الكل'],['active','نشط'],['expired','منتهي'],['soon','ينتهي قريباً'],['stopped','موقوف']].map(function(item){
-            return h('button',{key:item[0],onClick:function(){setF(item[0]);},className:'btn bsm '+(filter===item[0]?'bp':'bo')},item[1]);
+            return h('button',{key:item[0],onClick:function(){setF(item[0]);},
+              className:'btn bsm '+(filter===item[0]?'bp':'bo')},item[1]);
           })
         )
       ),
       list.length===0
-        ?h('p',{style:{color:'#4C4C7A',textAlign:'center',padding:'22px 0',fontSize:13}},'لا توجد أكواد')
+        ?h('p',{style:{color:'#4C4C7A',textAlign:'center',padding:'22px 0',fontSize:13}},'لا توجد أكواد في هذه الفئة')
         :h('div',{className:'tw'},h('table',null,
             h('thead',null,h('tr',null,
               h('th',null,'الكود'),h('th',null,'العميل'),h('th',null,'الخطة'),
-              h('th',null,'ينتهي'),h('th',null,'الجهاز'),h('th',null,'الاستخدام'),h('th',null,'الحالة'),h('th',null,'إجراءات')
+              h('th',null,'ينتهي'),h('th',null,'الجهاز'),
+              h('th',null,'الاستخدام'),h('th',null,'الحالة'),h('th',null,'إجراءات')
             )),
             h('tbody',null,list.map(function(c){
               var exp=new Date(c.expires_at)<new Date();
               var dl=dLeft(c.expires_at);
-              var hasDevice=!!(c.device_id&&c.device_id.length>3);
+              var hasDev=!!(c.device_id&&c.device_id.length>3);
               var status=!c.is_active?'موقوف':exp?'منتهي':dl<=7?'ينتهي قريباً':'نشط';
               var bc=!c.is_active?'bwrn':exp?'berr':dl<=7?'bwrn':'bok';
               return h('tr',{key:c.id},
                 h('td',null,
                   h('div',{style:{display:'flex',alignItems:'center',gap:6}},
                     h('b',{style:{fontFamily:'monospace',fontSize:13,letterSpacing:2,color:'#9D60FF'}},c.code),
-                    h('button',{onClick:function(){copy(c.code);},style:{background:'none',color:'#7878A8',fontSize:11,padding:'2px 6px',borderRadius:5,border:'1px solid #272750',cursor:'pointer'}},'📋')
+                    h('button',{onClick:function(){copy(c.code);},
+                      style:{background:'none',color:'#7878A8',fontSize:11,padding:'2px 6px',borderRadius:5,border:'1px solid #272750',cursor:'pointer'}},'📋')
                   )
                 ),
                 h('td',null,
@@ -366,10 +441,12 @@ function CodeMgr(props){
                   !exp&&h('div',{style:{fontSize:10,color:'#7878A8'}},dl,' يوم')
                 ),
                 h('td',null,
-                  hasDevice
+                  hasDev
                     ?h('div',null,
                         h('div',{className:'bdg bok',style:{fontSize:10,marginBottom:4}},'📱 مُسجَّل'),
-                        h('button',{className:'btn bsm bw',onClick:function(){resetDev(c.id);},style:{fontSize:10,cursor:'pointer'}},'🔄 تعيين جديد')
+                        h('button',{className:'btn bsm bw',
+                          onClick:function(){resetDev(c.id);},
+                          style:{fontSize:10}},'🔄 تعيين جديد')
                       )
                     :h('span',{className:'bdg bmut',style:{fontSize:10}},'لم يُستخدم')
                 ),
@@ -380,7 +457,8 @@ function CodeMgr(props){
                 h('td',null,h('span',{className:'bdg '+bc},status)),
                 h('td',null,
                   h('div',{style:{display:'flex',gap:4,flexWrap:'wrap'}},
-                    h('button',{className:'btn bsm '+(c.is_active?'br':'bg2'),onClick:function(){toggle(c.id,c.is_active);}},c.is_active?'⛔ إيقاف':'✅ تفعيل'),
+                    h('button',{className:'btn bsm '+(c.is_active?'br':'bg2'),
+                      onClick:function(){toggle(c.id,c.is_active);}},c.is_active?'⛔ إيقاف':'✅ تفعيل'),
                     h('button',{className:'btn bsm bo',onClick:function(){extend(c.id,1);}},'＋شهر'),
                     h('button',{className:'btn bsm bo',onClick:function(){extend(c.id,3);}},'＋٣'),
                     h('button',{className:'btn bsm br',onClick:function(){delCode(c.id);}},'🗑')
@@ -393,7 +471,7 @@ function CodeMgr(props){
   );
 }
 
-/* Users */
+/* ════════ Users ════════ */
 function Users(props){
   var codes=props.codes;
   var active=codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date()&&c.last_used_at;});
@@ -406,7 +484,7 @@ function Users(props){
         :h('div',{className:'tw'},h('table',null,
             h('thead',null,h('tr',null,
               h('th',null,'الكود'),h('th',null,'العميل'),h('th',null,'آخر دخول'),
-              h('th',null,'عدد الدخول'),h('th',null,'الجهاز مقيَّد'),h('th',null,'ينتهي بعد')
+              h('th',null,'عدد الدخول'),h('th',null,'الجهاز'),h('th',null,'ينتهي بعد')
             )),
             h('tbody',null,
               active.slice().sort(function(a,b){return new Date(b.last_used_at)-new Date(a.last_used_at);}).map(function(c){
@@ -415,7 +493,7 @@ function Users(props){
                   h('td',null,c.label||h('span',{style:{color:'#4C4C7A'}},'—')),
                   h('td',null,h('span',{style:{fontSize:12}},fmtD(c.last_used_at))),
                   h('td',null,h('b',null,c.use_count||0,' مرة')),
-                  h('td',null,c.device_id?h('span',{className:'bdg bok',style:{fontSize:10}},'📱 نعم'):h('span',{className:'bdg bwrn',style:{fontSize:10}},'لا')),
+                  h('td',null,c.device_id?h('span',{className:'bdg bok',style:{fontSize:10}},'📱 مُقيَّد'):h('span',{className:'bdg bwrn',style:{fontSize:10}},'مفتوح')),
                   h('td',null,h('span',{style:{color:dLeft(c.expires_at)<30?'#F59E0B':'#10B981',fontWeight:600}},dLeft(c.expires_at),' يوم'))
                 );
               })
@@ -425,77 +503,77 @@ function Users(props){
   );
 }
 
-/* Notifications */
+/* ════════ Notifications ════════ */
 function Notifs(props){
   var showToast=props.showToast;
   var ts=_useState('');var title=ts[0],setTitle=ts[1];
   var bs=_useState('');var body=bs[0],setBody=bs[1];
-  var tks=_useState(function(){return localStorage.getItem('cc-gh-token')||'';});var token=tks[0],setToken=tks[1];
-  var tis=_useState('');var tokenInput=tis[0],setTI=tis[1];
-  var shs=_useState(false);var showTok=shs[0],setShowTok=shs[1];
+  var tks=_useState(function(){return localStorage.getItem('cc-gh-token')||'';});var ghTok=tks[0],setGhTok=tks[1];
+  var tis=_useState('');var tokInput=tis[0],setTI=tis[1];
+  var shs=_useState(false);var showTok=shs[0],setST=shs[1];
   var sds=_useState(false);var sending=sds[0],setSending=sds[1];
   var lg=useLS('cc-notif-log',[]);var log=lg[0],setLog=lg[1];
 
-  function saveToken(){
-    var t=tokenInput.trim();if(!t)return;
-    localStorage.setItem('cc-gh-token',t);setToken(t);setTI('');setShowTok(false);
-    showToast('✅ تم حفظ الـ Token في متصفحك فقط');
+  function saveTok(){
+    var t=tokInput.trim();if(!t)return;
+    localStorage.setItem('cc-gh-token',t);setGhTok(t);setTI('');setST(false);
+    showToast('✅ تم حفظ الـ Token');
   }
-  function removeToken(){localStorage.removeItem('cc-gh-token');setToken('');showToast('تم حذف الـ Token','warn');}
+  function removeTok(){localStorage.removeItem('cc-gh-token');setGhTok('');showToast('تم الحذف','warn');}
 
   function send(){
-    if(!title.trim()){showToast('اكتب عنوان الإشعار','warn');return;}
-    if(!token){showToast('أدخل GitHub Token أولاً','err');return;}
+    if(!title.trim()){showToast('اكتب العنوان','warn');return;}
+    if(!ghTok){showToast('أدخل GitHub Token','err');return;}
     setSending(true);
-    ghSend(token,title,body).then(function(res){
+    ghSend(ghTok,title,body).then(function(res){
       setSending(false);
       if(res.ok){
-        var entry=Object.assign({},res.notif,{loggedAt:new Date().toISOString()});
-        setLog(function(p){return[entry].concat(p.slice(0,49));});
-        showToast('✅ تم الإرسال! يصل للعملاء خلال ساعة');
+        setLog(function(p){return[Object.assign({},res.notif,{loggedAt:new Date().toISOString()})].concat(p.slice(0,49));});
+        showToast('✅ تم الإرسال — يصل للعملاء خلال ساعة');
         setTitle('');setBody('');
-      }else{
-        showToast('❌ '+res.msg,'err');
-      }
+      }else showToast('❌ '+res.msg,'err');
     });
   }
 
-  var masked=token?token.slice(0,8)+'•••••••••••'+token.slice(-4):'';
+  var masked=ghTok?ghTok.slice(0,8)+'•••••••••••'+ghTok.slice(-4):'';
 
   return h('div',null,
-    h('div',{className:'sec',style:{background:token?'rgba(16,185,129,.07)':'rgba(245,158,11,.07)',borderColor:token?'rgba(16,185,129,.25)':'rgba(245,158,11,.25)'}},
+    h('div',{className:'sec',style:{background:ghTok?'rgba(16,185,129,.07)':'rgba(245,158,11,.07)',borderColor:ghTok?'rgba(16,185,129,.25)':'rgba(245,158,11,.25)'}},
       h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}},
         h('h3',{style:{fontSize:15,fontWeight:800}},'🔑 GitHub Token'),
-        token?h('span',{className:'bdg bok'},'✓ مُعيَّن'):h('span',{className:'bdg bwrn'},'⚠️ مطلوب')
+        ghTok?h('span',{className:'bdg bok'},'✓ مُعيَّن'):h('span',{className:'bdg bwrn'},'⚠️ مطلوب')
       ),
-      token?h('div',null,
-        h('div',{style:{display:'flex',alignItems:'center',gap:10,marginBottom:8}},
-          h('div',{style:{flex:1,background:'#181830',borderRadius:8,padding:'8px 12px',fontFamily:'monospace',fontSize:13,color:'#10B981'}},'🔒 ',masked),
-          h('button',{className:'btn br bsm',onClick:removeToken},'حذف')
-        ),
-        h('p',{style:{fontSize:11,color:'#7878A8'}},'✓ محفوظ في متصفحك فقط')
-      ):h('div',null,
-        h('div',{className:'wbox'},'💡 أنشئ Fine-grained token بصلاحية Contents: Read & Write على مستودع craftcost-notification فقط'),
-        h('div',{style:{display:'flex',gap:8,marginBottom:6}},
-          h('input',{type:showTok?'text':'password',value:tokenInput,onChange:function(e){setTI(e.target.value);},
-            onKeyDown:function(e){if(e.key==='Enter')saveToken();},placeholder:'github_pat_...',style:{flex:1,fontFamily:'monospace'}}),
-          h('button',{onClick:function(){setShowTok(!showTok);},className:'btn bo bsm'},showTok?'🙈':'👁'),
-          h('button',{onClick:saveToken,className:'btn bp bsm',disabled:!tokenInput.trim()},'حفظ')
-        ),
-        h('p',{style:{fontSize:11,color:'#4C4C7A'}},'الـ Token يُحفظ في متصفحك فقط ولا يُرسل لأي خادم')
-      )
+      ghTok
+        ?h('div',null,
+            h('div',{style:{display:'flex',alignItems:'center',gap:10,marginBottom:6}},
+              h('div',{style:{flex:1,background:'#181830',borderRadius:8,padding:'8px 12px',fontFamily:'monospace',fontSize:13,color:'#10B981'}},'🔒 ',masked),
+              h('button',{className:'btn br bsm',onClick:removeTok},'حذف')
+            ),
+            h('p',{style:{fontSize:11,color:'#7878A8'}},'✓ محفوظ في متصفحك فقط')
+          )
+        :h('div',null,
+            h('div',{className:'wbox'},'💡 أنشئ Fine-grained token على GitHub بصلاحية Contents: Read & Write على مستودع craftcost-notification فقط'),
+            h('div',{style:{display:'flex',gap:8,marginBottom:6}},
+              h('input',{type:showTok?'text':'password',value:tokInput,
+                onChange:function(e){setTI(e.target.value);},
+                onKeyDown:function(e){if(e.key==='Enter')saveTok();},
+                placeholder:'github_pat_...',style:{flex:1,fontFamily:'monospace'}}),
+              h('button',{onClick:function(){setST(!showTok);},className:'btn bo bsm'},showTok?'🙈':'👁'),
+              h('button',{onClick:saveTok,className:'btn bp bsm',disabled:!tokInput.trim()},'حفظ')
+            ),
+            h('p',{style:{fontSize:11,color:'#4C4C7A'}},'يُحفظ في متصفحك فقط — لا يُرسل لأي خادم')
+          )
     ),
-
     h('div',{className:'sec'},
       h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:8}},'📢 إرسال إشعار للعملاء'),
-      h('div',{className:'ibox'},'📡 ','يُكتب الإشعار على GitHub ← يصل للعملاء خلال ساعة — مجاني بالكامل'),
+      h('div',{className:'ibox'},'📡 ','يُكتب الإشعار على GitHub ← يصل للعملاء تلقائياً خلال ساعة — مجاني'),
       h('div',{style:{marginBottom:10}},
-        h('label',{className:'lbl'},'عنوان الإشعار *'),
+        h('label',{className:'lbl'},'العنوان *'),
         h('input',{value:title,onChange:function(e){setTitle(e.target.value);},placeholder:'مثال: تحديث جديد ✨',maxLength:100})
       ),
       h('div',{style:{marginBottom:14}},
-        h('label',{className:'lbl'},'تفاصيل (اختياري)'),
-        h('textarea',{value:body,onChange:function(e){setBody(e.target.value);},rows:3,placeholder:'تفاصيل...',maxLength:300})
+        h('label',{className:'lbl'},'التفاصيل (اختياري)'),
+        h('textarea',{value:body,onChange:function(e){setBody(e.target.value);},rows:3,placeholder:'تفاصيل إضافية...',maxLength:300})
       ),
       title&&h('div',{style:{background:'rgba(124,58,237,.12)',border:'1.5px solid rgba(124,58,237,.28)',borderRadius:12,padding:'12px 14px',marginBottom:14}},
         h('div',{style:{fontSize:11,color:'#7878A8',marginBottom:6,fontWeight:700}},'معاينة:'),
@@ -507,14 +585,14 @@ function Notifs(props){
           )
         )
       ),
-      h('button',{className:'btn bp',style:{width:'100%',justifyContent:'center',padding:'12px'},onClick:send,disabled:!title.trim()||!token||sending},
+      h('button',{className:'btn bp',style:{width:'100%',justifyContent:'center',padding:'12px'},
+        onClick:send,disabled:!title.trim()||!ghTok||sending},
         sending?'جاري الإرسال..':'📨 إرسال لجميع العملاء')
     ),
-
     log.length>0&&h('div',{className:'sec'},
       h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}},
         h('h3',{style:{fontSize:15,fontWeight:800}},'📋 الإشعارات المُرسلة (',log.length,')'),
-        h('button',{className:'btn br bsm',onClick:function(){if(window.confirm('مسح السجل؟'))setLog([]);}},'مسح')
+        h('button',{className:'btn br bsm',onClick:function(){if(window.confirm('مسح؟'))setLog([]);}},'مسح')
       ),
       h('div',{className:'tw'},h('table',null,
         h('thead',null,h('tr',null,h('th',null,'العنوان'),h('th',null,'التفاصيل'),h('th',null,'وقت الإرسال'))),
@@ -530,9 +608,9 @@ function Notifs(props){
   );
 }
 
-/* Admin Settings */
-function AdminSettings(props){
-  var showToast=props.showToast;
+/* ════════ Settings ════════ */
+function Settings(props){
+  var token=props.token,showToast=props.showToast,userEmail=props.userEmail;
   var tcs=_useState('');var testCode=tcs[0],setTC=tcs[1];
   var trs=_useState(null);var testRes=trs[0],setTR=trs[1];
   var tgs=_useState(false);var testing=tgs[0],setTG=tgs[1];
@@ -540,20 +618,34 @@ function AdminSettings(props){
   function runTest(){
     if(!testCode.trim())return;
     setTG(true);setTR(null);
-    supaGet('subscription_codes','code=eq.'+encodeURIComponent(testCode.toUpperCase())+'&select=*').then(function(d){
-      setTG(false);
-      if(!d||!d.length){setTR({err:true,msg:'الكود غير موجود'});}
-      else{var r=d[0];setTR({err:false,code:r.code,expires:r.expires_at,active:r.is_active,plan:r.plan,uses:r.use_count,device:r.device_id?'مُقيَّد بجهاز':'بدون جهاز'});}
-    });
+    dbGet(token,'subscription_codes','code=eq.'+encodeURIComponent(testCode.toUpperCase())+'&select=*')
+      .then(function(d){
+        setTG(false);
+        if(!d||!d.length)setTR({err:true,msg:'الكود غير موجود في قاعدة البيانات'});
+        else{
+          var r=d[0];
+          setTR({err:false,code:r.code,expires:r.expires_at,active:r.is_active,plan:r.plan,uses:r.use_count,device:r.device_id?'مُقيَّد':'مفتوح'});
+        }
+      });
   }
 
   return h('div',null,
+    h('div',{className:'sec',style:{background:'rgba(16,185,129,.07)',borderColor:'rgba(16,185,129,.25)'}},
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:10}},'👤 حسابك'),
+      h('div',{style:{display:'flex',alignItems:'center',gap:12}},
+        h('div',{style:{width:44,height:44,borderRadius:12,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20}},'👤'),
+        h('div',null,
+          h('div',{style:{fontWeight:700,fontSize:14}},userEmail||'مدير AdVax'),
+          h('div',{style:{fontSize:12,color:'#10B981'}},'✅ تسجيل دخول عبر Supabase Auth')
+        )
+      )
+    ),
     h('div',{className:'sec'},
       h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'🔌 حالة الاتصال'),
       h('div',{className:'g2'},
         h('div',{style:{background:'rgba(16,185,129,.1)',border:'1px solid rgba(16,185,129,.25)',borderRadius:10,padding:'12px 14px'}},
           h('div',{style:{fontWeight:700,marginBottom:3,color:'#10B981'}},'✅ Supabase متصل'),
-          h('div',{style:{fontSize:11,color:'#7878A8'}},'قاعدة البيانات السحابية')
+          h('div',{style:{fontSize:11,color:'#7878A8'}},'مُوثَّق بـ Auth — صلاحيات كاملة')
         ),
         h('div',{style:{background:'rgba(16,185,129,.1)',border:'1px solid rgba(16,185,129,.25)',borderRadius:10,padding:'12px 14px'}},
           h('div',{style:{fontWeight:700,marginBottom:3,color:'#10B981'}},'✅ GitHub Notifications'),
@@ -564,85 +656,102 @@ function AdminSettings(props){
     h('div',{className:'sec'},
       h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'🧪 اختبار كود'),
       h('div',{style:{display:'flex',gap:9,marginBottom:10}},
-        h('input',{value:testCode,onChange:function(e){setTC(e.target.value.toUpperCase());},placeholder:'أدخل كود للاختبار...',style:{flex:1,letterSpacing:2,fontWeight:700}}),
+        h('input',{value:testCode,onChange:function(e){setTC(e.target.value.toUpperCase());},
+          placeholder:'أدخل كود للاختبار...',style:{flex:1,letterSpacing:2,fontWeight:700}}),
         h('button',{className:'btn bp',onClick:runTest,disabled:testing||!testCode.trim(),style:{flexShrink:0}},testing?'..':'اختبار')
       ),
-      testRes&&h('div',{style:{background:testRes.err?'rgba(239,68,68,.1)':'rgba(16,185,129,.1)',border:'1px solid '+(testRes.err?'rgba(239,68,68,.25)':'rgba(16,185,129,.25)'),borderRadius:9,padding:'10px 14px',fontSize:13,color:testRes.err?'#EF4444':'#10B981'}},
+      testRes&&h('div',{style:{
+        background:testRes.err?'rgba(239,68,68,.1)':'rgba(16,185,129,.1)',
+        border:'1px solid '+(testRes.err?'rgba(239,68,68,.25)':'rgba(16,185,129,.25)'),
+        borderRadius:9,padding:'10px 14px',fontSize:13,color:testRes.err?'#EF4444':'#10B981'
+      }},
         testRes.err?('❌ '+testRes.msg):h('div',null,
-          h('div',null,'✅ الكود صحيح'),
+          h('b',null,'✅ الكود صحيح'),
           h('div',{style:{marginTop:5,fontSize:12,color:'#7878A8'}},
             'الخطة: ',testRes.plan,' · ينتهي: ',fmtD(testRes.expires),
-            ' · الاستخدام: ',testRes.uses||0,' مرة · الجهاز: ',testRes.device,
+            ' · الاستخدام: ',testRes.uses||0,' مرة',
+            ' · الجهاز: ',testRes.device,
             ' · الحالة: ',h('b',{style:{color:testRes.active?'#10B981':'#EF4444'}},testRes.active?'نشط':'موقوف')
           )
         )
       )
-    ),
-    h('div',{className:'sec'},
-      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'ℹ️ معلومات'),
-      [['رابط التطبيق',APP_URL],['الإصدار','CraftCost Pro v3.1'],['الشركة','AdVax']].map(function(item,i){
-        return h('div',{key:i,style:{display:'flex',justifyContent:'space-between',fontSize:13,padding:'7px 11px',background:'#181830',borderRadius:8,marginBottom:6}},
-          h('span',{style:{color:'#7878A8'}},item[0]),h('b',null,item[1]));
-      })
     )
   );
 }
 
-/* Main App */
+/* ════════ App Root ════════ */
 function AdminApp(){
-  var as=_useState(function(){return sessionStorage.getItem('cc-adm')==='1';});var auth=as[0],setAuth=as[1];
+  /* auth state */
+  var as=_useState(function(){
+    try{var s=sessionStorage.getItem('cc-auth');return s?JSON.parse(s):null;}catch(e){return null;}
+  });
+  var auth=as[0],setAuth=as[1];
+
   var ts=_useState('codes');var tab=ts[0],setTab=ts[1];
   var cs=useLS('cc-adm-codes',[]);var codes=cs[0],setCodes=cs[1];
   var ls=_useState(false);var loading=ls[0],setL=ls[1];
   var toast=useToast();
 
-  function logout(){sessionStorage.removeItem('cc-adm');setAuth(false);}
+  function onLogin(res){
+    var sess={token:res.token,email:res.email};
+    sessionStorage.setItem('cc-auth',JSON.stringify(sess));
+    setAuth(sess);
+  }
+
+  function logout(){
+    sessionStorage.removeItem('cc-auth');
+    setAuth(null);
+  }
 
   function refresh(){
+    if(!auth)return;
     setL(true);
-    supaGet('subscription_codes','select=*&order=created_at.desc').then(function(data){
+    dbGet(auth.token,'subscription_codes','select=*&order=created_at.desc').then(function(data){
       if(data){setCodes(data);toast.show('✅ تم تحميل '+data.length+' كود');}
-      else{toast.show('❌ خطأ في التحميل','err');}
+      else{toast.show('❌ خطأ في التحميل — قد تنتهي الجلسة، أعد تسجيل الدخول','err');}
       setL(false);
     });
   }
 
-  _useEffect(function(){if(auth)refresh();},[auth]);
+  _useEffect(function(){if(auth)refresh();},[auth&&auth.token]);
 
-  if(!auth)return React.createElement(_Fragment,null,
-    React.createElement(Login,{onLogin:function(){setAuth(true);}}),
+  if(!auth)return React.createElement(React.Fragment,null,
+    React.createElement(Login,{onLogin:onLogin}),
     React.createElement(Toast,{t:toast.t})
   );
 
   var active=codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date();}).length;
   var tabs=[
-    {id:'codes',  ic:'🔑',l:'الأكواد'},
-    {id:'users',  ic:'👥',l:'المستخدمون'},
-    {id:'notifs', ic:'📢',l:'الإشعارات'},
+    {id:'codes',ic:'🔑',l:'الأكواد'},
+    {id:'users',ic:'👥',l:'المستخدمون'},
+    {id:'notifs',ic:'📢',l:'الإشعارات'},
     {id:'settings',ic:'⚙️',l:'إعدادات'},
   ];
 
-  return React.createElement(_Fragment,null,
+  return React.createElement(React.Fragment,null,
     h('div',{className:'top'},
       h('div',{style:{width:38,height:38,borderRadius:10,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0}},'🔐'),
       h('div',{style:{flex:1}},
-        h('div',{style:{fontWeight:900,fontSize:16,color:'#9D60FF'}},'لوحة إدارة AdVax — CraftCost Pro'),
-        h('div',{style:{fontSize:12,color:'#7878A8'}},active,' اشتراك نشط')
+        h('div',{style:{fontWeight:900,fontSize:15,color:'#9D60FF'}},'لوحة إدارة AdVax — CraftCost Pro'),
+        h('div',{style:{fontSize:12,color:'#7878A8'}},
+          auth.email,' · ',active,' اشتراك نشط'
+        )
       ),
-      APP_URL&&h('a',{href:APP_URL,target:'_blank',className:'btn bo bsm',style:{textDecoration:'none',marginLeft:6}},'فتح التطبيق ↗'),
-      h('button',{className:'btn br bsm',onClick:logout},'خروج')
+      APP_URL&&h('a',{href:APP_URL,target:'_blank',className:'btn bo bsm',style:{textDecoration:'none',marginLeft:6}},'التطبيق ↗'),
+      h('button',{className:'btn br bsm',onClick:logout},'تسجيل خروج')
     ),
     h('div',{className:'wrap fu'},
       h(StatsBar,{codes:codes,onRefresh:refresh,loading:loading}),
       h('div',{className:'tabs'},
         tabs.map(function(tb){
-          return h('button',{key:tb.id,onClick:function(){setTab(tb.id);},className:'tab'+(tab===tb.id?' on':'')},tb.ic,' ',tb.l);
+          return h('button',{key:tb.id,onClick:function(){setTab(tb.id);},
+            className:'tab'+(tab===tb.id?' on':'')},tb.ic,' ',tb.l);
         })
       ),
-      tab==='codes'   &&h(CodeMgr,{codes:codes,setCodes:setCodes,showToast:toast.show}),
-      tab==='users'   &&h(Users,{codes:codes}),
-      tab==='notifs'  &&h(Notifs,{showToast:toast.show}),
-      tab==='settings'&&h(AdminSettings,{showToast:toast.show})
+      tab==='codes'   &&h(CodeMgr,  {token:auth.token,codes:codes,setCodes:setCodes,showToast:toast.show}),
+      tab==='users'   &&h(Users,    {codes:codes}),
+      tab==='notifs'  &&h(Notifs,   {showToast:toast.show}),
+      tab==='settings'&&h(Settings, {token:auth.token,showToast:toast.show,userEmail:auth.email})
     ),
     h(Toast,{t:toast.t})
   );
