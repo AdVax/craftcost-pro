@@ -126,15 +126,35 @@ function dbPost(token,table,body){
 function dbPatch(token,table,q,body){
   return fetch(SUPA_URL+'/rest/v1/'+table+'?'+q,{
     method:'PATCH',
-    headers:Object.assign({},authHdrs(token),{Prefer:'return=minimal'}),
+    headers:Object.assign({},authHdrs(token),{
+      'Prefer':'return=representation',
+      'Content-Type':'application/json'
+    }),
     body:JSON.stringify(body)
-  }).then(function(r){return r.ok;}).catch(function(){return false;});
+  }).then(function(r){
+    if(!r.ok)return r.text().then(function(t){console.error('PATCH error:',r.status,t);return false;});
+    return r.json().then(function(d){
+      // Supabase returns array of updated rows
+      var updated=Array.isArray(d)?d.length:1;
+      if(updated===0){console.warn('PATCH: 0 rows affected — check RLS policies');}
+      return updated>0;
+    }).catch(function(){return r.ok;});
+  }).catch(function(e){console.error('PATCH fetch error:',e);return false;});
 }
 function dbDel(token,table,q){
   return fetch(SUPA_URL+'/rest/v1/'+table+'?'+q,{
     method:'DELETE',
-    headers:authHdrs(token)
-  }).then(function(r){return r.ok;}).catch(function(){return false;});
+    headers:Object.assign({},authHdrs(token),{
+      'Prefer':'return=representation'
+    })
+  }).then(function(r){
+    if(!r.ok)return r.text().then(function(t){console.error('DELETE error:',r.status,t);return false;});
+    return r.json().then(function(d){
+      var deleted=Array.isArray(d)?d.length:1;
+      if(deleted===0){console.warn('DELETE: 0 rows affected — check RLS policies');}
+      return deleted>0;
+    }).catch(function(){return r.ok;});
+  }).catch(function(e){console.error('DELETE fetch error:',e);return false;});
 }
 
 /* ════════ GitHub Notifications ════════ */
@@ -340,7 +360,7 @@ function CodeMgr(props){
         showToast(newVal?'✅ تم التفعيل':'⛔ تم الإيقاف', newVal?'ok':'warn');
         onRefresh();
       }else{
-        showToast('❌ فشل التحديث — أعد المحاولة','err');
+        showToast('❌ فشل — تأكد من صلاحيات Supabase (SQL)','err');
       }
     });
   }
@@ -372,7 +392,7 @@ function CodeMgr(props){
     if(!window.confirm('Delete: '+codeName+'? Cannot undo.'))return;
     dbDel(token,'subscription_codes','id=eq.'+id).then(function(ok){
       if(ok){showToast('تم حذف '+codeName,'err');onRefresh();}
-      else showToast('❌ فشل الحذف — أعد المحاولة','err');
+      else showToast('❌ فشل الحذف — تأكد من صلاحيات Supabase (SQL)','err');
     });
   }
 
