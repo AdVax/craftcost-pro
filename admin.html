@@ -273,102 +273,154 @@ function StatsBar(props){
 
 /* ════════ Code Manager ════════ */
 var PLANS=[
-  {v:'monthly',l:'شهري',m:1},
-  {v:'quarterly',l:'ربع سنوي',m:3},
-  {v:'biannual',l:'نصف سنوي',m:6},
-  {v:'yearly',l:'سنوي',m:12},
+  {v:'monthly',  l:'شهري',      m:1},
+  {v:'quarterly',l:'ربع سنوي', m:3},
+  {v:'biannual', l:'نصف سنوي', m:6},
+  {v:'yearly',   l:'سنوي',     m:12},
 ];
 
 function CodeMgr(props){
-  var token=props.token,codes=props.codes,setCodes=props.setCodes,showToast=props.showToast;
-  var ns=_useState({code:'',label:'',note:'',plan:'monthly',months:1});var nc=ns[0],setNc=ns[1];
-  var fs=_useState('all');var filter=fs[0],setF=fs[1];
-  var ls=_useState(false);var loading=ls[0],setL=ls[1];
+  var token=props.token, showToast=props.showToast, onRefresh=props.onRefresh;
+  var codes=props.codes;
 
+  // Form state
+  var ns=_useState({code:'',label:'',note:'',plan:'monthly',months:1});
+  var nc=ns[0],setNc=ns[1];
+
+  // Filter state
+  var fs=_useState('all');
+  var filter=fs[0],setF=fs[1];
+
+  // Loading state per operation
+  var ls=_useState(false);
+  var loading=ls[0],setL=ls[1];
+
+  // ── Add new code ──────────────────────────────
   function addCode(){
-    if(!nc.code.trim())return;
+    var code=nc.code.trim().toUpperCase();
+    if(!code){showToast('أدخل الكود','warn');return;}
+    
+    // Check duplicate
+    var exists=codes.find(function(c){return c.code===code;});
+    if(exists){showToast('❌ الكود موجود مسبقاً','err');return;}
+    
     setL(true);
     var row={
-      code:nc.code.toUpperCase(),label:nc.label,note:nc.note,
-      plan:nc.plan,expires_at:expDate(nc.months),
-      is_active:true,device_id:'',use_count:0
+      code:code,
+      label:nc.label.trim(),
+      note:nc.note.trim(),
+      plan:nc.plan,
+      expires_at:expDate(nc.months),
+      is_active:true,
+      device_id:'',
+      device_info:'',
+      use_count:0
     };
+    
     dbPost(token,'subscription_codes',row).then(function(res){
       setL(false);
-      if(res&&res[0]){
-        setCodes(function(p){return[res[0]].concat(p);});
-        showToast('✅ تم إنشاء الكود بنجاح');
+      // Supabase returns array on success
+      var created = Array.isArray(res)?res[0]:res;
+      if(created && created.id){
+        showToast('✅ تم إنشاء الكود: '+code);
         setNc({code:'',label:'',note:'',plan:'monthly',months:1});
+        // Refresh to get latest data
+        onRefresh();
       }else{
-        showToast('❌ خطأ في الحفظ — تأكد من تشغيل SQL الأمان','err');
+        showToast('❌ فشل الحفظ — حاول مرة أخرى','err');
       }
     });
   }
 
-  function toggle(id,cur){
-    dbPatch(token,'subscription_codes','id=eq.'+id,{is_active:!cur}).then(function(ok){
+  // ── Toggle active/inactive ────────────────────
+  function toggle(id,currentActive){
+    var newVal=!currentActive;
+    dbPatch(token,'subscription_codes','id=eq.'+id,{is_active:newVal}).then(function(ok){
       if(ok){
-        setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{is_active:!cur}):c;});});
-        showToast(cur?'⛔ تم الإيقاف':'✅ تم التفعيل',cur?'warn':'ok');
-      }else showToast('❌ فشل التحديث','err');
+        showToast(newVal?'✅ تم التفعيل':'⛔ تم الإيقاف', newVal?'ok':'warn');
+        onRefresh();
+      }else{
+        showToast('❌ فشل التحديث — أعد المحاولة','err');
+      }
     });
   }
 
-  function resetDev(id){
+  // ── Reset device binding ──────────────────────
+  function resetDev(id,codeName){
+    if(!window.confirm('Reset device for code: '+codeName))return;
     dbPatch(token,'subscription_codes','id=eq.'+id,{device_id:'',device_info:''}).then(function(ok){
-      if(ok){
-        setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{device_id:'',device_info:''}):c;});});
-        showToast('✅ تم إعادة تعيين الجهاز');
-      }
+      if(ok){showToast('✅ تم إعادة تعيين الجهاز');onRefresh();}
+      else showToast('❌ فشل التحديث','err');
     });
   }
 
-  function extend(id,months){
-    var c=codes.find(function(x){return x.id===id;});if(!c)return;
+  // ── Extend expiry ─────────────────────────────
+  function extend(id,months,codeName){
+    var c=codes.find(function(x){return x.id===id;});
+    if(!c)return;
     var base=new Date(c.expires_at)>new Date()?new Date(c.expires_at):new Date();
     base.setMonth(base.getMonth()+months);
     var iso=base.toISOString();
     dbPatch(token,'subscription_codes','id=eq.'+id,{expires_at:iso,is_active:true}).then(function(ok){
-      if(ok){
-        setCodes(function(p){return p.map(function(x){return x.id===id?Object.assign({},x,{expires_at:iso,is_active:true}):x;});});
-        showToast('✅ تم التمديد '+months+' شهر');
-      }
+      if(ok){showToast('✅ تم تمديد '+codeName+' '+months+' شهر');onRefresh();}
+      else showToast('❌ فشل التمديد','err');
     });
   }
 
-  function delCode(id){
-    if(!window.confirm('حذف هذا الكود نهائياً؟ لا يمكن التراجع.'))return;
+  // ── Delete code ───────────────────────────────
+  function delCode(id,codeName){
+    if(!window.confirm('Delete: '+codeName+'? Cannot undo.'))return;
     dbDel(token,'subscription_codes','id=eq.'+id).then(function(ok){
-      if(ok){setCodes(function(p){return p.filter(function(c){return c.id!==id;});});showToast('تم الحذف','err');}
-      else showToast('❌ فشل الحذف','err');
+      if(ok){showToast('تم حذف '+codeName,'err');onRefresh();}
+      else showToast('❌ فشل الحذف — أعد المحاولة','err');
     });
   }
 
+  // ── Copy code ─────────────────────────────────
   function copy(code){
-    navigator.clipboard&&navigator.clipboard.writeText(code).then(function(){showToast('✅ تم نسخ الكود');});
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(code).then(function(){showToast('📋 تم نسخ: '+code);});
+    }else{
+      showToast('❌ النسخ غير مدعوم في هذا المتصفح','err');
+    }
   }
 
+  // ── Filter list ───────────────────────────────
   var list=codes.filter(function(c){
-    if(filter==='active') return c.is_active&&new Date(c.expires_at)>new Date();
-    if(filter==='expired')return new Date(c.expires_at)<new Date();
-    if(filter==='stopped')return !c.is_active;
-    if(filter==='soon')   return c.is_active&&dLeft(c.expires_at)<=7&&dLeft(c.expires_at)>0;
+    var exp=new Date(c.expires_at)<new Date();
+    var dl=dLeft(c.expires_at);
+    if(filter==='active') return c.is_active&&!exp;
+    if(filter==='expired')return exp;
+    if(filter==='stopped')return !c.is_active&&!exp;
+    if(filter==='soon')   return c.is_active&&!exp&&dl<=7&&dl>0;
     return true;
   });
 
+  var planLabel=PLANS.find(function(p){return p.v===nc.plan;})||PLANS[0];
+
   return h('div',null,
+
+    // ── Create form ──────────────────────────────
     h('div',{className:'sec'},
-      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12,color:'#9D60FF'}},'➕ إنشاء كود اشتراك'),
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12,color:'#9D60FF'}},'➕ إنشاء كود اشتراك جديد'),
+      
       h('div',{className:'g3',style:{marginBottom:12}},
         h('div',null,
-          h('label',{className:'lbl'},'الكود'),
+          h('label',{className:'lbl'},'الكود *'),
           h('div',{style:{display:'flex',gap:7}},
-            h('input',{value:nc.code,
-              onChange:function(e){setNc(function(p){return Object.assign({},p,{code:e.target.value.toUpperCase()});});},
-              placeholder:'CRAFT2025',style:{letterSpacing:2,fontWeight:700,fontSize:14}}),
-            h('button',{className:'btn bo bsm',
+            h('input',{
+              value:nc.code,
+              onChange:function(e){setNc(function(p){return Object.assign({},p,{code:e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'')});});},
+              placeholder:'CRAFT2025',
+              maxLength:12,
+              style:{letterSpacing:2,fontWeight:700,fontSize:14}
+            }),
+            h('button',{
+              className:'btn bo bsm',
               onClick:function(){setNc(function(p){return Object.assign({},p,{code:genCode()});});},
-              style:{flexShrink:0}},'🔀')
+              style:{flexShrink:0},
+              title:'توليد كود عشوائي'
+            },'🔀')
           )
         ),
         h('div',null,
@@ -377,91 +429,172 @@ function CodeMgr(props){
         ),
         h('div',null,
           h('label',{className:'lbl'},'ملاحظة داخلية'),
-          h('input',{value:nc.note,onChange:function(e){setNc(function(p){return Object.assign({},p,{note:e.target.value});});},placeholder:'لك أنت فقط...'})
+          h('input',{value:nc.note,onChange:function(e){setNc(function(p){return Object.assign({},p,{note:e.target.value});});},placeholder:'خاصة بك فقط...'})
         )
       ),
-      h('div',{style:{marginBottom:14}},
+
+      h('div',{style:{marginBottom:12}},
         h('label',{className:'lbl'},'مدة الاشتراك'),
         h('div',{style:{display:'flex',gap:7,flexWrap:'wrap'}},
           PLANS.map(function(p){
-            return h('button',{key:p.v,
+            return h('button',{
+              key:p.v,
               onClick:function(){setNc(function(x){return Object.assign({},x,{plan:p.v,months:p.m});});},
-              className:'btn bsm '+(nc.plan===p.v?'bp':'bo')},p.l,' (',p.m,' شهر)');
+              className:'btn bsm '+(nc.plan===p.v?'bp':'bo')
+            },p.l,' (',p.m,' شهر)');
           })
         )
       ),
-      nc.code&&h('div',{style:{background:'rgba(124,58,237,.1)',border:'1px solid rgba(124,58,237,.25)',borderRadius:9,padding:'8px 14px',marginBottom:12,fontSize:13,color:'#9D60FF'}},
-        '📅 ينتهي في: ',h('b',null,expLabel(nc.months))
+
+      nc.code.trim()&&h('div',{style:{
+        background:'rgba(124,58,237,.1)',border:'1px solid rgba(124,58,237,.25)',
+        borderRadius:9,padding:'9px 14px',marginBottom:12,fontSize:13
+      }},
+        h('span',{style:{color:'#9D60FF'}},'📅 ينتهي في: '),
+        h('b',{style:{color:'#fff'}},expLabel(nc.months)),
+        h('span',{style:{color:'#7878A8',marginRight:12}},' · ',planLabel.l)
       ),
-      h('button',{className:'btn bp',onClick:addCode,disabled:!nc.code.trim()||loading},
-        loading?'جاري الحفظ..':'✅ إنشاء الكود')
+
+      h('button',{
+        className:'btn bp',
+        onClick:addCode,
+        disabled:!nc.code.trim()||loading,
+        style:{minWidth:160}
+      },loading?h('span',null,'⏳ جاري الحفظ..'):h('span',null,'✅ إنشاء الكود'))
     ),
 
+    // ── Codes table ──────────────────────────────
     h('div',{className:'sec'},
       h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14,flexWrap:'wrap',gap:10}},
-        h('h3',{style:{fontSize:15,fontWeight:800}},'🔑 الأكواد (',codes.length,')'),
+        h('div',null,
+          h('h3',{style:{fontSize:15,fontWeight:800}},
+            '🔑 الأكواد',
+            h('span',{style:{color:'#7878A8',fontWeight:400,fontSize:13,marginRight:8}},'(',codes.length,' إجمالي)')
+          )
+        ),
         h('div',{style:{display:'flex',gap:5,flexWrap:'wrap'}},
-          [['all','الكل'],['active','نشط'],['expired','منتهي'],['soon','ينتهي قريباً'],['stopped','موقوف']].map(function(item){
-            return h('button',{key:item[0],onClick:function(){setF(item[0]);},
-              className:'btn bsm '+(filter===item[0]?'bp':'bo')},item[1]);
+          [
+            ['all',   'الكل',         codes.length],
+            ['active','نشط',          codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date();}).length],
+            ['expired','منتهي',        codes.filter(function(c){return new Date(c.expires_at)<new Date();}).length],
+            ['soon',  'ينتهي قريباً', codes.filter(function(c){return c.is_active&&dLeft(c.expires_at)<=7&&dLeft(c.expires_at)>0&&new Date(c.expires_at)>new Date();}).length],
+            ['stopped','موقوف',        codes.filter(function(c){return !c.is_active&&new Date(c.expires_at)>new Date();}).length],
+          ].map(function(item){
+            return h('button',{
+              key:item[0],
+              onClick:function(){setF(item[0]);},
+              className:'btn bsm '+(filter===item[0]?'bp':'bo')
+            },item[1],' (',item[2],')');
           })
         )
       ),
+
       list.length===0
-        ?h('p',{style:{color:'#4C4C7A',textAlign:'center',padding:'22px 0',fontSize:13}},'لا توجد أكواد في هذه الفئة')
+        ?h('div',{style:{textAlign:'center',padding:'32px 0',color:'#4C4C7A'}},
+            h('div',{style:{fontSize:36,marginBottom:10}},'🔍'),
+            h('p',{style:{fontSize:14}},'لا توجد أكواد في هذه الفئة')
+          )
         :h('div',{className:'tw'},h('table',null,
             h('thead',null,h('tr',null,
-              h('th',null,'الكود'),h('th',null,'العميل'),h('th',null,'الخطة'),
-              h('th',null,'ينتهي'),h('th',null,'الجهاز'),
-              h('th',null,'الاستخدام'),h('th',null,'الحالة'),h('th',null,'إجراءات')
+              h('th',null,'الكود'),
+              h('th',null,'العميل'),
+              h('th',null,'الخطة'),
+              h('th',null,'تاريخ الانتهاء'),
+              h('th',null,'الجهاز'),
+              h('th',null,'الاستخدام'),
+              h('th',null,'الحالة'),
+              h('th',null,'الإجراءات')
             )),
             h('tbody',null,list.map(function(c){
               var exp=new Date(c.expires_at)<new Date();
               var dl=dLeft(c.expires_at);
               var hasDev=!!(c.device_id&&c.device_id.length>3);
-              var status=!c.is_active?'موقوف':exp?'منتهي':dl<=7?'ينتهي قريباً':'نشط';
-              var bc=!c.is_active?'bwrn':exp?'berr':dl<=7?'bwrn':'bok';
-              return h('tr',{key:c.id},
+              
+              var statusText, statusClass;
+              if(!c.is_active){statusText='موقوف';statusClass='bwrn';}
+              else if(exp){statusText='منتهي';statusClass='berr';}
+              else if(dl<=7){statusText='ينتهي قريباً';statusClass='bwrn';}
+              else{statusText='نشط';statusClass='bok';}
+
+              var rowBg=exp?'rgba(239,68,68,.04)':!c.is_active?'rgba(245,158,11,.04)':'transparent';
+
+              return h('tr',{key:c.id,style:{background:rowBg}},
+                // Code
                 h('td',null,
                   h('div',{style:{display:'flex',alignItems:'center',gap:6}},
-                    h('b',{style:{fontFamily:'monospace',fontSize:13,letterSpacing:2,color:'#9D60FF'}},c.code),
-                    h('button',{onClick:function(){copy(c.code);},
-                      style:{background:'none',color:'#7878A8',fontSize:11,padding:'2px 6px',borderRadius:5,border:'1px solid #272750',cursor:'pointer'}},'📋')
+                    h('b',{style:{
+                      fontFamily:'monospace',fontSize:14,letterSpacing:2,
+                      color:exp||!c.is_active?'#7878A8':'#9D60FF'
+                    }},c.code),
+                    h('button',{
+                      onClick:function(){copy(c.code);},
+                      style:{background:'none',color:'#7878A8',fontSize:11,padding:'2px 6px',borderRadius:5,border:'1px solid #272750',cursor:'pointer'},
+                      title:'نسخ الكود'
+                    },'📋')
                   )
                 ),
+                // Label
                 h('td',null,
                   h('div',null,
-                    h('div',{style:{fontWeight:600}},c.label||h('span',{style:{color:'#4C4C7A'}},'—')),
-                    c.note&&h('div',{style:{fontSize:11,color:'#4C4C7A'}},c.note)
+                    h('div',{style:{fontWeight:600,fontSize:13}},c.label||h('span',{style:{color:'#4C4C7A'}},'—')),
+                    c.note&&h('div',{style:{fontSize:11,color:'#4C4C7A',marginTop:2}},c.note)
                   )
                 ),
-                h('td',null,h('span',{className:'bdg bpur',style:{fontSize:10}},c.plan||'—')),
+                // Plan
+                h('td',null,h('span',{className:'bdg bpur',style:{fontSize:10}},c.plan||'monthly')),
+                // Expiry
                 h('td',null,
-                  h('div',{style:{fontSize:12,color:exp?'#EF4444':dl<=7?'#F59E0B':'#10B981',fontWeight:600}},fmtD(c.expires_at)),
-                  !exp&&h('div',{style:{fontSize:10,color:'#7878A8'}},dl,' يوم')
+                  h('div',null,
+                    h('div',{style:{fontSize:12,fontWeight:600,color:exp?'#EF4444':dl<=7?'#F59E0B':'#10B981'}},fmtD(c.expires_at)),
+                    !exp&&h('div',{style:{fontSize:10,color:'#7878A8'}},dl,' يوم متبقي'),
+                    exp&&h('div',{style:{fontSize:10,color:'#EF4444'}},'انتهى منذ ',Math.abs(dl),' يوم')
+                  )
                 ),
+                // Device
                 h('td',null,
                   hasDev
                     ?h('div',null,
-                        h('div',{className:'bdg bok',style:{fontSize:10,marginBottom:4}},'📱 مُسجَّل'),
-                        h('button',{className:'btn bsm bw',
-                          onClick:function(){resetDev(c.id);},
-                          style:{fontSize:10}},'🔄 تعيين جديد')
+                        h('span',{className:'bdg bok',style:{fontSize:10,marginBottom:4,display:'block',width:'fit-content'}},'📱 مُسجَّل'),
+                        h('button',{
+                          className:'btn bsm bw',
+                          onClick:function(){resetDev(c.id,c.code);},
+                          style:{fontSize:10,marginTop:4}
+                        },'🔄 تعيين جديد')
                       )
-                    :h('span',{className:'bdg bmut',style:{fontSize:10}},'لم يُستخدم')
+                    :h('span',{className:'bdg bmut',style:{fontSize:10}},'لم يُستخدم بعد')
                 ),
+                // Usage
                 h('td',null,
-                  h('div',{style:{fontSize:12,color:'#7878A8'}},c.use_count||0,' مرة'),
-                  c.last_used_at&&h('div',{style:{fontSize:10,color:'#4C4C7A'}},fmtD(c.last_used_at))
+                  h('div',null,
+                    h('div',{style:{fontSize:13,fontWeight:700,color:c.use_count>0?'#10B981':'#7878A8'}},c.use_count||0,' مرة'),
+                    c.last_used_at&&h('div',{style:{fontSize:10,color:'#4C4C7A'}},fmtD(c.last_used_at))
+                  )
                 ),
-                h('td',null,h('span',{className:'bdg '+bc},status)),
+                // Status
+                h('td',null,h('span',{className:'bdg '+statusClass},statusText)),
+                // Actions
                 h('td',null,
                   h('div',{style:{display:'flex',gap:4,flexWrap:'wrap'}},
-                    h('button',{className:'btn bsm '+(c.is_active?'br':'bg2'),
-                      onClick:function(){toggle(c.id,c.is_active);}},c.is_active?'⛔ إيقاف':'✅ تفعيل'),
-                    h('button',{className:'btn bsm bo',onClick:function(){extend(c.id,1);}},'＋شهر'),
-                    h('button',{className:'btn bsm bo',onClick:function(){extend(c.id,3);}},'＋٣'),
-                    h('button',{className:'btn bsm br',onClick:function(){delCode(c.id);}},'🗑')
+                    h('button',{
+                      className:'btn bsm '+(c.is_active?'br':'bg2'),
+                      onClick:function(){toggle(c.id,c.is_active);},
+                      title:c.is_active?'إيقاف الكود':'تفعيل الكود'
+                    },c.is_active?'⛔ إيقاف':'✅ تفعيل'),
+                    h('button',{
+                      className:'btn bsm bo',
+                      onClick:function(){extend(c.id,1,c.code);},
+                      title:'تمديد شهر'
+                    },'＋١ شهر'),
+                    h('button',{
+                      className:'btn bsm bo',
+                      onClick:function(){extend(c.id,3,c.code);},
+                      title:'تمديد 3 أشهر'
+                    },'＋٣'),
+                    h('button',{
+                      className:'btn bsm br',
+                      onClick:function(){delCode(c.id,c.code);},
+                      title:'حذف الكود'
+                    },'🗑')
                   )
                 )
               );
@@ -748,7 +881,7 @@ function AdminApp(){
             className:'tab'+(tab===tb.id?' on':'')},tb.ic,' ',tb.l);
         })
       ),
-      tab==='codes'   &&h(CodeMgr,  {token:auth.token,codes:codes,setCodes:setCodes,showToast:toast.show}),
+      tab==='codes'   &&h(CodeMgr,  {token:auth.token,codes:codes,onRefresh:refresh,showToast:toast.show}),
       tab==='users'   &&h(Users,    {codes:codes}),
       tab==='notifs'  &&h(Notifs,   {showToast:toast.show}),
       tab==='settings'&&h(Settings, {token:auth.token,showToast:toast.show,userEmail:auth.email})
