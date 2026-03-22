@@ -1,0 +1,1583 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#7C3AED"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="CraftCost Pro"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon.png"/>
+<link rel="icon" href="icon.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+<title>CraftCost Pro</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A14;--surf:#0F0F1F;--card:#141428;--card2:#1A1A35;
+  --border:#1F1F42;--border2:#2A2A55;
+  --p:#7C3AED;--p2:#9D60FF;--pBg:rgba(124,58,237,0.12);
+  --gold:#F59E0B;--goldBg:rgba(245,158,11,0.11);
+  --text:#E2E2F0;--muted:#4A4A78;--muted2:#7878A8;
+  --ok:#10B981;--okBg:rgba(16,185,129,0.11);
+  --err:#EF4444;--errBg:rgba(239,68,68,0.11);
+  --warn:#F59E0B;--warnBg:rgba(245,158,11,0.11);
+  --info:#3B82F6;--infoBg:rgba(59,130,246,0.11);
+}
+html,body{height:100%;overflow:hidden;font-family:'Cairo',sans-serif;direction:rtl;background:var(--bg);color:var(--text)}
+input,select,textarea,button{font-family:'Cairo',sans-serif}
+input,select,textarea{background:var(--surf);border:1.5px solid var(--border2);color:var(--text);padding:10px 14px;border-radius:10px;width:100%;outline:none;transition:border-color .2s;direction:rtl;font-size:16px}
+input:focus,select:focus,textarea:focus{border-color:var(--p2);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+select option{background:var(--card2)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+button{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;border:none}
+
+/* Layout */
+.layout{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:232px;flex-shrink:0;background:var(--surf);border-left:1.5px solid var(--border);display:flex;flex-direction:column;padding:16px 10px;z-index:200}
+.sidebar.mob{position:fixed;right:0;top:0;bottom:0;height:100%;transition:transform .3s}
+.sidebar.mob.closed{transform:translateX(110%)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:199}
+.main-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{padding:12px 16px;border-bottom:1.5px solid var(--border);background:var(--surf);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.page-content{flex:1;overflow-y:auto;padding:20px 16px}
+
+/* Nav */
+.nav-item{display:flex;align-items:center;gap:9px;padding:10px 13px;border-radius:10px;width:100%;text-align:right;font-size:13px;font-weight:600;color:var(--muted2);background:transparent;margin-bottom:2px;transition:all .2s}
+.nav-item:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.nav-item.act{background:var(--pBg);color:var(--p2);border:1px solid rgba(124,58,237,.2)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;font-size:14px;font-weight:700;transition:all .2s;white-space:nowrap}
+.btn-p{background:linear-gradient(135deg,#7C3AED,#9D60FF);color:#fff}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.4)}
+.btn-p:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-o{background:transparent;border:1.5px solid var(--border2);color:var(--text)}
+.btn-o:hover{border-color:var(--p2);color:var(--p2)}
+.btn-r{background:var(--errBg);border:1px solid rgba(239,68,68,.2);color:var(--err)}
+.btn-g{background:var(--okBg);border:1px solid rgba(16,185,129,.2);color:var(--ok)}
+.btn-sm{padding:7px 13px;font-size:12px;border-radius:8px}
+
+/* Cards */
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;transition:all .25s}
+.card-h:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.3)}
+
+/* Tags/Badges */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-p{background:var(--pBg);color:var(--p2)}
+.badge-ok{background:var(--okBg);color:var(--ok)}
+.badge-err{background:var(--errBg);color:var(--err)}
+.badge-warn{background:var(--warnBg);color:var(--warn)}
+.badge-muted{background:rgba(255,255,255,.06);color:var(--muted2)}
+
+/* Stock indicators */
+.stock-ok{color:var(--ok)}
+.stock-warn{color:var(--warn)}
+.stock-err{color:var(--err)}
+
+/* Form */
+.lbl{display:block;margin-bottom:5px;font-size:12px;font-weight:700;color:var(--muted2)}
+.sec{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px}
+.hr{border:none;border-top:1px solid var(--border);margin:14px 0}
+.form-row{display:grid;gap:11px;margin-bottom:11px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.ga{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:12px}
+.modal{background:var(--card);border:1.5px solid var(--border2);border-radius:20px;padding:24px;width:100%;max-width:540px;max-height:92vh;overflow-y:auto}
+.modal.wide{max-width:640px}
+
+/* Toast */
+.toast-wrap{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{padding:10px 22px;border-radius:12px;font-weight:800;font-size:13px;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+
+/* Install banner */
+.install-wrap{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:9990;width:min(94vw,400px);background:linear-gradient(135deg,#14142A,#1A1A3A);border:1.5px solid rgba(124,58,237,.4);border-radius:18px;padding:13px 15px;box-shadow:0 12px 48px rgba(0,0,0,.7);display:flex;align-items:center;gap:11px}
+
+/* Login */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px}
+.login-box{background:var(--card);border:1.5px solid var(--border2);border-radius:24px;padding:36px 28px;width:100%;max-width:400px;text-align:center}
+
+/* Stat cards */
+.stat-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .25s}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+
+/* Progress bar */
+.progress-wrap{background:var(--border);border-radius:99px;height:6px;overflow:hidden}
+.progress-bar{height:100%;border-radius:99px;transition:width .4s}
+
+/* Table */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:10px 12px;text-align:right;color:var(--muted2);font-weight:700;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.fu{animation:fu .3s ease-out}
+.fi{animation:fi .2s}
+
+@media(max-width:640px){
+  .g2,.g3{grid-template-columns:1fr}
+  .ga{grid-template-columns:1fr}
+  .btn{padding:11px 15px}
+  .hide-mob{display:none}
+}
+@media(display-mode:standalone){.topbar{padding-top:calc(12px + env(safe-area-inset-top))!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script>
+'use strict';
+const {useState,useEffect,useMemo,useCallback,useRef,Fragment}=React;
+const h=React.createElement;
+
+// ══════════════════════════════════════════
+// ⚙️ CONFIG — عدّل هذه القيم فقط
+// ══════════════════════════════════════════
+const CFG = {
+  APP_NAME:      'CraftCost Pro',
+  APP_TAGLINE:   'إدارة تكاليف الهاند ميد بذكاء',
+  COMPANY:       'AdVax',
+  // ← أضف رابط Supabase وكليد بعد إنشاء المشروع
+  SUPABASE_URL:  '',
+  SUPABASE_KEY:  '',
+  // كلمة سر لوحة الإدارة (غيّرها)
+  ADMIN_PASS:    'advax2025',
+  // كود دخول للتجربة المحلية (بدون Supabase)
+  DEMO_CODE:     'CRAFTDEMO',
+};
+
+// ══════════════════════════════════════════
+// 🛠 Utils
+// ══════════════════════════════════════════
+const uid   = ()=>Math.random().toString(36).slice(2,9);
+const fmt   = (n,c='SAR')=>`${(+n||0).toFixed(2)} ${c}`;
+const pct   = n=>`${(+n||0).toFixed(1)}%`;
+const today = ()=>new Date().toISOString().slice(0,10);
+const fmtDate = d=>d?new Date(d).toLocaleDateString('ar-SA'):'—';
+
+const MC=['زيوت وشموع','عطور','زهور','تغليف','أقمشة','خيوط','طعام','كيماويات','أخرى'];
+const RC=['مستحضرات تجميل','باقات ورد','عطور','شموع','مجوهرات','ملابس','طعام وحلويات','هدايا','أخرى'];
+const PLATFORMS=['إنستغرام','واتساب','تيك توك','متجر','معرض','صديق/معرفة','أخرى'];
+const UN=['غ','مل','كغ','لتر','قطعة','متر','ملعقة ص','ملعقة ك'];
+const CURR=[{c:'SAR',s:'ر.س',n:'ريال'},{c:'AED',s:'د.إ',n:'درهم'},{c:'KWD',s:'د.ك',n:'دينار'},{c:'USD',s:'$',n:'دولار'},{c:'EUR',s:'€',n:'يورو'}];
+
+function useLS(k,init){
+  const [v,sv]=useState(()=>{try{const s=localStorage.getItem(k);return s?JSON.parse(s):init}catch{return init}});
+  useEffect(()=>{localStorage.setItem(k,JSON.stringify(v))},[v,k]);
+  return[v,sv];
+}
+
+// Supabase code check
+async function checkCode(code){
+  // 1) Demo code — works without Supabase
+  if(code.toUpperCase()===CFG.DEMO_CODE) return{ok:true,expires:new Date(Date.now()+365*24*3600*1000).toISOString(),label:'تجريبي'};
+
+  // 2) Supabase check
+  if(!CFG.SUPABASE_URL||!CFG.SUPABASE_KEY) return{ok:false,msg:'الكود غير صحيح'};
+  try{
+    const res=await fetch(`${CFG.SUPABASE_URL}/rest/v1/subscription_codes?code=eq.${encodeURIComponent(code.toUpperCase())}&is_active=eq.true&select=*`,{
+      headers:{'apikey':CFG.SUPABASE_KEY,'Authorization':`Bearer ${CFG.SUPABASE_KEY}`}
+    });
+    const data=await res.json();
+    if(!data||data.length===0) return{ok:false,msg:'الكود غير صحيح أو منتهي'};
+    const row=data[0];
+    if(new Date(row.expires_at)<new Date()) return{ok:false,msg:'انتهت صلاحية الكود'};
+    return{ok:true,expires:row.expires_at,label:row.label||''};
+  }catch{return{ok:false,msg:'خطأ في الاتصال — تحقق من الإنترنت'}}
+}
+
+// ══════════════════════════════════════════
+// 🔔 Notification request
+// ══════════════════════════════════════════
+async function askNotifPermission(){
+  if(!('Notification' in window)) return false;
+  if(Notification.permission==='granted') return true;
+  const p=await Notification.requestPermission();
+  return p==='granted';
+}
+function sendLocalNotif(title,body){
+  if(Notification.permission==='granted') new Notification(title,{body,icon:'icon.png'});
+}
+
+// ══════════════════════════════════════════
+// 💾 Data helpers
+// ══════════════════════════════════════════
+function calcMatStock(mat){
+  const bought=(mat.purchases||[]).reduce((s,p)=>s+p.qty,0);
+  const used=(mat.usedQty||0);
+  return Math.max(0,bought-used);
+}
+function calcUnitCost(mat){
+  const p=mat.purchases||[];
+  if(!p.length) return 0;
+  const l=p[p.length-1];
+  return l.totalPrice/l.qty;
+}
+function calcRecipeCost(recipe,materials,settings){
+  const ing=(recipe.ingredients||[]).map(i=>{
+    const mat=materials.find(m=>m.id===i.matId);
+    if(!mat) return{...i,cost:0};
+    const uc=calcUnitCost(mat);
+    const wasteM=mat.wastePercent||0;
+    const effQty=i.qty*(1+wasteM/100);
+    return{...i,cost:uc*effQty,effQty};
+  });
+  const ingTotal=ing.reduce((s,i)=>s+i.cost,0);
+  const packCost=recipe.packagingCost||0;
+  const timeCost=(recipe.timeHours||0)*(settings.hourlyRate||0);
+  const batchSize=Math.max(1,recipe.batchSize||1);
+  const totalCost=ingTotal+packCost+timeCost;
+  const costPerUnit=totalCost/batchSize;
+  const sp=recipe.sellingPrice||0;
+  const margin=sp>0?((sp-costPerUnit)/sp)*100:null;
+  return{ing,ingTotal,packCost,timeCost,totalCost,costPerUnit,margin};
+}
+
+// ══════════════════════════════════════════
+// 🎨 UI Components
+// ══════════════════════════════════════════
+
+// Toast system
+function useToast(){
+  const [toasts,setToasts]=useState([]);
+  const show=useCallback((msg,type='ok')=>{
+    const id=uid();
+    setToasts(p=>[...p,{id,msg,type}]);
+    setTimeout(()=>setToasts(p=>p.filter(t=>t.id!==id)),3000);
+  },[]);
+  return{toasts,show};
+}
+function Toasts({toasts}){
+  const bg={ok:'#10B981',err:'#EF4444',warn:'#F59E0B',info:'#3B82F6'};
+  return h('div',{className:'toast-wrap'},
+    toasts.map(t=>h('div',{key:t.id,className:'toast',style:{background:bg[t.type]||bg.ok,color:'#fff'}},t.msg))
+  );
+}
+
+// Modal
+function Modal({title,onClose,children,wide}){
+  return h('div',{className:'modal-bg',onClick:e=>e.target===e.currentTarget&&onClose()},
+    h('div',{className:`modal${wide?' wide':''}`},
+      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18}},
+        h('h2',{style:{fontSize:17,fontWeight:900}},title),
+        h('button',{onClick:onClose,style:{background:'rgba(255,255,255,.07)',borderRadius:8,padding:'5px 8px',color:'var(--muted2)',fontSize:16}},'✕')
+      ),
+      children
+    )
+  );
+}
+
+// Confirm
+function Confirm({msg,onYes,onNo}){
+  return h('div',{className:'modal-bg'},
+    h('div',{className:'modal',style:{maxWidth:350,textAlign:'center'}},
+      h('div',{style:{fontSize:42,marginBottom:10}},'⚠️'),
+      h('p',{style:{fontSize:14,lineHeight:1.7,marginBottom:18}},msg),
+      h('div',{style:{display:'flex',gap:10,justifyContent:'center'}},
+        h('button',{className:'btn btn-r',onClick:onYes},'تأكيد الحذف'),
+        h('button',{className:'btn btn-o',onClick:onNo},'إلغاء')
+      )
+    )
+  );
+}
+
+// Install banner
+function InstallBanner(){
+  const [pt,setPt]=useState(null);
+  const [done,setDone]=useState(false);
+  const [ios,setIos]=useState(false);
+  const [dis,setDis]=useState(()=>localStorage.getItem('cc-dis')==='1');
+  useEffect(()=>{
+    setIos(/iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase()));
+    if(window.matchMedia('(display-mode:standalone)').matches){setDone(true);return}
+    const fn=e=>{e.preventDefault();setPt(e)};
+    window.addEventListener('beforeinstallprompt',fn);
+    return()=>window.removeEventListener('beforeinstallprompt',fn);
+  },[]);
+  if(done||dis||(!pt&&!ios)) return null;
+  const install=async()=>{if(!pt)return;pt.prompt();const{outcome}=await pt.userChoice;if(outcome==='accepted'){setDone(true);setPt(null)}};
+  const dismiss=()=>{setDis(true);localStorage.setItem('cc-dis','1')};
+  return h('div',{className:'install-wrap'},
+    h('div',{style:{width:42,height:42,borderRadius:11,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0}},'📱'),
+    h('div',{style:{flex:1}},
+      h('div',{style:{fontWeight:800,fontSize:13,marginBottom:2}},'ثبّت CraftCost Pro'),
+      ios
+        ?h('div',{style:{fontSize:11,color:'var(--muted2)'}},'اضغط ',h('b',{style:{color:'var(--p2)'}},'□↑'),' ← أضف للشاشة الرئيسية')
+        :h('div',{style:{fontSize:11,color:'var(--muted2)'}},'يعمل بدون إنترنت بعد التثبيت')
+    ),
+    h('div',{style:{display:'flex',flexDirection:'column',gap:5}},
+      !ios&&h('button',{onClick:install,className:'btn btn-p btn-sm'},'تثبيت'),
+      h('button',{onClick:dismiss,style:{background:'rgba(255,255,255,.06)',border:'1px solid var(--border2)',borderRadius:7,padding:'5px 9px',color:'var(--muted2)',fontSize:11}},'لاحقاً')
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// 🔐 Login Screen
+// ══════════════════════════════════════════
+function LoginScreen({onLogin}){
+  const [code,setCode]=useState('');
+  const [loading,setLoading]=useState(false);
+  const [err,setErr]=useState('');
+
+  const submit=async()=>{
+    if(!code.trim()) return;
+    setLoading(true);setErr('');
+    const res=await checkCode(code.trim());
+    setLoading(false);
+    if(res.ok){
+      localStorage.setItem('cc-session',JSON.stringify({code:code.toUpperCase(),expires:res.expires,label:res.label,loginAt:new Date().toISOString()}));
+      onLogin({code:code.toUpperCase(),expires:res.expires});
+    } else {
+      setErr(res.msg||'الكود غير صحيح');
+    }
+  };
+
+  return h('div',{className:'login-wrap'},
+    h('div',{className:'login-box'},
+      h('div',{style:{width:60,height:60,borderRadius:18,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:28,margin:'0 auto 16px'}},'✂️'),
+      h('h1',{style:{fontSize:22,fontWeight:900,marginBottom:6,color:'var(--text)'}},CFG.APP_NAME),
+      h('p',{style:{fontSize:13,color:'var(--muted2)',marginBottom:28}},CFG.APP_TAGLINE),
+      h('div',{style:{textAlign:'right',marginBottom:18}},
+        h('label',{className:'lbl'},'كود الاشتراك'),
+        h('input',{
+          value:code,
+          onChange:e=>setCode(e.target.value),
+          onKeyDown:e=>e.key==='Enter'&&submit(),
+          placeholder:'أدخل كود الاشتراك',
+          style:{textAlign:'center',fontSize:18,fontWeight:700,letterSpacing:2}
+        })
+      ),
+      err&&h('div',{style:{background:'var(--errBg)',border:'1px solid rgba(239,68,68,.2)',borderRadius:9,padding:'8px 12px',fontSize:13,color:'var(--err)',marginBottom:14}},err),
+      h('button',{className:'btn btn-p',style:{width:'100%',justifyContent:'center',padding:'13px'},onClick:submit,disabled:loading||!code.trim()},
+        loading?'جاري التحقق...':'دخول ←'
+      ),
+      h('div',{style:{marginTop:20,padding:'12px',background:'var(--card2)',borderRadius:10,fontSize:12,color:'var(--muted2)',lineHeight:1.8}},
+        h('b',{style:{color:'var(--warn)'}},'للتجربة المجانية: '),CFG.DEMO_CODE
+      ),
+      h('div',{style:{marginTop:16,fontSize:11,color:'var(--muted)'}},
+        CFG.COMPANY,' · ',CFG.APP_NAME
+      )
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// 📊 Dashboard
+// ══════════════════════════════════════════
+function Dashboard({materials,recipes,sales,settings,setPage,showToast}){
+  const cur=settings.currency||'SAR';
+  const thisMonth=new Date().toISOString().slice(0,7);
+  const monthlySales=sales.filter(s=>s.date.startsWith(thisMonth));
+  const totalRevenue=monthlySales.reduce((s,sale)=>{
+    const r=recipes.find(x=>x.id===sale.recipeId);
+    return s+(sale.sellingPrice||r?.sellingPrice||0)*sale.qty;
+  },0);
+  const totalCost=monthlySales.reduce((s,sale)=>{
+    const r=recipes.find(x=>x.id===sale.recipeId);
+    if(!r)return s;
+    const{costPerUnit}=calcRecipeCost(r,materials,settings);
+    return s+costPerUnit*sale.qty;
+  },0);
+  const profit=totalRevenue-totalCost;
+  const salesCount=monthlySales.reduce((s,x)=>s+x.qty,0);
+
+  // Stock alerts
+  const alerts=materials.filter(m=>{
+    const stock=calcMatStock(m);
+    return m.minStock>0&&stock<=m.minStock;
+  });
+
+  // Top product
+  const prodSales={};
+  monthlySales.forEach(s=>{prodSales[s.recipeId]=(prodSales[s.recipeId]||0)+s.qty});
+  const topId=Object.keys(prodSales).sort((a,b)=>prodSales[b]-prodSales[a])[0];
+  const topRec=recipes.find(r=>r.id===topId);
+
+  useEffect(()=>{
+    if(alerts.length>0){
+      alerts.forEach(m=>{
+        const stock=calcMatStock(m);
+        sendLocalNotif('⚠️ مخزون منخفض',`${m.name}: ${stock} ${m.unit} متبقية`);
+      });
+    }
+  },[]);
+
+  const stats=[
+    {ic:'💰',label:'الإيرادات هذا الشهر',val:fmt(totalRevenue,cur),color:'var(--p2)',pg:'sales'},
+    {ic:'📈',label:'الربح الصافي',val:fmt(profit,cur),color:profit>=0?'var(--ok)':'var(--err)',pg:'reports'},
+    {ic:'🛍️',label:'المبيعات هذا الشهر',val:`${salesCount} قطعة`,color:'var(--gold)',pg:'sales'},
+    {ic:'📦',label:'تنبيهات المخزون',val:`${alerts.length} مادة`,color:alerts.length>0?'var(--err)':'var(--ok)',pg:'inventory'},
+  ];
+
+  return h('div',{className:'fu'},
+    h('div',{style:{marginBottom:20}},
+      h('h1',{style:{fontSize:22,fontWeight:900,marginBottom:3}},'لوحة التحكم 📊'),
+      h('p',{style:{color:'var(--muted2)',fontSize:13}},`${new Date().toLocaleDateString('ar-SA',{month:'long',year:'numeric'})}`)
+    ),
+
+    // Stats
+    h('div',{className:'ga',style:{marginBottom:18}},
+      stats.map((s,i)=>h('div',{key:i,className:'stat-card',onClick:()=>setPage(s.pg)},
+        h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:10}},
+          h('div',{style:{width:40,height:40,borderRadius:10,background:`${s.color}18`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:19}},s.ic),
+          h('span',{style:{fontSize:18,color:'var(--muted)',marginTop:2}},›)
+        ),
+        h('div',{style:{fontSize:19,fontWeight:900,color:s.color,marginBottom:3}},s.val),
+        h('div',{style:{fontSize:12,color:'var(--muted2)'}},s.label)
+      ))
+    ),
+
+    // Alerts
+    alerts.length>0&&h('div',{style:{background:'var(--errBg)',border:'1px solid rgba(239,68,68,.2)',borderRadius:13,padding:14,marginBottom:16}},
+      h('div',{style:{fontWeight:800,fontSize:14,color:'var(--err)',marginBottom:8}},'⚠️ تنبيه مخزون منخفض'),
+      alerts.map(m=>{
+        const stock=calcMatStock(m);
+        return h('div',{key:m.id,style:{display:'flex',justifyContent:'space-between',fontSize:13,padding:'4px 0',borderBottom:'1px solid rgba(239,68,68,.1)'}},
+          h('span',null,m.name),
+          h('span',{style:{color:'var(--err)',fontWeight:700}},`${stock.toFixed(1)} ${m.unit} (الحد: ${m.minStock})`)
+        );
+      })
+    ),
+
+    h('div',{className:'form-row g2'},
+      // Recent sales
+      h('div',{className:'sec',style:{margin:0}},
+        h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}},
+          h('h3',{style:{fontSize:14,fontWeight:800}},'🛍️ آخر المبيعات'),
+          h('button',{onClick:()=>setPage('sales'),style:{background:'none',color:'var(--p2)',fontSize:12,fontWeight:700}},'كل المبيعات ←')
+        ),
+        sales.length===0
+          ?h('div',{style:{textAlign:'center',padding:'20px 0',color:'var(--muted)'}},
+              h('div',{style:{fontSize:30,marginBottom:6}},'🛍️'),
+              h('p',{style:{fontSize:13}},'لا توجد مبيعات بعد')
+            )
+          :sales.slice(-5).reverse().map(s=>{
+              const r=recipes.find(x=>x.id===s.recipeId);
+              return h('div',{key:s.id,style:{display:'flex',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid var(--border)'}},
+                h('div',null,
+                  h('div',{style:{fontSize:13,fontWeight:600}},r?.name||'—'),
+                  h('div',{style:{fontSize:11,color:'var(--muted2)'}},s.date,' · ',s.platform||'—')
+                ),
+                h('div',{style:{textAlign:'left'}},
+                  h('div',{style:{fontSize:13,fontWeight:700,color:'var(--ok)'}},fmt((s.sellingPrice||0)*s.qty,cur)),
+                  h('div',{style:{fontSize:11,color:'var(--muted2)'}},'×',s.qty,' قطعة')
+                )
+              );
+            })
+      ),
+
+      // Top products
+      h('div',{className:'sec',style:{margin:0}},
+        h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}},
+          h('h3',{style:{fontSize:14,fontWeight:800}},'🏆 أفضل المنتجات'),
+          h('button',{onClick:()=>setPage('recipes'),style:{background:'none',color:'var(--p2)',fontSize:12,fontWeight:700}},'الوصفات ←')
+        ),
+        recipes.length===0
+          ?h('div',{style:{textAlign:'center',padding:'20px 0',color:'var(--muted)'}},
+              h('div',{style:{fontSize:30,marginBottom:6}},'📖'),
+              h('p',{style:{fontSize:13}},'لا توجد وصفات بعد')
+            )
+          :recipes.slice(0,5).map(r=>{
+              const{costPerUnit,margin}=calcRecipeCost(r,materials,settings);
+              return h('div',{key:r.id,style:{display:'flex',justifyContent:'space-between',padding:'7px 0',borderBottom:'1px solid var(--border)'}},
+                h('span',{style:{fontSize:13,fontWeight:600}},r.name),
+                h('div',{style:{textAlign:'left'}},
+                  h('div',{style:{fontSize:12,color:'var(--gold)',fontWeight:700}},fmt(costPerUnit,cur),' /وحدة'),
+                  margin!==null&&h('div',{style:{fontSize:11,color:margin>30?'var(--ok)':'var(--err)'}},pct(margin),' ربح')
+                )
+              );
+            })
+      )
+    ),
+
+    materials.length===0&&h('div',{style:{background:'var(--pBg)',border:'1.5px dashed rgba(124,58,237,.3)',borderRadius:13,padding:16,marginTop:14,display:'flex',gap:10}},
+      h('div',{style:{fontSize:22}},'💡'),
+      h('div',null,
+        h('div',{style:{fontWeight:800,color:'var(--p2)',marginBottom:4}},'ابدأ من هنا!'),
+        h('div',{style:{fontSize:13,color:'var(--muted2)',lineHeight:1.9}},
+          h('b',{style:{color:'var(--text)'}},'1. '),'أضف مواد خامك من صفحة المواد',h('br'),
+          h('b',{style:{color:'var(--text)'}},'2. '),'أنشئ وصفاتك مع تكاليف الوقت والتغليف',h('br'),
+          h('b',{style:{color:'var(--text)'}},'3. '),'سجل مبيعاتك وتابع أرباحك تلقائياً ✨'
+        )
+      )
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// 📦 Materials
+// ══════════════════════════════════════════
+function Materials({materials,setMaterials,settings,showToast}){
+  const [srch,setSrch]=useState('');
+  const [cat,setCat]=useState('الكل');
+  const [modal,setModal]=useState(null);
+  const [conf,setConf]=useState(null);
+  const cur=settings.currency||'SAR';
+
+  const filtered=materials.filter(m=>(cat==='الكل'||m.category===cat)&&m.name.includes(srch));
+
+  const save=d=>{
+    if(d.id){setMaterials(p=>p.map(m=>m.id===d.id?d:m));showToast('✓ تم تحديث المادة')}
+    else{setMaterials(p=>[...p,{...d,id:uid()}]);showToast('✓ تمت إضافة المادة')}
+    setModal(null);
+  };
+  const del=id=>{setMaterials(p=>p.filter(m=>m.id!==id));setConf(null);showToast('تم الحذف','err')};
+
+  return h('div',{className:'fu'},
+    h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18,flexWrap:'wrap',gap:10}},
+      h('div',null,h('h1',{style:{fontSize:20,fontWeight:900}},'📦 المواد الخام'),h('p',{style:{color:'var(--muted2)',fontSize:13}},materials.length,' مادة')),
+      h('button',{className:'btn btn-p',onClick:()=>setModal('add')},'+ إضافة مادة')
+    ),
+    h('div',{style:{display:'flex',gap:9,marginBottom:14,flexWrap:'wrap'}},
+      h('div',{style:{position:'relative',flex:1,minWidth:150}},
+        h('span',{style:{position:'absolute',right:11,top:'50%',transform:'translateY(-50%)',color:'var(--muted)',pointerEvents:'none',fontSize:14}},'🔍'),
+        h('input',{value:srch,onChange:e=>setSrch(e.target.value),placeholder:'بحث...',style:{paddingRight:36}})
+      ),
+      h('select',{value:cat,onChange:e=>setCat(e.target.value),style:{width:'auto',minWidth:120}},
+        h('option',null,'الكل'),MC.map(c=>h('option',{key:c},c))
+      )
+    ),
+    filtered.length===0
+      ?h('div',{style:{textAlign:'center',padding:'44px 0',color:'var(--muted)'}},
+          h('div',{style:{fontSize:44,marginBottom:10}},'📦'),
+          h('p',{style:{fontSize:14,marginBottom:10}},srch?'لا توجد نتائج':'لا توجد مواد بعد'),
+          !srch&&h('button',{className:'btn btn-p',onClick:()=>setModal('add')},'+ إضافة الآن')
+        )
+      :h('div',{className:'ga'},filtered.map(m=>h(MatCard,{key:m.id,mat:m,cur,onEdit:()=>setModal(m),onDel:()=>setConf(m.id)}))),
+    modal&&h(MatModal,{mat:modal==='add'?null:modal,onSave:save,onClose:()=>setModal(null),cur}),
+    conf&&h(Confirm,{msg:'حذف هذه المادة؟ سيؤثر على الوصفات المرتبطة.',onYes:()=>del(conf),onNo:()=>setConf(null)})
+  );
+}
+
+function MatCard({mat,cur,onEdit,onDel}){
+  const stock=calcMatStock(mat);
+  const uc=calcUnitCost(mat);
+  const stockPct=mat.minStock>0?Math.min(100,(stock/((mat.purchases||[]).reduce((s,p)=>s+p.qty,0)||1))*100):100;
+  const stockColor=mat.minStock>0&&stock<=mat.minStock?'var(--err)':mat.minStock>0&&stock<=mat.minStock*2?'var(--warn)':'var(--ok)';
+  return h('div',{className:'card card-h',style:{padding:15}},
+    h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:10}},
+      h('div',null,
+        h('div',{style:{fontSize:14,fontWeight:800,marginBottom:4}},mat.name),
+        h('span',{className:'badge badge-p',style:{fontSize:10}},mat.category)
+      ),
+      h('div',{style:{display:'flex',gap:5}},
+        h('button',{onClick:onEdit,style:{background:'var(--infoBg)',borderRadius:7,padding:'5px 7px',color:'var(--info)',border:'1px solid rgba(59,130,246,.2)',fontSize:12}},'✏️'),
+        h('button',{onClick:onDel,style:{background:'var(--errBg)',borderRadius:7,padding:'5px 7px',color:'var(--err)',border:'1px solid rgba(239,68,68,.2)',fontSize:12}},'🗑')
+      )
+    ),
+    h('div',{style:{background:'var(--goldBg)',border:'1px solid rgba(245,158,11,.15)',borderRadius:8,padding:'9px 11px',marginBottom:9}},
+      h('div',{style:{fontSize:10,color:'var(--muted2)',marginBottom:1}},'سعر الوحدة'),
+      h('div',{style:{fontSize:17,fontWeight:900,color:'var(--gold)'}},uc.toFixed(4),h('span',{style:{fontSize:11,color:'var(--muted2)',marginRight:3}},cur,'/',mat.unit))
+    ),
+    h('div',{style:{marginBottom:8}},
+      h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:4}},
+        h('span',{style:{fontSize:12,color:'var(--muted2)'}},'المخزون'),
+        h('span',{style:{fontSize:12,fontWeight:700,color:stockColor}},stock.toFixed(1),' ',mat.unit)
+      ),
+      h('div',{className:'progress-wrap'},
+        h('div',{className:'progress-bar',style:{width:`${stockPct}%`,background:stockColor}})
+      ),
+      mat.minStock>0&&h('div',{style:{fontSize:10,color:'var(--muted2)',marginTop:3}},'الحد الأدنى: ',mat.minStock,' ',mat.unit)
+    ),
+    mat.wastePercent>0&&h('div',{style:{fontSize:11,color:'var(--warn)'}},'⚠ هدر متوقع: ',mat.wastePercent,'%'),
+    (mat.purchases||[]).length>0&&h('div',{style:{fontSize:11,color:'var(--muted2)',marginTop:4}},'📋 ',(mat.purchases||[]).length,' عملية شراء')
+  );
+}
+
+function MatModal({mat,onSave,onClose,cur}){
+  const [name,setName]=useState(mat?.name||'');
+  const [cat,setCat]=useState(mat?.category||MC[0]);
+  const [unit,setUnit]=useState(mat?.unit||UN[0]);
+  const [waste,setWaste]=useState(mat?.wastePercent||0);
+  const [minStock,setMinStock]=useState(mat?.minStock||0);
+  const [purchases,setPurch]=useState(mat?.purchases||[]);
+  const [usedQty,setUsedQty]=useState(mat?.usedQty||0);
+  const [np,setNp]=useState({date:today(),qty:'',price:''});
+
+  const addP=()=>{
+    const qty=parseFloat(np.qty),price=parseFloat(np.price);
+    if(!qty||!price)return;
+    setPurch(p=>[...p,{id:uid(),date:np.date,qty,totalPrice:price,unitCost:price/qty}]);
+    setNp(p=>({...p,qty:'',price:''}));
+  };
+  const save=()=>{
+    if(!name.trim()||purchases.length===0)return;
+    onSave({...(mat||{}),name:name.trim(),category:cat,unit,wastePercent:+waste,minStock:+minStock,purchases,usedQty:+usedQty});
+  };
+  const prev=np.qty&&np.price?(parseFloat(np.price)/parseFloat(np.qty)).toFixed(4):null;
+  const curStock=calcMatStock({purchases,usedQty:+usedQty});
+
+  return h(Modal,{title:mat?'✏️ تعديل المادة':'➕ مادة جديدة',onClose},
+    h('div',{style:{display:'flex',flexDirection:'column',gap:11}},
+      h('div',{className:'form-row g2'},
+        h('div',null,h('label',{className:'lbl'},'الاسم *'),h('input',{value:name,onChange:e=>setName(e.target.value),placeholder:'مثال: زيت جوز الهند'})),
+        h('div',null,h('label',{className:'lbl'},'الفئة'),h('select',{value:cat,onChange:e=>setCat(e.target.value)},MC.map(c=>h('option',{key:c},c))))
+      ),
+      h('div',{className:'form-row g3'},
+        h('div',null,h('label',{className:'lbl'},'الوحدة'),h('select',{value:unit,onChange:e=>setUnit(e.target.value)},UN.map(u=>h('option',{key:u},u)))),
+        h('div',null,h('label',{className:'lbl'},'نسبة الهدر %'),h('input',{type:'number',value:waste,onChange:e=>setWaste(e.target.value),placeholder:'0',min:0,max:100,step:0.5})),
+        h('div',null,h('label',{className:'lbl'},'حد التنبيه'),h('input',{type:'number',value:minStock,onChange:e=>setMinStock(e.target.value),placeholder:'0',min:0,step:'any'}))
+      ),
+      h('div',{className:'hr'}),
+      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},
+        h('h4',{style:{fontSize:13,fontWeight:800}},'📦 سجل المشتريات'),
+        purchases.length>0&&h('div',{style:{background:'var(--okBg)',border:'1px solid rgba(16,185,129,.2)',borderRadius:8,padding:'4px 11px',fontSize:12,color:'var(--ok)'}},'المخزون: ',curStock.toFixed(1),' ',unit)
+      ),
+      h('div',{style:{background:'var(--card2)',borderRadius:10,padding:13,border:'1px solid var(--border2)'}},
+        h('div',{className:'form-row g3',style:{marginBottom:10}},
+          h('div',null,h('label',{className:'lbl'},'التاريخ'),h('input',{type:'date',value:np.date,onChange:e=>setNp(p=>({...p,date:e.target.value}))})),
+          h('div',null,h('label',{className:'lbl'},'الكمية (',unit,')'),h('input',{type:'number',value:np.qty,onChange:e=>setNp(p=>({...p,qty:e.target.value})),placeholder:'500',min:0,step:'any'})),
+          h('div',null,h('label',{className:'lbl'},'السعر (',cur,')'),h('input',{type:'number',value:np.price,onChange:e=>setNp(p=>({...p,price:e.target.value})),placeholder:'25',min:0,step:'any'}))
+        ),
+        prev&&h('div',{style:{background:'var(--okBg)',borderRadius:7,padding:'5px 10px',fontSize:12,color:'var(--ok)',marginBottom:9}},'✓ سعر الوحدة: ',prev,' ',cur,'/',unit),
+        h('button',{className:'btn btn-o',style:{width:'100%',justifyContent:'center'},onClick:addP},'+ إضافة للسجل')
+      ),
+      purchases.length>0&&h('div',null,
+        h('p',{style:{fontSize:12,color:'var(--muted2)',marginBottom:7}},'(',purchases.length,' عملية شراء)'),
+        purchases.map((p,i)=>h('div',{key:p.id,style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 11px',background:i===purchases.length-1?'rgba(124,58,237,.06)':'var(--card2)',border:`1px solid ${i===purchases.length-1?'rgba(124,58,237,.2)':'var(--border)'}`,borderRadius:9,marginBottom:5}},
+          h('div',null,
+            h('div',{style:{fontSize:12,fontWeight:700}},p.date,' — ',p.qty,' ',unit),
+            h('div',{style:{fontSize:11,color:'var(--muted)'}},fmt(p.totalPrice,cur),' | ',p.unitCost.toFixed(4),' /وحدة')
+          ),
+          h('div',{style:{display:'flex',gap:7,alignItems:'center'}},
+            i===purchases.length-1&&h('span',{className:'badge badge-p',style:{fontSize:9}},'الأحدث'),
+            h('button',{onClick:()=>setPurch(pr=>pr.filter(x=>x.id!==p.id)),style:{background:'none',color:'var(--err)',fontSize:14}},'✕')
+          )
+        ))
+      ),
+      purchases.length===0&&h('p',{style:{color:'var(--err)',fontSize:12,textAlign:'center'}},'* أضف عملية شراء واحدة على الأقل'),
+      h('div',{style:{display:'flex',gap:9}},
+        h('button',{className:'btn btn-p',style:{flex:1,justifyContent:'center'},onClick:save,disabled:!name.trim()||purchases.length===0},'✓ ',mat?'حفظ':'إضافة'),
+        h('button',{className:'btn btn-o',onClick:onClose},'إلغاء')
+      )
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// 📖 Recipes
+// ══════════════════════════════════════════
+function Recipes({recipes,setRecipes,materials,settings,showToast}){
+  const [srch,setSrch]=useState('');
+  const [cat,setCat]=useState('الكل');
+  const [modal,setModal]=useState(null);
+  const [conf,setConf]=useState(null);
+  const cur=settings.currency||'SAR';
+
+  const filtered=recipes.filter(r=>(cat==='الكل'||r.category===cat)&&r.name.includes(srch));
+
+  const save=d=>{
+    if(d.id){setRecipes(p=>p.map(r=>r.id===d.id?d:r));showToast('✓ تم التحديث')}
+    else{setRecipes(p=>[...p,{...d,id:uid()}]);showToast('✓ تمت الإضافة')}
+    setModal(null);
+  };
+  const del=id=>{setRecipes(p=>p.filter(r=>r.id!==id));setConf(null);showToast('تم الحذف','err')};
+  const dup=r=>{setRecipes(p=>[...p,{...r,id:uid(),name:`${r.name} (نسخة)`}]);showToast('✓ تم التكرار','warn')};
+
+  return h('div',{className:'fu'},
+    h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18,flexWrap:'wrap',gap:10}},
+      h('div',null,h('h1',{style:{fontSize:20,fontWeight:900}},'📖 الوصفات والمنتجات'),h('p',{style:{color:'var(--muted2)',fontSize:13}},recipes.length,' وصفة')),
+      h('button',{className:'btn btn-p',onClick:()=>setModal('add'),disabled:materials.length===0,title:materials.length===0?'أضف مواد أولاً':''},'+ إضافة وصفة')
+    ),
+    materials.length===0&&h('div',{style:{background:'var(--warnBg)',border:'1px solid rgba(245,158,11,.2)',borderRadius:10,padding:12,marginBottom:14,fontSize:13,color:'var(--warn)',display:'flex',gap:8}},'⚠️ ','أضف مواد خام أولاً لتتمكن من إنشاء وصفات'),
+    h('div',{style:{display:'flex',gap:9,marginBottom:14,flexWrap:'wrap'}},
+      h('div',{style:{position:'relative',flex:1,minWidth:150}},
+        h('span',{style:{position:'absolute',right:11,top:'50%',transform:'translateY(-50%)',color:'var(--muted)',pointerEvents:'none'}},'🔍'),
+        h('input',{value:srch,onChange:e=>setSrch(e.target.value),placeholder:'بحث...',style:{paddingRight:36}})
+      ),
+      h('select',{value:cat,onChange:e=>setCat(e.target.value),style:{width:'auto',minWidth:120}},
+        h('option',null,'الكل'),RC.map(c=>h('option',{key:c},c))
+      )
+    ),
+    filtered.length===0
+      ?h('div',{style:{textAlign:'center',padding:'44px 0',color:'var(--muted)'}},
+          h('div',{style:{fontSize:44,marginBottom:10}},'📖'),
+          h('p',{style:{fontSize:14,marginBottom:10}},srch?'لا توجد نتائج':'لا توجد وصفات بعد'),
+          !srch&&materials.length>0&&h('button',{className:'btn btn-p',onClick:()=>setModal('add')},'+ إضافة الآن')
+        )
+      :h('div',{className:'ga'},filtered.map(r=>{
+          const costs=calcRecipeCost(r,materials,settings);
+          return h(RecCard,{key:r.id,r,costs,cur,onEdit:()=>setModal(r),onDel:()=>setConf(r.id),onDup:()=>dup(r)});
+        })),
+    modal&&h(RecModal,{recipe:modal==='add'?null:modal,materials,settings,onSave:save,onClose:()=>setModal(null),cur}),
+    conf&&h(Confirm,{msg:'حذف هذه الوصفة نهائياً؟',onYes:()=>del(conf),onNo:()=>setConf(null)})
+  );
+}
+
+function RecCard({r,costs,cur,onEdit,onDel,onDup}){
+  const [exp,setExp]=useState(false);
+  const mc=costs.margin===null?'var(--muted)':costs.margin>50?'var(--ok)':costs.margin>25?'var(--gold)':'var(--err)';
+  return h('div',{className:'card card-h',style:{padding:15}},
+    h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:9}},
+      h('div',{style:{flex:1}},
+        h('div',{style:{fontSize:14,fontWeight:800,marginBottom:4}},r.name),
+        h('div',{style:{display:'flex',gap:5,flexWrap:'wrap'}},
+          h('span',{className:'badge badge-p',style:{fontSize:10}},r.category),
+          r.batchSize>1&&h('span',{className:'badge badge-muted',style:{fontSize:10}},'×',r.batchSize,' قطعة')
+        )
+      ),
+      h('div',{style:{display:'flex',gap:4}},
+        h('button',{onClick:onDup,style:{background:'var(--okBg)',borderRadius:7,padding:'5px 7px',color:'var(--ok)',border:'1px solid rgba(16,185,129,.2)',fontSize:11}},'⧉'),
+        h('button',{onClick:onEdit,style:{background:'var(--infoBg)',borderRadius:7,padding:'5px 7px',color:'var(--info)',border:'1px solid rgba(59,130,246,.2)',fontSize:11}},'✏️'),
+        h('button',{onClick:onDel,style:{background:'var(--errBg)',borderRadius:7,padding:'5px 7px',color:'var(--err)',border:'1px solid rgba(239,68,68,.2)',fontSize:11}},'🗑')
+      )
+    ),
+    h('div',{className:'form-row g2',style:{marginBottom:r.sellingPrice>0?8:10}},
+      h('div',{style:{background:'var(--errBg)',border:'1px solid rgba(239,68,68,.13)',borderRadius:8,padding:'8px 10px'}},
+        h('div',{style:{fontSize:10,color:'var(--muted2)',marginBottom:1}},'تكلفة الإنتاج'),
+        h('div',{style:{fontSize:14,fontWeight:900,color:'var(--err)'}},fmt(costs.totalCost,cur))
+      ),
+      h('div',{style:{background:'var(--goldBg)',border:'1px solid rgba(245,158,11,.13)',borderRadius:8,padding:'8px 10px'}},
+        h('div',{style:{fontSize:10,color:'var(--muted2)',marginBottom:1}},'تكلفة الوحدة'),
+        h('div',{style:{fontSize:14,fontWeight:900,color:'var(--gold)'}},fmt(costs.costPerUnit,cur))
+      )
+    ),
+    r.sellingPrice>0&&h('div',{style:{background:'var(--okBg)',border:'1px solid rgba(16,185,129,.13)',borderRadius:8,padding:'7px 10px',marginBottom:9,display:'flex',justifyContent:'space-between',alignItems:'center'}},
+      h('span',{style:{fontSize:12,color:'var(--muted2)'}},'سعر البيع: ',fmt(r.sellingPrice,cur)),
+      h('span',{style:{fontWeight:900,fontSize:14,color:mc}},costs.margin?.toFixed(1),'% ربح')
+    ),
+    // Cost breakdown toggle
+    h('button',{onClick:()=>setExp(!exp),style:{background:'none',color:'var(--muted2)',fontSize:11,display:'flex',alignItems:'center',gap:4}},
+      '🧪 ',r.ingredients?.length||0,' مكوّن ',exp?'▲':'▼'
+    ),
+    exp&&h('div',{style:{marginTop:8,borderTop:'1px solid var(--border)',paddingTop:8}},
+      costs.ing.map(i=>h('div',{key:i.matId||i.id,style:{display:'flex',justifyContent:'space-between',fontSize:11,padding:'3px 0',borderBottom:'1px solid var(--border)'}},
+        h('span',{style:{fontWeight:600}},i.name||'—'),
+        h('span',{style:{color:'var(--muted)'}},(i.effQty||i.qty)?.toFixed(2),' ',i.unit),
+        h('span',{style:{color:'var(--gold)',fontWeight:700}},fmt(i.cost,cur))
+      )),
+      costs.packCost>0&&h('div',{style:{display:'flex',justifyContent:'space-between',fontSize:11,padding:'3px 0',color:'var(--info)'}},h('span',null,'تغليف'),h('span',null,fmt(costs.packCost,cur))),
+      costs.timeCost>0&&h('div',{style:{display:'flex',justifyContent:'space-between',fontSize:11,padding:'3px 0',color:'var(--p2)'}},h('span',null,'وقت العمل'),h('span',null,fmt(costs.timeCost,cur)))
+    )
+  );
+}
+
+function RecModal({recipe,materials,settings,onSave,onClose,cur}){
+  const [name,setName]=useState(recipe?.name||'');
+  const [cat,setCat]=useState(recipe?.category||RC[0]);
+  const [desc,setDesc]=useState(recipe?.description||'');
+  const [sp,setSp]=useState(recipe?.sellingPrice||'');
+  const [bs,setBs]=useState(recipe?.batchSize||1);
+  const [packCost,setPackCost]=useState(recipe?.packagingCost||'');
+  const [timeH,setTimeH]=useState(recipe?.timeHours||'');
+  const [ings,setIngs]=useState(recipe?.ingredients||[]);
+  const [ni,setNi]=useState({matId:'',qty:'',unit:UN[0]});
+
+  const addIng=()=>{
+    const mat=materials.find(m=>m.id===ni.matId);
+    if(!mat||!ni.qty)return;
+    const qty=parseFloat(ni.qty);
+    setIngs(p=>[...p,{id:uid(),matId:ni.matId,name:mat.name,qty,unit:ni.unit}]);
+    setNi(p=>({...p,matId:'',qty:''}));
+  };
+
+  const tmpRecipe={ingredients:ings,packagingCost:parseFloat(packCost)||0,timeHours:parseFloat(timeH)||0,batchSize:Math.max(1,parseInt(bs)||1),sellingPrice:parseFloat(sp)||0};
+  const costs=calcRecipeCost(tmpRecipe,materials,settings);
+
+  const save=()=>{
+    if(!name.trim()||ings.length===0)return;
+    onSave({...(recipe||{}),name:name.trim(),category:cat,description:desc,sellingPrice:parseFloat(sp)||0,batchSize:Math.max(1,parseInt(bs)||1),packagingCost:parseFloat(packCost)||0,timeHours:parseFloat(timeH)||0,ingredients:ings});
+  };
+
+  const niMat=materials.find(m=>m.id===ni.matId);
+  const niCost=niMat&&ni.qty?calcUnitCost(niMat)*parseFloat(ni.qty)*(1+(niMat.wastePercent||0)/100):null;
+
+  return h(Modal,{title:recipe?'✏️ تعديل الوصفة':'➕ وصفة جديدة',onClose,wide:true},
+    h('div',{style:{display:'flex',flexDirection:'column',gap:11}},
+      h('div',{className:'form-row g2'},
+        h('div',null,h('label',{className:'lbl'},'اسم الوصفة *'),h('input',{value:name,onChange:e=>setName(e.target.value),placeholder:'مثال: كريم الورد'})),
+        h('div',null,h('label',{className:'lbl'},'الفئة'),h('select',{value:cat,onChange:e=>setCat(e.target.value)},RC.map(c=>h('option',{key:c},c))))
+      ),
+      h('div',null,h('label',{className:'lbl'},'وصف (اختياري)'),h('textarea',{value:desc,onChange:e=>setDesc(e.target.value),rows:2,placeholder:'ملاحظات...'})),
+      h('div',{className:'form-row g3'},
+        h('div',null,h('label',{className:'lbl'},'حجم الدفعة'),h('input',{type:'number',value:bs,onChange:e=>setBs(e.target.value),min:1})),
+        h('div',null,h('label',{className:'lbl'},'تكلفة التغليف (',cur,')'),h('input',{type:'number',value:packCost,onChange:e=>setPackCost(e.target.value),placeholder:'0',min:0,step:'any'})),
+        h('div',null,h('label',{className:'lbl'},'ساعات العمل'),h('input',{type:'number',value:timeH,onChange:e=>setTimeH(e.target.value),placeholder:'0',min:0,step:0.5}))
+      ),
+      parseFloat(timeH)>0&&h('div',{style:{background:'var(--pBg)',borderRadius:8,padding:'6px 11px',fontSize:12,color:'var(--p2)'}},'⏱ تكلفة الوقت: ',fmt((parseFloat(timeH)||0)*(settings.hourlyRate||0),cur),' (',settings.hourlyRate||0,' ',cur,'/ساعة)'),
+      h('div',{className:'hr'}),
+      h('h4',{style:{fontSize:13,fontWeight:800}},'🧪 المكونات'),
+      materials.length===0
+        ?h('div',{style:{background:'var(--errBg)',borderRadius:9,padding:12,color:'var(--err)',fontSize:13,textAlign:'center'}},'أضف مواد خام أولاً')
+        :h('div',{style:{background:'var(--card2)',borderRadius:10,padding:13,border:'1px solid var(--border2)'}},
+            h('div',{className:'form-row g3',style:{marginBottom:9}},
+              h('div',null,h('label',{className:'lbl'},'المادة'),h('select',{value:ni.matId,onChange:e=>setNi(p=>({...p,matId:e.target.value}))},
+                h('option',{value:''},'اختر...'),
+                materials.map(m=>h('option',{key:m.id,value:m.id},m.name,' (',calcUnitCost(m).toFixed(4),'/',m.unit,')'))
+              )),
+              h('div',null,h('label',{className:'lbl'},'الكمية'),h('input',{type:'number',value:ni.qty,onChange:e=>setNi(p=>({...p,qty:e.target.value})),placeholder:'30',min:0,step:'any'})),
+              h('div',null,h('label',{className:'lbl'},'الوحدة'),h('select',{value:ni.unit,onChange:e=>setNi(p=>({...p,unit:e.target.value}))},UN.map(u=>h('option',{key:u},u))))
+            ),
+            niCost!==null&&h('div',{style:{background:'var(--okBg)',borderRadius:7,padding:'5px 10px',fontSize:12,color:'var(--ok)',marginBottom:8}},'✓ تكلفة المكون (مع الهدر): ',fmt(niCost,cur)),
+            h('button',{className:'btn btn-o',style:{width:'100%',justifyContent:'center'},onClick:addIng},'+ إضافة')
+          ),
+      ings.length>0&&h('div',null,
+        ings.map(ing=>h('div',{key:ing.id,style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 11px',background:'var(--card2)',border:'1px solid var(--border)',borderRadius:9,marginBottom:5}},
+          h('div',null,h('div',{style:{fontSize:13,fontWeight:700}},ing.name),h('div',{style:{fontSize:11,color:'var(--muted)'}},ing.qty,' ',ing.unit)),
+          h('div',{style:{display:'flex',gap:9,alignItems:'center'}},
+            h('span',{style:{color:'var(--gold)',fontWeight:700,fontSize:13}},fmt(costs.ing.find(i=>i.matId===ing.matId)?.cost||0,cur)),
+            h('button',{onClick:()=>setIngs(p=>p.filter(i=>i.id!==ing.id)),style:{background:'none',color:'var(--err)',fontSize:14}},'✕')
+          )
+        ))
+      ),
+      ings.length>0&&h('div',{style:{background:'var(--pBg)',border:'1.5px solid rgba(124,58,237,.2)',borderRadius:11,padding:14}},
+        h('div',{className:'form-row g3',style:{marginBottom:costs.margin!==null?10:0}},
+          h('div',{style:{textAlign:'center'}},h('div',{style:{fontSize:10,color:'var(--muted2)',marginBottom:2}},'المكونات'),h('div',{style:{fontSize:14,fontWeight:900}},fmt(costs.ingTotal,cur))),
+          h('div',{style:{textAlign:'center'}},h('div',{style:{fontSize:10,color:'var(--muted2)',marginBottom:2}},'إجمالي الدفعة'),h('div',{style:{fontSize:14,fontWeight:900,color:'var(--err)'}},fmt(costs.totalCost,cur))),
+          h('div',{style:{textAlign:'center'}},h('div',{style:{fontSize:10,color:'var(--muted2)',marginBottom:2}},'تكلفة الوحدة ÷',Math.max(1,parseInt(bs)||1)),h('div',{style:{fontSize:14,fontWeight:900,color:'var(--gold)'}},fmt(costs.costPerUnit,cur)))
+        ),
+        costs.margin!==null&&h('div',{style:{textAlign:'center',paddingTop:10,borderTop:'1px solid rgba(124,58,237,.15)'}},
+          h('span',{style:{fontSize:12,color:'var(--muted2)',marginLeft:6}},'هامش الربح:'),
+          h('span',{style:{fontSize:18,fontWeight:900,color:costs.margin>50?'var(--ok)':costs.margin>25?'var(--gold)':'var(--err)'}},pct(costs.margin))
+        )
+      ),
+      ings.length===0&&h('p',{style:{color:'var(--err)',fontSize:12,textAlign:'center'}},'* أضف مكوّناً واحداً على الأقل'),
+      h('div',{style:{display:'flex',gap:9}},
+        h('button',{className:'btn btn-p',style:{flex:1,justifyContent:'center'},onClick:save,disabled:!name.trim()||ings.length===0},'✓ ',recipe?'حفظ':'إضافة'),
+        h('button',{className:'btn btn-o',onClick:onClose},'إلغاء')
+      )
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// 🛍️ Sales
+// ══════════════════════════════════════════
+function Sales({sales,setSales,recipes,materials,setMaterials,settings,showToast}){
+  const [modal,setModal]=useState(false);
+  const [conf,setConf]=useState(null);
+  const cur=settings.currency||'SAR';
+
+  const addSale=d=>{
+    // Deduct materials from stock
+    const recipe=recipes.find(r=>r.id===d.recipeId);
+    if(recipe){
+      const updatedMats=[...materials];
+      (recipe.ingredients||[]).forEach(ing=>{
+        const idx=updatedMats.findIndex(m=>m.id===ing.matId);
+        if(idx>=0){
+          updatedMats[idx]={...updatedMats[idx],usedQty:(updatedMats[idx].usedQty||0)+ing.qty*d.qty};
+        }
+      });
+      setMaterials(updatedMats);
+    }
+    setSales(p=>[...p,{...d,id:uid()}]);
+    showToast('✓ تم تسجيل البيع');
+    setModal(false);
+  };
+  const del=id=>{
+    setSales(p=>p.filter(s=>s.id!==id));
+    setConf(null);showToast('تم الحذف','err');
+  };
+
+  return h('div',{className:'fu'},
+    h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18,flexWrap:'wrap',gap:10}},
+      h('div',null,h('h1',{style:{fontSize:20,fontWeight:900}},'🛍️ المبيعات'),h('p',{style:{color:'var(--muted2)',fontSize:13}},sales.length,' عملية بيع')),
+      h('button',{className:'btn btn-p',onClick:()=>setModal(true),disabled:recipes.length===0},'+ تسجيل بيعة')
+    ),
+    recipes.length===0&&h('div',{style:{background:'var(--warnBg)',border:'1px solid rgba(245,158,11,.2)',borderRadius:10,padding:12,marginBottom:14,fontSize:13,color:'var(--warn)'}},'⚠️ أضف وصفات أولاً لتسجيل المبيعات'),
+    sales.length===0
+      ?h('div',{style:{textAlign:'center',padding:'44px 0',color:'var(--muted)'}},
+          h('div',{style:{fontSize:44,marginBottom:10}},'🛍️'),
+          h('p',{style:{fontSize:14,marginBottom:10}},'لا توجد مبيعات بعد'),
+          recipes.length>0&&h('button',{className:'btn btn-p',onClick:()=>setModal(true)},'+ سجّل أول بيعة')
+        )
+      :h('div',{className:'sec',style:{padding:0}},
+          h('div',{className:'table-wrap'},
+            h('table',null,
+              h('thead',null,h('tr',null,
+                h('th',null,'التاريخ'),h('th',null,'المنتج'),h('th',null,'الكمية'),
+                h('th',null,'سعر البيع'),h('th',null,'الإجمالي'),h('th',null,'المنصة'),h('th',null,'')
+              )),
+              h('tbody',null,
+                [...sales].reverse().map(s=>{
+                  const r=recipes.find(x=>x.id===s.recipeId);
+                  const{costPerUnit}=r?calcRecipeCost(r,materials,settings):{costPerUnit:0};
+                  const total=(s.sellingPrice||0)*s.qty;
+                  const profit=total-costPerUnit*s.qty;
+                  return h('tr',{key:s.id},
+                    h('td',null,h('span',{style:{fontSize:12,color:'var(--muted2)'}},s.date)),
+                    h('td',null,h('span',{style:{fontWeight:600,fontSize:13}},r?.name||'—')),
+                    h('td',null,s.qty,' قطعة'),
+                    h('td',null,fmt(s.sellingPrice||0,cur)),
+                    h('td',null,
+                      h('div',{style:{fontSize:13,fontWeight:700,color:'var(--ok)'}},fmt(total,cur)),
+                      h('div',{style:{fontSize:11,color:profit>=0?'var(--ok)':'var(--err)'}},'ربح: ',fmt(profit,cur))
+                    ),
+                    h('td',null,h('span',{className:'badge badge-muted',style:{fontSize:10}},s.platform||'—')),
+                    h('td',null,h('button',{onClick:()=>setConf(s.id),style:{background:'none',color:'var(--err)',fontSize:13}},'🗑'))
+                  );
+                })
+              )
+            )
+          )
+        ),
+    modal&&h(SaleModal,{recipes,materials,settings,cur,onSave:addSale,onClose:()=>setModal(false)}),
+    conf&&h(Confirm,{msg:'حذف هذه البيعة؟ لن يُعاد المخزون.',onYes:()=>del(conf),onNo:()=>setConf(null)})
+  );
+}
+
+function SaleModal({recipes,materials,settings,cur,onSave,onClose}){
+  const [recipeId,setRecipeId]=useState('');
+  const [qty,setQty]=useState(1);
+  const [price,setPrice]=useState('');
+  const [platform,setPlatform]=useState(PLATFORMS[0]);
+  const [date,setDate]=useState(today());
+  const recipe=recipes.find(r=>r.id===recipeId);
+  const costs=recipe?calcRecipeCost(recipe,materials,settings):null;
+  const total=(parseFloat(price)||0)*parseInt(qty||1);
+  const profit=costs?total-costs.costPerUnit*(parseInt(qty)||1):null;
+
+  useEffect(()=>{if(recipe&&recipe.sellingPrice)setPrice(recipe.sellingPrice);},[recipeId]);
+
+  const save=()=>{
+    if(!recipeId||!price)return;
+    onSave({recipeId,qty:parseInt(qty)||1,sellingPrice:parseFloat(price)||0,platform,date});
+  };
+
+  return h(Modal,{title:'🛍️ تسجيل بيعة جديدة',onClose},
+    h('div',{style:{display:'flex',flexDirection:'column',gap:11}},
+      h('div',null,h('label',{className:'lbl'},'المنتج *'),h('select',{value:recipeId,onChange:e=>setRecipeId(e.target.value)},
+        h('option',{value:''},'اختر منتج...'),
+        recipes.map(r=>{const c=calcRecipeCost(r,materials,settings);return h('option',{key:r.id,value:r.id},r.name,' (تكلفة: ',fmt(c.costPerUnit,cur),')')})
+      )),
+      h('div',{className:'form-row g2'},
+        h('div',null,h('label',{className:'lbl'},'الكمية'),h('input',{type:'number',value:qty,onChange:e=>setQty(e.target.value),min:1})),
+        h('div',null,h('label',{className:'lbl'},'سعر البيع/قطعة (',cur,')'),h('input',{type:'number',value:price,onChange:e=>setPrice(e.target.value),placeholder:'0',min:0,step:'any'}))
+      ),
+      h('div',{className:'form-row g2'},
+        h('div',null,h('label',{className:'lbl'},'المنصة'),h('select',{value:platform,onChange:e=>setPlatform(e.target.value)},PLATFORMS.map(p=>h('option',{key:p},p)))),
+        h('div',null,h('label',{className:'lbl'},'التاريخ'),h('input',{type:'date',value:date,onChange:e=>setDate(e.target.value)}))
+      ),
+      costs&&price&&h('div',{style:{background:profit>=0?'var(--okBg)':'var(--errBg)',border:`1px solid ${profit>=0?'rgba(16,185,129,.2)':'rgba(239,68,68,.2)'}`,borderRadius:10,padding:'11px 14px'}},
+        h('div',{className:'form-row g3'},
+          h('div',{style:{textAlign:'center'}},h('div',{style:{fontSize:10,color:'var(--muted2)',marginBottom:2}},'تكلفة الإنتاج'),h('div',{style:{fontSize:14,fontWeight:900,color:'var(--err)'}},fmt(costs.costPerUnit*(parseInt(qty)||1),cur))),
+          h('div',{style:{textAlign:'center'}},h('div',{style:{fontSize:10,color:'var(--muted2)',marginBottom:2}},'إجمالي المبيعات'),h('div',{style:{fontSize:14,fontWeight:900,color:'var(--ok)'}},fmt(total,cur))),
+          h('div',{style:{textAlign:'center'}},h('div',{style:{fontSize:10,color:'var(--muted2)',marginBottom:2}},'الربح الصافي'),h('div',{style:{fontSize:14,fontWeight:900,color:profit>=0?'var(--ok)':'var(--err)'}},fmt(profit,cur)))
+        )
+      ),
+      h('div',{style:{display:'flex',gap:9}},
+        h('button',{className:'btn btn-p',style:{flex:1,justifyContent:'center'},onClick:save,disabled:!recipeId||!price},'✓ تسجيل البيعة'),
+        h('button',{className:'btn btn-o',onClick:onClose},'إلغاء')
+      )
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// 🏭 Inventory
+// ══════════════════════════════════════════
+function Inventory({materials,settings}){
+  const cur=settings.currency||'SAR';
+  const sorted=[...materials].sort((a,b)=>{
+    const sa=calcMatStock(a),sb=calcMatStock(b);
+    const pa=a.minStock>0?sa/a.minStock:1,pb=b.minStock>0?sb/b.minStock:1;
+    return pa-pb;
+  });
+
+  const totalValue=materials.reduce((s,m)=>{
+    const stock=calcMatStock(m);
+    const uc=calcUnitCost(m);
+    return s+stock*uc;
+  },0);
+
+  return h('div',{className:'fu'},
+    h('div',{style:{marginBottom:18}},
+      h('h1',{style:{fontSize:20,fontWeight:900}},'🏭 المخزون'),
+      h('p',{style:{color:'var(--muted2)',fontSize:13}},'القيمة الإجمالية: ',h('b',{style:{color:'var(--gold)'}},fmt(totalValue,cur)))
+    ),
+    materials.length===0
+      ?h('div',{style:{textAlign:'center',padding:'44px 0',color:'var(--muted)'}},h('div',{style:{fontSize:44}},'📦'),h('p',{style:{marginTop:10}},'لا توجد مواد بعد'))
+      :h('div',{className:'sec',style:{padding:0}},
+          h('div',{className:'table-wrap'},
+            h('table',null,
+              h('thead',null,h('tr',null,
+                h('th',null,'المادة'),h('th',null,'الفئة'),h('th',null,'المخزون الحالي'),
+                h('th',null,'الحد الأدنى'),h('th',null,'الحالة'),h('th',null,'القيمة')
+              )),
+              h('tbody',null,
+                sorted.map(m=>{
+                  const stock=calcMatStock(m);
+                  const uc=calcUnitCost(m);
+                  const val=stock*uc;
+                  const status=m.minStock>0&&stock<=m.minStock?'منخفض جداً':m.minStock>0&&stock<=m.minStock*2?'منخفض':'جيد';
+                  const statusColor=status==='منخفض جداً'?'var(--err)':status==='منخفض'?'var(--warn)':'var(--ok)';
+                  const badgeClass=status==='منخفض جداً'?'badge-err':status==='منخفض'?'badge-warn':'badge-ok';
+                  return h('tr',{key:m.id},
+                    h('td',null,h('span',{style:{fontWeight:600}},m.name)),
+                    h('td',null,h('span',{className:'badge badge-p',style:{fontSize:10}},m.category)),
+                    h('td',null,
+                      h('span',{style:{fontWeight:700,color:statusColor}},stock.toFixed(1),' ',m.unit),
+                      h('div',{className:'progress-wrap',style:{marginTop:4,width:80}},
+                        h('div',{className:'progress-bar',style:{width:`${Math.min(100,m.minStock>0?(stock/m.minStock)*50:100)}%`,background:statusColor}})
+                      )
+                    ),
+                    h('td',null,m.minStock||'—',' ',m.minStock?m.unit:''),
+                    h('td',null,h('span',{className:`badge ${badgeClass}`},status)),
+                    h('td',null,h('span',{style:{fontWeight:600,color:'var(--gold)'}},fmt(val,cur)))
+                  );
+                })
+              )
+            )
+          )
+        )
+  );
+}
+
+// ══════════════════════════════════════════
+// ♻️ Waste
+// ══════════════════════════════════════════
+function Waste({wasteLog,setWasteLog,materials,settings,showToast}){
+  const [modal,setModal]=useState(false);
+  const cur=settings.currency||'SAR';
+  const thisMonth=new Date().toISOString().slice(0,7);
+  const monthlyWaste=wasteLog.filter(w=>w.date.startsWith(thisMonth));
+  const totalWasteValue=monthlyWaste.reduce((s,w)=>{
+    const mat=materials.find(m=>m.id===w.matId);
+    return s+(mat?calcUnitCost(mat)*w.qty:0);
+  },0);
+
+  return h('div',{className:'fu'},
+    h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18,flexWrap:'wrap',gap:10}},
+      h('div',null,
+        h('h1',{style:{fontSize:20,fontWeight:900}},'♻️ تسجيل الهدر'),
+        h('p',{style:{color:'var(--muted2)',fontSize:13}},'هدر هذا الشهر: ',h('b',{style:{color:'var(--err)'}},fmt(totalWasteValue,cur)))
+      ),
+      h('button',{className:'btn btn-p',onClick:()=>setModal(true),disabled:materials.length===0},'+ تسجيل هدر')
+    ),
+    wasteLog.length>0&&h('div',{style:{display:'flex',gap:10,marginBottom:14,flexWrap:'wrap'}},
+      h('div',{style:{background:'var(--errBg)',border:'1px solid rgba(239,68,68,.2)',borderRadius:11,padding:'11px 16px',flex:1}},
+        h('div',{style:{fontSize:11,color:'var(--muted2)',marginBottom:2}},'إجمالي هدر الشهر'),
+        h('div',{style:{fontSize:17,fontWeight:900,color:'var(--err)'}},fmt(totalWasteValue,cur))
+      ),
+      h('div',{style:{background:'var(--warnBg)',border:'1px solid rgba(245,158,11,.2)',borderRadius:11,padding:'11px 16px',flex:1}},
+        h('div',{style:{fontSize:11,color:'var(--muted2)',marginBottom:2}},'عدد حوادث الهدر'),
+        h('div',{style:{fontSize:17,fontWeight:900,color:'var(--warn)'}},monthlyWaste.length,' حادثة')
+      )
+    ),
+    wasteLog.length===0
+      ?h('div',{style:{textAlign:'center',padding:'44px 0',color:'var(--muted)'}},
+          h('div',{style:{fontSize:44,marginBottom:10}},'♻️'),
+          h('p',{style:{fontSize:14,marginBottom:10}},'لا يوجد هدر مسجل'),
+          materials.length>0&&h('button',{className:'btn btn-p',onClick:()=>setModal(true)},'+ تسجيل هدر')
+        )
+      :h('div',{className:'sec',style:{padding:0}},
+          h('div',{className:'table-wrap'},
+            h('table',null,
+              h('thead',null,h('tr',null,h('th',null,'التاريخ'),h('th',null,'المادة'),h('th',null,'الكمية'),h('th',null,'القيمة'),h('th',null,'ملاحظات'),h('th',null,''))),
+              h('tbody',null,
+                [...wasteLog].reverse().map(w=>{
+                  const mat=materials.find(m=>m.id===w.matId);
+                  const val=mat?calcUnitCost(mat)*w.qty:0;
+                  return h('tr',{key:w.id},
+                    h('td',null,h('span',{style:{fontSize:12,color:'var(--muted2)'}},w.date)),
+                    h('td',null,h('span',{style:{fontWeight:600}},mat?.name||'—')),
+                    h('td',null,w.qty,' ',mat?.unit||''),
+                    h('td',null,h('span',{style:{color:'var(--err)',fontWeight:700}},fmt(val,cur))),
+                    h('td',null,h('span',{style:{fontSize:12,color:'var(--muted2)'}},w.notes||'—')),
+                    h('td',null,h('button',{onClick:()=>{setWasteLog(p=>p.filter(x=>x.id!==w.id));showToast('تم الحذف','err')},style:{background:'none',color:'var(--err)',fontSize:13}},'🗑'))
+                  );
+                })
+              )
+            )
+          )
+        ),
+    modal&&h(WasteModal,{materials,cur,onSave:d=>{setWasteLog(p=>[...p,{...d,id:uid()}]);showToast('✓ تم تسجيل الهدر','warn');setModal(false)},onClose:()=>setModal(false)})
+  );
+}
+
+function WasteModal({materials,cur,onSave,onClose}){
+  const [matId,setMatId]=useState('');
+  const [qty,setQty]=useState('');
+  const [date,setDate]=useState(today());
+  const [notes,setNotes]=useState('');
+  const mat=materials.find(m=>m.id===matId);
+  const val=mat&&qty?calcUnitCost(mat)*parseFloat(qty):null;
+  return h(Modal,{title:'♻️ تسجيل هدر',onClose},
+    h('div',{style:{display:'flex',flexDirection:'column',gap:11}},
+      h('div',null,h('label',{className:'lbl'},'المادة *'),h('select',{value:matId,onChange:e=>setMatId(e.target.value)},
+        h('option',{value:''},'اختر مادة...'),
+        materials.map(m=>h('option',{key:m.id,value:m.id},m.name,' (',calcMatStock(m).toFixed(1),' ',m.unit,' متبقي)'))
+      )),
+      h('div',{className:'form-row g2'},
+        h('div',null,h('label',{className:'lbl'},'الكمية المهدرة'),h('input',{type:'number',value:qty,onChange:e=>setQty(e.target.value),placeholder:'0',min:0,step:'any'})),
+        h('div',null,h('label',{className:'lbl'},'التاريخ'),h('input',{type:'date',value:date,onChange:e=>setDate(e.target.value)}))
+      ),
+      val!==null&&h('div',{style:{background:'var(--errBg)',borderRadius:8,padding:'7px 11px',fontSize:13,color:'var(--err)'}},'⚠ قيمة الهدر: ',fmt(val,cur)),
+      h('div',null,h('label',{className:'lbl'},'ملاحظات'),h('input',{value:notes,onChange:e=>setNotes(e.target.value),placeholder:'سبب الهدر...'})),
+      h('div',{style:{display:'flex',gap:9}},
+        h('button',{className:'btn btn-p',style:{flex:1,justifyContent:'center'},onClick:()=>onSave({matId,qty:parseFloat(qty)||0,date,notes}),disabled:!matId||!qty},'✓ تسجيل'),
+        h('button',{className:'btn btn-o',onClick:onClose},'إلغاء')
+      )
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// 📊 Reports
+// ══════════════════════════════════════════
+function Reports({sales,recipes,materials,wasteLog,settings}){
+  const cur=settings.currency||'SAR';
+  const [period,setPeriod]=useState('month');
+  const now=new Date();
+  const filterDate=d=>{
+    const dd=new Date(d);
+    if(period==='week'){const w=new Date(now);w.setDate(w.getDate()-7);return dd>=w}
+    if(period==='month'){return d.startsWith(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`)}
+    if(period==='year'){return d.startsWith(`${now.getFullYear()}`)}
+    return true;
+  };
+
+  const pSales=sales.filter(s=>filterDate(s.date));
+  const pWaste=wasteLog.filter(w=>filterDate(w.date));
+
+  const revenue=pSales.reduce((s,sale)=>s+(sale.sellingPrice||0)*sale.qty,0);
+  const costOfGoods=pSales.reduce((s,sale)=>{
+    const r=recipes.find(x=>x.id===sale.recipeId);
+    if(!r)return s;
+    return s+calcRecipeCost(r,materials,settings).costPerUnit*sale.qty;
+  },0);
+  const wasteValue=pWaste.reduce((s,w)=>{const mat=materials.find(m=>m.id===w.matId);return s+(mat?calcUnitCost(mat)*w.qty:0)},0);
+  const profit=revenue-costOfGoods-wasteValue;
+  const margin=revenue>0?(profit/revenue)*100:0;
+
+  // Product breakdown
+  const prodBreak={};
+  pSales.forEach(s=>{
+    const r=recipes.find(x=>x.id===s.recipeId);
+    if(!r)return;
+    const rev=(s.sellingPrice||0)*s.qty;
+    const cost=calcRecipeCost(r,materials,settings).costPerUnit*s.qty;
+    if(!prodBreak[r.id]){prodBreak[r.id]={name:r.name,qty:0,rev:0,cost:0}}
+    prodBreak[r.id].qty+=s.qty;
+    prodBreak[r.id].rev+=rev;
+    prodBreak[r.id].cost+=cost;
+  });
+  const prodList=Object.values(prodBreak).sort((a,b)=>b.rev-a.rev);
+
+  const periods=[{v:'week',l:'هذا الأسبوع'},{v:'month',l:'هذا الشهر'},{v:'year',l:'هذا العام'},{v:'all',l:'الكل'}];
+
+  return h('div',{className:'fu'},
+    h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:18,flexWrap:'wrap',gap:10}},
+      h('h1',{style:{fontSize:20,fontWeight:900}},'📊 التقارير'),
+      h('div',{style:{display:'flex',gap:6}},
+        periods.map(p=>h('button',{key:p.v,onClick:()=>setPeriod(p.v),className:`btn btn-sm ${period===p.v?'btn-p':'btn-o'}`},p.l))
+      )
+    ),
+
+    // Summary
+    h('div',{className:'ga',style:{marginBottom:18}},
+      [
+        {ic:'💰',label:'الإيرادات',val:fmt(revenue,cur),color:'var(--ok)'},
+        {ic:'📦',label:'تكلفة البضاعة',val:fmt(costOfGoods,cur),color:'var(--err)'},
+        {ic:'♻️',label:'خسائر الهدر',val:fmt(wasteValue,cur),color:'var(--warn)'},
+        {ic:'📈',label:'الربح الصافي',val:fmt(profit,cur),color:profit>=0?'var(--ok)':'var(--err)'},
+        {ic:'🎯',label:'هامش الربح',val:pct(margin),color:margin>30?'var(--ok)':margin>15?'var(--gold)':'var(--err)'},
+        {ic:'🛍️',label:'إجمالي المبيعات',val:`${pSales.reduce((s,x)=>s+x.qty,0)} قطعة`,color:'var(--p2)'},
+      ].map((s,i)=>h('div',{key:i,className:'stat-card'},
+        h('div',{style:{fontSize:22,marginBottom:8}},s.ic),
+        h('div',{style:{fontSize:17,fontWeight:900,color:s.color,marginBottom:3}},s.val),
+        h('div',{style:{fontSize:12,color:'var(--muted2)'}},s.label)
+      ))
+    ),
+
+    // Product breakdown
+    prodList.length>0&&h('div',{className:'sec'},
+      h('h3',{style:{fontSize:14,fontWeight:800,marginBottom:12}},'🏆 أداء المنتجات'),
+      h('div',{className:'table-wrap'},
+        h('table',null,
+          h('thead',null,h('tr',null,h('th',null,'المنتج'),h('th',null,'المبيعات'),h('th',null,'الإيرادات'),h('th',null,'التكلفة'),h('th',null,'الربح'),h('th',null,'الهامش'))),
+          h('tbody',null,
+            prodList.map(p=>{
+              const pr=p.rev-p.cost;
+              const mg=p.rev>0?(pr/p.rev)*100:0;
+              return h('tr',{key:p.name},
+                h('td',null,h('span',{style:{fontWeight:600}},p.name)),
+                h('td',null,p.qty,' قطعة'),
+                h('td',null,fmt(p.rev,cur)),
+                h('td',null,fmt(p.cost,cur)),
+                h('td',null,h('span',{style:{fontWeight:700,color:pr>=0?'var(--ok)':'var(--err)'}},fmt(pr,cur))),
+                h('td',null,h('span',{style:{fontWeight:700,color:mg>30?'var(--ok)':mg>15?'var(--gold)':'var(--err)'}},pct(mg)))
+              );
+            })
+          )
+        )
+      )
+    ),
+
+    pSales.length===0&&h('div',{style:{textAlign:'center',padding:'40px 0',color:'var(--muted)'}},
+      h('div',{style:{fontSize:40,marginBottom:10}},'📊'),
+      h('p',null,'لا توجد بيانات للفترة المختارة')
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// ⚙️ Settings
+// ══════════════════════════════════════════
+function SettingsPage({settings,setSettings,materials,setMaterials,recipes,setRecipes,sales,setSales,wasteLog,setWasteLog,showToast,session}){
+  const [hr,setHr]=useState(settings.hourlyRate||0);
+  const [bn,setBn]=useState(settings.businessName||'');
+
+  const saveSettings=()=>{
+    setSettings(p=>({...p,hourlyRate:parseFloat(hr)||0,businessName:bn.trim()}));
+    showToast('✓ تم حفظ الإعدادات');
+  };
+
+  const doExport=()=>{
+    const d=JSON.stringify({materials,recipes,sales,wasteLog,settings,exportDate:new Date().toISOString()},null,2);
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([d],{type:'application/json'}));
+    a.download=`craftcost-backup-${today()}.json`;a.click();
+    showToast('✓ تم التصدير');
+  };
+  const doImport=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{
+        const d=JSON.parse(ev.target.result);
+        if(d.materials)setMaterials(d.materials);
+        if(d.recipes)setRecipes(d.recipes);
+        if(d.sales)setSales(d.sales);
+        if(d.wasteLog)setWasteLog(d.wasteLog);
+        if(d.settings)setSettings(d.settings);
+        showToast('✓ تم الاستيراد');
+      }catch{showToast('خطأ في الملف','err')}
+    };r.readAsText(f);e.target.value='';
+  };
+  const doReset=()=>{
+    if(window.confirm('⚠️ مسح كل البيانات؟ لا يمكن التراجع!')){
+      setMaterials([]);setRecipes([]);setSales([]);setWasteLog([]);
+      showToast('تم المسح','err');
+    }
+  };
+
+  const expDate=session?.expires?new Date(session.expires).toLocaleDateString('ar-SA'):'—';
+  const daysLeft=session?.expires?Math.ceil((new Date(session.expires)-new Date())/(1000*3600*24)):0;
+
+  return h('div',{className:'fu',style:{maxWidth:540}},
+    h('h1',{style:{fontSize:20,fontWeight:900,marginBottom:18}},'⚙️ الإعدادات'),
+
+    // Subscription info
+    h('div',{className:'sec',style:{background:'var(--pBg)',borderColor:'rgba(124,58,237,.2)'}},
+      h('h3',{style:{fontSize:14,fontWeight:800,marginBottom:10,color:'var(--p2)'}},'🔑 معلومات الاشتراك'),
+      h('div',{style:{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:5}},
+        h('span',{style:{color:'var(--muted2)'}},'كود الاشتراك'),
+        h('span',{style:{fontWeight:700}},session?.code||'—')
+      ),
+      h('div',{style:{display:'flex',justifyContent:'space-between',fontSize:13,marginBottom:5}},
+        h('span',{style:{color:'var(--muted2)'}},'تاريخ الانتهاء'),
+        h('span',{style:{fontWeight:700,color:daysLeft<30?'var(--warn)':'var(--ok)'}},expDate)
+      ),
+      h('div',{style:{display:'flex',justifyContent:'space-between',fontSize:13}},
+        h('span',{style:{color:'var(--muted2)'}},'الأيام المتبقية'),
+        h('span',{style:{fontWeight:700,color:daysLeft<30?'var(--err)':'var(--ok)'}},daysLeft,' يوم')
+      )
+    ),
+
+    // Business settings
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:14,fontWeight:800,marginBottom:12}},'💼 إعدادات العمل'),
+      h('div',{style:{marginBottom:11}},
+        h('label',{className:'lbl'},'اسم النشاط التجاري'),
+        h('input',{value:bn,onChange:e=>setBn(e.target.value),placeholder:'مثال: ورشة الإبداع'})
+      ),
+      h('div',{style:{marginBottom:11}},
+        h('label',{className:'lbl'},'سعر ساعة العمل (',settings.currency||'SAR',')'),
+        h('input',{type:'number',value:hr,onChange:e=>setHr(e.target.value),placeholder:'0',min:0,step:0.5}),
+        h('p',{style:{fontSize:11,color:'var(--muted2)',marginTop:4}},'يُستخدم في حساب تكلفة الوقت في الوصفات')
+      ),
+      h('button',{className:'btn btn-p',onClick:saveSettings},'✓ حفظ الإعدادات')
+    ),
+
+    // Currency
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:14,fontWeight:800,marginBottom:10}},'💰 العملة'),
+      h('div',{style:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(90px,1fr))',gap:8}},
+        CURR.map(c=>h('button',{key:c.c,onClick:()=>{setSettings(p=>({...p,currency:c.c}));showToast(`✓ ${c.n}`)},style:{padding:'10px 6px',borderRadius:10,textAlign:'center',fontFamily:'Cairo,sans-serif',transition:'all .2s',border:`2px solid ${settings.currency===c.c?'var(--p2)':'var(--border2)'}`,background:settings.currency===c.c?'var(--pBg)':'var(--card2)',color:settings.currency===c.c?'var(--p2)':'var(--text)'}},
+          h('div',{style:{fontSize:15,fontWeight:900}},c.s),
+          h('div',{style:{fontSize:11,fontWeight:700,marginTop:2}},c.c)
+        ))
+      )
+    ),
+
+    // Data
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:14,fontWeight:800,marginBottom:3}},'💾 إدارة البيانات'),
+      h('p',{style:{fontSize:12,color:'var(--muted)',marginBottom:10}},'بياناتك محفوظة محلياً — صدّر نسخة احتياطية بانتظام'),
+      h('div',{style:{background:'var(--card2)',borderRadius:9,padding:'8px 12px',marginBottom:11,display:'flex',justifyContent:'space-around',fontSize:12}},
+        h('span',null,'مواد: ',h('b',null,materials.length)),
+        h('span',null,'وصفات: ',h('b',null,recipes.length)),
+        h('span',null,'مبيعات: ',h('b',null,sales.length))
+      ),
+      h('div',{style:{display:'flex',flexDirection:'column',gap:8}},
+        h('button',{className:'btn btn-o',style:{justifyContent:'flex-start',gap:9,width:'100%'},onClick:doExport},'⬇ تصدير كل البيانات (JSON)'),
+        h('label',{style:{cursor:'pointer'}},
+          h('div',{className:'btn btn-o',style:{justifyContent:'flex-start',gap:9,width:'100%',display:'flex'}},'⬆ استيراد بيانات (JSON)'),
+          h('input',{type:'file',accept:'.json',onChange:doImport,style:{display:'none'}})
+        ),
+        h('button',{className:'btn btn-r',style:{justifyContent:'flex-start',gap:9,width:'100%'},onClick:doReset},'🗑 مسح جميع البيانات')
+      )
+    ),
+
+    h('div',{style:{textAlign:'center',fontSize:11,color:'var(--muted)',marginTop:16}},
+      h('b',{style:{color:'var(--p2)'}},'CraftCost Pro'),' by ',CFG.COMPANY,' © ',new Date().getFullYear()
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// 🖥️ Admin Panel
+// ══════════════════════════════════════════
+function AdminPanel({onExit}){
+  const [pass,setPass]=useState('');
+  const [auth,setAuth]=useState(false);
+  const [codes,setCodes]=useLS('cc-admin-codes',[]);
+  const [newCode,setNewCode]=useState({code:'',label:'',months:1});
+  const [notifTitle,setNotifTitle]=useState('');
+  const [notifBody,setNotifBody]=useState('');
+
+  const login=()=>{if(pass===CFG.ADMIN_PASS)setAuth(true);else alert('كلمة السر غير صحيحة')};
+
+  const genCode=()=>{
+    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    return Array.from({length:8},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+  };
+
+  const addCode=()=>{
+    if(!newCode.code.trim())return;
+    const exp=new Date();exp.setMonth(exp.getMonth()+newCode.months);
+    setCodes(p=>[...p,{id:uid(),code:newCode.code.toUpperCase(),label:newCode.label,expiresAt:exp.toISOString(),isActive:true,createdAt:new Date().toISOString()}]);
+    setNewCode({code:'',label:'',months:1});
+  };
+  const toggleCode=id=>setCodes(p=>p.map(c=>c.id===id?{...c,isActive:!c.isActive}:c));
+  const delCode=id=>setCodes(p=>p.filter(c=>c.id!==id));
+
+  const sendNotif=async()=>{
+    if(!notifTitle.trim())return;
+    await askNotifPermission();
+    sendLocalNotif(notifTitle,notifBody);
+    alert('✓ تم إرسال الإشعار (محلياً)');
+    setNotifTitle('');setNotifBody('');
+  };
+
+  if(!auth) return h('div',{className:'login-wrap'},
+    h('div',{className:'login-box'},
+      h('div',{style:{fontSize:40,marginBottom:14}},'🔐'),
+      h('h2',{style:{fontSize:20,fontWeight:900,marginBottom:20}},'لوحة إدارة AdVax'),
+      h('div',{style:{marginBottom:14,textAlign:'right'}},
+        h('label',{className:'lbl'},'كلمة السر'),
+        h('input',{type:'password',value:pass,onChange:e=>setPass(e.target.value),onKeyDown:e=>e.key==='Enter'&&login(),placeholder:'••••••••'})
+      ),
+      h('button',{className:'btn btn-p',style:{width:'100%',justifyContent:'center'},onClick:login},'دخول'),
+      h('button',{className:'btn btn-o',style:{width:'100%',justifyContent:'center',marginTop:10},onClick:onExit},'← رجوع للتطبيق')
+    )
+  );
+
+  return h('div',{style:{minHeight:'100vh',background:'var(--bg)',padding:20,direction:'rtl',fontFamily:'Cairo,sans-serif'}},
+    h('div',{style:{maxWidth:700,margin:'0 auto'}},
+      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}},
+        h('div',null,
+          h('h1',{style:{fontSize:22,fontWeight:900,color:'var(--p2)'}},'🖥️ لوحة إدارة AdVax'),
+          h('p',{style:{fontSize:13,color:'var(--muted2)'}},'إدارة الاشتراكات والإشعارات')
+        ),
+        h('button',{className:'btn btn-o',onClick:onExit},'← رجوع')
+      ),
+
+      // Add code
+      h('div',{className:'sec'},
+        h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'➕ إنشاء كود اشتراك جديد'),
+        h('div',{style:{display:'flex',gap:9,flexWrap:'wrap',marginBottom:10,alignItems:'flex-end'}},
+          h('div',{style:{flex:2,minWidth:120}},
+            h('label',{className:'lbl'},'الكود'),
+            h('div',{style:{display:'flex',gap:6}},
+              h('input',{value:newCode.code,onChange:e=>setNewCode(p=>({...p,code:e.target.value.toUpperCase()})),placeholder:'CRAFT2025'}),
+              h('button',{className:'btn btn-o btn-sm',onClick:()=>setNewCode(p=>({...p,code:genCode()})),style:{flexShrink:0,whiteSpace:'nowrap'}},'🔀 توليد')
+            )
+          ),
+          h('div',{style:{flex:2,minWidth:120}},
+            h('label',{className:'lbl'},'التسمية (اختياري)'),
+            h('input',{value:newCode.label,onChange:e=>setNewCode(p=>({...p,label:e.target.value})),placeholder:'مثال: عميل VIP'})
+          ),
+          h('div',{style:{flex:1,minWidth:80}},
+            h('label',{className:'lbl'},'المدة (أشهر)'),
+            h('input',{type:'number',value:newCode.months,onChange:e=>setNewCode(p=>({...p,months:parseInt(e.target.value)||1})),min:1,max:24})
+          )
+        ),
+        h('button',{className:'btn btn-p',onClick:addCode,disabled:!newCode.code.trim()},'+ إضافة الكود')
+      ),
+
+      // Codes list
+      h('div',{className:'sec'},
+        h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'🔑 الأكواد (',codes.length,')'),
+        codes.length===0
+          ?h('p',{style:{color:'var(--muted)',fontSize:13,textAlign:'center'}},'لا توجد أكواد بعد')
+          :h('div',{className:'table-wrap'},
+              h('table',null,
+                h('thead',null,h('tr',null,h('th',null,'الكود'),h('th',null,'التسمية'),h('th',null,'ينتهي'),h('th',null,'الحالة'),h('th',null,'إجراءات'))),
+                h('tbody',null,
+                  codes.map(c=>{
+                    const expired=new Date(c.expiresAt)<new Date();
+                    return h('tr',{key:c.id},
+                      h('td',null,h('b',{style:{fontSize:14,letterSpacing:1,color:'var(--p2)'}},c.code)),
+                      h('td',null,c.label||'—'),
+                      h('td',null,h('span',{style:{color:expired?'var(--err)':'var(--ok)',fontSize:12}},new Date(c.expiresAt).toLocaleDateString('ar-SA'))),
+                      h('td',null,h('span',{className:`badge ${!c.isActive||expired?'badge-err':'badge-ok'}`},!c.isActive?'موقوف':expired?'منتهي':'نشط')),
+                      h('td',null,
+                        h('div',{style:{display:'flex',gap:5}},
+                          h('button',{className:`btn btn-sm ${c.isActive?'btn-r':'btn-g'}`,onClick:()=>toggleCode(c.id)},c.isActive?'إيقاف':'تفعيل'),
+                          h('button',{className:'btn btn-r btn-sm',onClick:()=>delCode(c.id)},'حذف')
+                        )
+                      )
+                    );
+                  })
+                )
+              )
+            )
+      ),
+
+      // Notifications
+      h('div',{className:'sec'},
+        h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'🔔 إرسال إشعار'),
+        h('div',{style:{marginBottom:10}},h('label',{className:'lbl'},'عنوان الإشعار'),h('input',{value:notifTitle,onChange:e=>setNotifTitle(e.target.value),placeholder:'مثال: تحديث جديد متاح!'})),
+        h('div',{style:{marginBottom:10}},h('label',{className:'lbl'},'نص الإشعار'),h('textarea',{value:notifBody,onChange:e=>setNotifBody(e.target.value),rows:2,placeholder:'تفاصيل الإشعار...'})),
+        h('button',{className:'btn btn-p',onClick:sendNotif,disabled:!notifTitle.trim()},'📨 إرسال للجميع'),
+        h('p',{style:{fontSize:11,color:'var(--muted)',marginTop:8}},'* يتطلب إذن الإشعارات من المستخدمين')
+      )
+    )
+  );
+}
+
+// ══════════════════════════════════════════
+// 🏗️ App Root
+// ══════════════════════════════════════════
+function App(){
+  const [session,setSession]=useState(()=>{
+    try{const s=localStorage.getItem('cc-session');return s?JSON.parse(s):null}catch{return null}
+  });
+  const [page,setPage]=useState('dashboard');
+  const [sbOpen,setSbOpen]=useState(false);
+  const [isAdmin,setIsAdmin]=useState(false);
+  const {toasts,show:showToast}=useToast();
+
+  const [materials,setMaterials]=useLS('cc-materials',[]);
+  const [recipes,setRecipes]=useLS('cc-recipes',[]);
+  const [sales,setSales]=useLS('cc-sales',[]);
+  const [wasteLog,setWasteLog]=useLS('cc-waste',[]);
+  const [settings,setSettings]=useLS('cc-settings',{currency:'SAR',hourlyRate:0,businessName:''});
+
+  const logout=()=>{localStorage.removeItem('cc-session');setSession(null)};
+
+  // Check session expiry
+  useEffect(()=>{
+    if(session?.expires&&new Date(session.expires)<new Date()){
+      logout();
+      alert('انتهت صلاحية اشتراكك — يرجى تجديده');
+    }
+    // Request notif permission
+    askNotifPermission();
+  },[]);
+
+  // Show admin panel
+  if(isAdmin) return h(AdminPanel,{onExit:()=>setIsAdmin(false)});
+
+  // Show login
+  if(!session) return h(Fragment,null,h(LoginScreen,{onLogin:s=>{setSession(s);if(s.code==='ADMIN')setIsAdmin(true)}}),h(InstallBanner,null));
+
+  // Check if admin code entered as subscription
+  useEffect(()=>{
+    if(session?.code===CFG.ADMIN_PASS.toUpperCase()||session?.code==='ADMIN'){setIsAdmin(true)}
+  },[session]);
+
+  const nav=[
+    {id:'dashboard',ic:'🏠',l:'لوحة التحكم'},
+    {id:'materials',ic:'📦',l:'المواد'},
+    {id:'recipes',ic:'📖',l:'الوصفات'},
+    {id:'sales',ic:'🛍️',l:'المبيعات'},
+    {id:'inventory',ic:'🏭',l:'المخزون'},
+    {id:'waste',ic:'♻️',l:'الهدر'},
+    {id:'reports',ic:'📊',l:'التقارير'},
+    {id:'settings',ic:'⚙️',l:'الإعدادات'},
+  ];
+  const isMob=window.innerWidth<860;
+
+  // Alerts count for nav badge
+  const alertsCount=materials.filter(m=>m.minStock>0&&calcMatStock(m)<=m.minStock).length;
+
+  return h('div',{className:'layout'},
+    // Sidebar
+    isMob&&sbOpen&&h('div',{className:'overlay',onClick:()=>setSbOpen(false)}),
+    h('aside',{className:`sidebar${isMob?' mob':''}${isMob&&!sbOpen?' closed':''}`},
+      h('div',{style:{padding:'8px 9px',marginBottom:20}},
+        h('div',{style:{display:'flex',alignItems:'center',gap:8,marginBottom:2}},
+          h('div',{style:{width:32,height:32,borderRadius:9,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:17}},'✂️'),
+          h('span',{style:{fontWeight:900,fontSize:15,color:'var(--p2)'}},'CraftCost Pro')
+        ),
+        settings.businessName&&h('div',{style:{fontSize:11,color:'var(--muted)',paddingRight:40}},settings.businessName)
+      ),
+      h('nav',{style:{flex:1}},
+        nav.map(n=>h('button',{key:n.id,className:`nav-item${page===n.id?' act':''}`,onClick:()=>{setPage(n.id);setSbOpen(false)}},
+          h('span',{style:{fontSize:16}},n.ic),
+          n.l,
+          n.id==='inventory'&&alertsCount>0&&h('span',{style:{marginRight:'auto',background:'var(--err)',color:'#fff',borderRadius:99,fontSize:10,padding:'1px 6px',fontWeight:700}},alertsCount)
+        ))
+      ),
+      h('div',{style:{borderTop:'1px solid var(--border)',paddingTop:12}},
+        h('button',{onClick:()=>setIsAdmin(true),className:'nav-item',style:{marginBottom:2}},'🖥️','الإدارة'),
+        h('button',{onClick:logout,className:'nav-item',style:{color:'var(--err)'}},'🚪','خروج')
+      )
+    ),
+
+    // Main
+    h('div',{className:'main-wrap'},
+      h('div',{className:'topbar'},
+        h('button',{onClick:()=>setSbOpen(true),style:{background:'rgba(255,255,255,.06)',borderRadius:8,padding:'7px 9px',color:'var(--muted2)',fontSize:18}},'☰'),
+        h('div',{style:{flex:1,display:'flex',alignItems:'center',gap:7,justifyContent:'center'}},
+          h('span',{style:{fontSize:16}},'✂️'),
+          h('span',{style:{fontWeight:900,fontSize:15,color:'var(--p2)'}},'CraftCost Pro')
+        ),
+        alertsCount>0&&h('div',{style:{background:'var(--err)',color:'#fff',borderRadius:99,fontSize:11,padding:'3px 9px',fontWeight:800}},alertsCount,' ⚠️'),
+        h('span',{style:{fontSize:11,color:'var(--muted)',background:'var(--card2)',padding:'3px 9px',borderRadius:20,border:'1px solid var(--border)'}},settings.currency||'SAR')
+      ),
+      h('div',{className:'page-content'},
+        page==='dashboard'&&h(Dashboard,{materials,recipes,sales,settings,setPage,showToast}),
+        page==='materials'&&h(Materials,{materials,setMaterials,settings,showToast}),
+        page==='recipes'&&h(Recipes,{recipes,setRecipes,materials,settings,showToast}),
+        page==='sales'&&h(Sales,{sales,setSales,recipes,materials,setMaterials,settings,showToast}),
+        page==='inventory'&&h(Inventory,{materials,settings}),
+        page==='waste'&&h(Waste,{wasteLog,setWasteLog,materials,settings,showToast}),
+        page==='reports'&&h(Reports,{sales,recipes,materials,wasteLog,settings}),
+        page==='settings'&&h(SettingsPage,{settings,setSettings,materials,setMaterials,recipes,setRecipes,sales,setSales,wasteLog,setWasteLog,showToast,session})
+      )
+    ),
+
+    h(Toasts,{toasts}),
+    h(InstallBanner,null)
+  );
+}
+
+// Mount
+const root=ReactDOM.createRoot(document.getElementById('root'));
+root.render(h(App,null));
+
+// Service Worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
