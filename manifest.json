@@ -6,8 +6,8 @@
   "background_color": "#09090F",
   "display": "standalone",
   "orientation": "portrait",
-  "scope": "./",
-  "start_url": "./index.html",
+  "scope": "/",
+  "start_url": "/",
   "lang": "ar",
   "dir": "rtl",
   "icons": [
