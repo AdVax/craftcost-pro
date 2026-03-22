@@ -72,7 +72,7 @@ function h(){return React.createElement.apply(React,arguments)}
 /* ════════ CONFIG ════════ */
 var SUPA_URL='https://jqkmtqbhxsuvvumudgrj.supabase.co';
 var SUPA_KEY='sb_publishable_0KbQ1aL7rWoJCkk84OUVKQ_Krc4nvwS';
-var APP_URL ='https://craftcost-pro.pages.dev';
+var APP_URL ='https://craftcost-pro.advax.workers.dev';
 var GH_OWNER='Advax';
 var GH_REPO ='craftcost-notification';
 var GH_FILE ='latest.json';
@@ -688,7 +688,7 @@ function AdminApp(){
   var auth=as[0],setAuth=as[1];
 
   var ts=_useState('codes');var tab=ts[0],setTab=ts[1];
-  var cs=useLS('cc-adm-codes',[]);var codes=cs[0],setCodes=cs[1];
+  var cs=_useState([]);var codes=cs[0],setCodes=cs[1];
   var ls=_useState(false);var loading=ls[0],setL=ls[1];
   var toast=useToast();
 
