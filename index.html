@@ -462,6 +462,15 @@ function Login({onLogin}){
     if(res.ok){
       const sess={code:code.toUpperCase(),expires:res.expires,label:res.label,plan:res.plan,at:Date.now()};
       localStorage.setItem('cc-sess',JSON.stringify(sess));
+      // Mark current notification as seen on first login
+      // so new users don't see old notifications
+      try {
+        const nr = await fetch(CFG.GH_NOTIF_URL + '?t=' + Date.now(), { cache: 'no-store' });
+        if(nr.ok) {
+          const nd = await nr.json();
+          if(nd?.id) localStorage.setItem('cc-last-notif-id', nd.id);
+        }
+      } catch(e) {}
       onLogin(sess);
     }else setErr(res.msg||'الكود غير صحيح');
   };
@@ -1408,19 +1417,28 @@ function App(){
     
     if(!sess)return;
     
-    // Silent re-verification with Supabase on every open
-    silentVerify(sess).then(valid=>{
-      if(!valid){
-        logout();
-        setTimeout(()=>alert('انتهت صلاحية اشتراكك أو تم إيقافه — تواصل مع AdVax'),100);
-        return;
-      }
-      // Warn 3 days before expiry
-      const dl=Math.ceil((new Date(sess.expires)-new Date())/(864e5));
-      if(dl<=3&&dl>0){
-        setTimeout(()=>localNotif('⚠️ اشتراكك ينتهي قريباً',`ينتهي بعد ${dl} أيام — تواصل مع AdVax`),2000);
-      }
-    });
+    // Silent re-verification — on open AND every 5 minutes
+    const doVerify = () => {
+      silentVerify(sess).then(valid=>{
+        if(!valid){
+          logout();
+          setTimeout(()=>alert('انتهت صلاحية اشتراكك أو تم إيقافه — تواصل مع AdVax'),100);
+          return;
+        }
+        // Warn 3 days before expiry
+        const dl=Math.ceil((new Date(sess.expires)-new Date())/(864e5));
+        if(dl<=3&&dl>0){
+          setTimeout(()=>localNotif('⚠️ اشتراكك ينتهي قريباً',`ينتهي بعد ${dl} أيام — تواصل مع AdVax`),2000);
+        }
+      });
+    };
+    
+    // Check on open
+    doVerify();
+    
+    // Check every 5 minutes while app is open
+    const verifyInterval = setInterval(doVerify, 5 * 60 * 1000);
+    return () => clearInterval(verifyInterval);
     
     // Ask notif permission silently after 5s
     setTimeout(askNotif,5000);
