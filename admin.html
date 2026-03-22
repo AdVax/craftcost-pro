@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+<title>لوحة إدارة AdVax</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',sans-serif;direction:rtl;background:#08080F;color:#E4E4F0;min-height:100vh}
+input,select,textarea,button{font-family:'Cairo',sans-serif}
+input,select,textarea{background:#0E0E1C;border:1.5px solid #272750;color:#E4E4F0;padding:10px 14px;border-radius:10px;width:100%;outline:none;transition:border-color .2s;direction:rtl;font-size:15px}
+input:focus,select:focus,textarea:focus{border-color:#9D60FF;box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+select option{background:#181830}
+button{cursor:pointer;user-select:none;border:none;font-family:'Cairo',sans-serif}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#272750;border-radius:4px}
+
+.top{background:#0E0E1C;border-bottom:1.5px solid #1C1C3A;padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.wrap{max-width:920px;margin:0 auto;padding:22px 16px}
+
+/* Login */
+.lp{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.lb{background:#111124;border:1.5px solid #272750;border-radius:24px;padding:36px;width:100%;max-width:390px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:700;transition:all .2s;white-space:nowrap;cursor:pointer}
+.bp{background:linear-gradient(135deg,#7C3AED,#9D60FF);color:#fff;box-shadow:0 2px 10px rgba(124,58,237,.3)}
+.bp:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(124,58,237,.45)}
+.bp:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.bo{background:transparent;border:1.5px solid #272750;color:#E4E4F0}
+.bo:hover{border-color:#9D60FF;color:#9D60FF}
+.br{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.28);color:#EF4444}
+.bg{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.28);color:#10B981}
+.bw{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.28);color:#F59E0B}
+.bsm{padding:5px 11px;font-size:12px;border-radius:7px}
+
+/* Cards */
+.sec{background:#111124;border:1.5px solid #1C1C3A;border-radius:14px;padding:20px;margin-bottom:16px}
+.hr{border:none;border-top:1px solid #1C1C3A;margin:14px 0}
+.lbl{display:block;margin-bottom:5px;font-size:12px;font-weight:700;color:#7878A8}
+
+/* Badge */
+.bdg{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.bok{background:rgba(16,185,129,.12);color:#10B981}
+.berr{background:rgba(239,68,68,.12);color:#EF4444}
+.bwarn{background:rgba(245,158,11,.12);color:#F59E0B}
+.bp2{background:rgba(124,58,237,.12);color:#9D60FF}
+
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* Table */
+.tw{overflow-x:auto;border-radius:12px;border:1.5px solid #1C1C3A}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:10px 12px;text-align:right;color:#7878A8;font-weight:700;border-bottom:1.5px solid #1C1C3A;background:#181830}
+td{padding:10px 12px;border-bottom:1px solid #1C1C3A;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+/* Tabs */
+.tabs{display:flex;gap:7px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:9px 16px;border-radius:9px;font-size:13px;font-weight:700;color:#7878A8;background:#181830;border:1.5px solid #1C1C3A;transition:all .2s;cursor:pointer}
+.tab.on{background:rgba(124,58,237,.12);color:#9D60FF;border-color:rgba(124,58,237,.28)}
+
+/* Stat */
+.sc{background:#111124;border:1.5px solid #1C1C3A;border-radius:13px;padding:16px}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:11px;font-weight:800;font-size:13px;z-index:9999;box-shadow:0 8px 28px rgba(0,0,0,.5);white-space:nowrap;color:#fff;animation:fu .3s}
+@keyframes fu{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.fu{animation:fu .3s}
+
+/* Info box */
+.ibox{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);border-radius:10px;padding:11px 14px;font-size:12px;margin-bottom:12px;color:#9D60FF;display:flex;gap:8px}
+.wbox{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:12px;color:#F59E0B}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script>
+'use strict';
+const{useState,useEffect,useCallback,Fragment}=React;
+const h=React.createElement;
+
+/* ════════════════════════
+   CONFIG — غيّر هنا
+════════════════════════ */
+const PASS    = 'advax2025';          // ← كلمة سر الإدارة
+const SUPA_URL= 'https://jqkmtqbhxsuvvumudgrj.supabase.co'; // ← رابط Supabase
+const SUPA_KEY= 'sb_publishable_0KbQ1aL7rWoJCkk84OUVKQ_Krc4nvwS'; // ← مفتاح Supabase
+const APP_URL = 'https://advax.github.io/craftcost-pro';                   // ← رابط التطبيق
+
+/* ════════════════════════
+   Supabase
+════════════════════════ */
+const rdy=()=>SUPA_URL&&!SUPA_URL.includes('PASTE');
+const H=()=>({apikey:SUPA_KEY,Authorization:`Bearer ${SUPA_KEY}`});
+
+const supa={
+  async get(t,q=''){if(!rdy())return null;const r=await fetch(`${SUPA_URL}/rest/v1/${t}?${q}`,{headers:H()}).catch(()=>null);return r?.ok?r.json():null},
+  async post(t,body){if(!rdy())return null;return fetch(`${SUPA_URL}/rest/v1/${t}`,{method:'POST',headers:{...H(),'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(body)}).then(r=>r.ok?r.json():null).catch(()=>null)},
+  async patch(t,q,body){if(!rdy())return false;return fetch(`${SUPA_URL}/rest/v1/${t}?${q}`,{method:'PATCH',headers:{...H(),'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(body)}).then(r=>r.ok).catch(()=>false)},
+  async del(t,q){if(!rdy())return false;return fetch(`${SUPA_URL}/rest/v1/${t}?${q}`,{method:'DELETE',headers:H()}).then(r=>r.ok).catch(()=>false)},
+};
+
+/* ════════════════════════
+   Utils
+════════════════════════ */
+const uid=()=>Math.random().toString(36).slice(2,9);
+const today=()=>new Date().toISOString().slice(0,10);
+const fmtD=d=>d?new Date(d).toLocaleDateString('ar-SA'):'—';
+const dl=d=>Math.ceil((new Date(d)-new Date())/(864e5));
+const genCode=()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length:8},()=>c[Math.floor(Math.random()*c.length)]).join('')};
+
+function useLS(k,d0){
+  const[v,sv]=useState(()=>{try{const s=localStorage.getItem(k);return s?JSON.parse(s):d0}catch{return d0}});
+  useEffect(()=>{localStorage.setItem(k,JSON.stringify(v))},[v,k]);
+  return[v,sv];
+}
+
+/* ════════════════════════
+   Toast
+════════════════════════ */
+function useToast(){
+  const[t,st]=useState(null);
+  const show=useCallback((msg,type='ok')=>{st({msg,type});setTimeout(()=>st(null),3200)},[]);
+  return{t,show};
+}
+function Toast({t}){
+  if(!t)return null;
+  const C={ok:'#10B981',err:'#EF4444',warn:'#F59E0B',info:'#3B82F6'};
+  return h('div',{className:'toast',style:{background:C[t.type]||C.ok}},t.msg);
+}
+
+/* ════════════════════════
+   Login
+════════════════════════ */
+function Login({onLogin}){
+  const[pass,setPass]=useState('');
+  const[err,setErr]=useState('');
+  const submit=()=>{if(pass===PASS){sessionStorage.setItem('cc-adm','1');onLogin()}else{setErr('كلمة السر غير صحيحة');setPass('')}};
+  return h('div',{className:'lp'},
+    h('div',{className:'lb'},
+      h('div',{style:{width:68,height:68,borderRadius:18,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:32,margin:'0 auto 16px'}},'🔐'),
+      h('h1',{style:{fontSize:22,fontWeight:900,marginBottom:4}},'لوحة إدارة AdVax'),
+      h('p',{style:{fontSize:13,color:'#7878A8',marginBottom:26}},'CraftCost Pro · المسؤولون فقط'),
+      h('div',{style:{textAlign:'right',marginBottom:err?0:14}},
+        h('label',{className:'lbl'},'كلمة السر'),
+        h('input',{type:'password',value:pass,onChange:e=>setPass(e.target.value),onKeyDown:e=>e.key==='Enter'&&submit(),placeholder:'••••••••'})
+      ),
+      err&&h('div',{style:{background:'rgba(239,68,68,.1)',border:'1px solid rgba(239,68,68,.25)',borderRadius:9,padding:'8px 12px',fontSize:13,color:'#EF4444',margin:'10px 0'}},err),
+      h('button',{className:'btn bp',style:{width:'100%',justifyContent:'center',padding:'13px',marginTop:6},onClick:submit,disabled:!pass},'دخول ←')
+    )
+  );
+}
+
+/* ════════════════════════
+   Stats
+════════════════════════ */
+function StatsBar({codes,onRefresh,loading}){
+  const active=codes.filter(c=>c.is_active&&new Date(c.expires_at)>new Date()).length;
+  const expired=codes.filter(c=>new Date(c.expires_at)<new Date()).length;
+  const soon=codes.filter(c=>c.is_active&&dl(c.expires_at)<=7&&dl(c.expires_at)>0).length;
+  const stopped=codes.filter(c=>!c.is_active).length;
+  const stats=[
+    {ic:'🔑',l:'إجمالي الأكواد',v:codes.length,c:'#9D60FF'},
+    {ic:'✅',l:'نشط',v:active,c:'#10B981'},
+    {ic:'⏰',l:'ينتهي قريباً',v:soon,c:'#F59E0B'},
+    {ic:'❌',l:'منتهي/موقوف',v:expired+stopped,c:'#EF4444'},
+  ];
+  return h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20,flexWrap:'wrap',gap:12}},
+    h('div',{className:'g4',style:{flex:1}},
+      stats.map((s,i)=>h('div',{key:i,className:'sc'},
+        h('div',{style:{fontSize:20,marginBottom:7}},s.ic),
+        h('div',{style:{fontSize:22,fontWeight:900,color:s.c,marginBottom:2}},s.v),
+        h('div',{style:{fontSize:12,color:'#7878A8'}},s.l)
+      ))
+    ),
+    h('button',{className:'btn bo bsm',onClick:onRefresh,disabled:loading,style:{flexShrink:0}},loading?'جاري...':'🔄 تحديث')
+  );
+}
+
+/* ════════════════════════
+   Code Manager
+════════════════════════ */
+function CodeMgr({codes,setCodes,showToast}){
+  const[nc,setNc]=useState({code:'',label:'',note:'',months:1,plan:'monthly'});
+  const[filter,setFilter]=useState('all');
+  const[loading,setLoading]=useState(false);
+
+  const plans=[{v:'monthly',l:'شهري',m:1},{v:'quarterly',l:'ربعي',m:3},{v:'biannual',l:'نصف سنوي',m:6},{v:'yearly',l:'سنوي',m:12}];
+
+  const addCode=async()=>{
+    if(!nc.code.trim())return;
+    setLoading(true);
+    const exp=new Date();exp.setMonth(exp.getMonth()+nc.months);
+    const row={code:nc.code.toUpperCase(),label:nc.label,note:nc.note,plan:nc.plan,expires_at:exp.toISOString(),is_active:true};
+    if(rdy()){
+      const res=await supa.post('subscription_codes',row);
+      if(res&&res[0]){setCodes(p=>[res[0],...p]);showToast('✓ تم الحفظ في Supabase')}
+      else showToast('خطأ في Supabase','err');
+    }else{
+      setCodes(p=>[{...row,id:uid(),created_at:new Date().toISOString(),use_count:0,last_used_at:null,device_info:''},...p]);
+      showToast('✓ حُفظ محلياً — ربط Supabase لم يتم بعد','warn');
+    }
+    setNc({code:'',label:'',note:'',months:1,plan:'monthly'});
+    setLoading(false);
+  };
+
+  const toggle=async(id,cur)=>{
+    if(rdy())await supa.patch('subscription_codes',`id=eq.${id}`,{is_active:!cur});
+    setCodes(p=>p.map(c=>c.id===id?{...c,is_active:!cur}:c));
+    showToast(cur?'تم الإيقاف':'✓ تم التفعيل',cur?'warn':'ok');
+  };
+
+  const extend=async(id,months)=>{
+    const c=codes.find(x=>x.id===id);if(!c)return;
+    const base=new Date(c.expires_at)>new Date()?new Date(c.expires_at):new Date();
+    base.setMonth(base.getMonth()+months);
+    if(rdy())await supa.patch('subscription_codes',`id=eq.${id}`,{expires_at:base.toISOString(),is_active:true});
+    setCodes(p=>p.map(x=>x.id===id?{...x,expires_at:base.toISOString(),is_active:true}:x));
+    showToast(`✓ تم التمديد ${months} شهر`);
+  };
+
+  const delCode=async(id)=>{
+    if(!window.confirm('حذف هذا الكود نهائياً؟'))return;
+    if(rdy())await supa.del('subscription_codes',`id=eq.${id}`);
+    setCodes(p=>p.filter(c=>c.id!==id));showToast('تم الحذف','err');
+  };
+
+  const copy=code=>{navigator.clipboard?.writeText(code).then(()=>showToast('✓ تم النسخ'))};
+
+  const list=codes.filter(c=>{
+    if(filter==='active')return c.is_active&&new Date(c.expires_at)>new Date();
+    if(filter==='expired')return new Date(c.expires_at)<new Date();
+    if(filter==='stopped')return!c.is_active;
+    if(filter==='soon')return c.is_active&&dl(c.expires_at)<=7&&dl(c.expires_at)>0;
+    return true;
+  });
+
+  return h('div',null,
+    // Create form
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12,color:'#9D60FF'}},'➕ إنشاء كود اشتراك'),
+      !rdy()&&h('div',{className:'wbox'},'⚠️ Supabase غير مُربوط — الأكواد ستُحفظ محلياً فقط في هذا المتصفح'),
+      h('div',{className:'g3',style:{marginBottom:12}},
+        h('div',null,
+          h('label',{className:'lbl'},'الكود'),
+          h('div',{style:{display:'flex',gap:7}},
+            h('input',{value:nc.code,onChange:e=>setNc(p=>({...p,code:e.target.value.toUpperCase()})),placeholder:'CRAFT2025',style:{letterSpacing:2,fontWeight:700,fontSize:14}}),
+            h('button',{className:'btn bo bsm',onClick:()=>setNc(p=>({...p,code:genCode()})),style:{flexShrink:0}},'🔀')
+          )
+        ),
+        h('div',null,h('label',{className:'lbl'},'التسمية'),h('input',{value:nc.label,onChange:e=>setNc(p=>({...p,label:e.target.value})),placeholder:'اسم العميل...'})),
+        h('div',null,h('label',{className:'lbl'},'ملاحظة داخلية'),h('input',{value:nc.note,onChange:e=>setNc(p=>({...p,note:e.target.value})),placeholder:'لك أنت فقط...'}))
+      ),
+      h('div',{style:{marginBottom:14}},
+        h('label',{className:'lbl'},'مدة الاشتراك'),
+        h('div',{style:{display:'flex',gap:7,flexWrap:'wrap'}},
+          plans.map(p=>h('button',{key:p.v,onClick:()=>setNc(x=>({...x,plan:p.v,months:p.m})),className:'btn bsm '+(nc.plan===p.v?'bp':'bo')},p.l,' (',p.m,' شهر)'))
+        )
+      ),
+      nc.code&&h('div',{style:{background:'rgba(124,58,237,.1)',border:'1px solid rgba(124,58,237,.25)',borderRadius:9,padding:'8px 14px',marginBottom:12,fontSize:12,color:'#9D60FF'}},
+        'ينتهي في: ',h('b',null,()=>{const d=new Date();d.setMonth(d.getMonth()+nc.months);return d.toLocaleDateString('ar-SA')}())
+      ),
+      h('button',{className:'btn bp',onClick:addCode,disabled:!nc.code.trim()||loading},loading?'جاري..':'✓ إنشاء الكود')
+    ),
+    // Filter + List
+    h('div',{className:'sec'},
+      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14,flexWrap:'wrap',gap:10}},
+        h('h3',{style:{fontSize:15,fontWeight:800}},'🔑 الأكواد (',codes.length,')'),
+        h('div',{style:{display:'flex',gap:5,flexWrap:'wrap'}},
+          [['all','الكل'],['active','نشط'],['expired','منتهي'],['soon','ينتهي قريباً'],['stopped','موقوف']].map(([v,l])=>
+            h('button',{key:v,onClick:()=>setFilter(v),className:'btn bsm '+(filter===v?'bp':'bo')},l)
+          )
+        )
+      ),
+      list.length===0
+        ?h('p',{style:{color:'#4C4C7A',fontSize:13,textAlign:'center',padding:'22px 0'}},'لا توجد أكواد')
+        :h('div',{className:'tw'},h('table',null,
+            h('thead',null,h('tr',null,
+              h('th',null,'الكود'),h('th',null,'التسمية'),h('th',null,'الخطة'),
+              h('th',null,'ينتهي'),h('th',null,'الاستخدام'),h('th',null,'الحالة'),h('th',null,'إجراءات')
+            )),
+            h('tbody',null,list.map(c=>{
+              const exp=new Date(c.expires_at)<new Date();
+              const d=dl(c.expires_at);
+              const status=!c.is_active?'موقوف':exp?'منتهي':d<=7?'ينتهي قريباً':'نشط';
+              const bc=!c.is_active?'bwarn':exp?'berr':d<=7?'bwarn':'bok';
+              return h('tr',{key:c.id},
+                h('td',null,h('div',{style:{display:'flex',alignItems:'center',gap:7}},
+                  h('b',{style:{fontFamily:'monospace',fontSize:14,letterSpacing:2,color:'#9D60FF'}},c.code),
+                  h('button',{onClick:()=>copy(c.code),style:{background:'none',color:'#7878A8',fontSize:11,padding:'2px 5px',borderRadius:5,border:'1px solid #272750',cursor:'pointer'},title:'نسخ'},'📋')
+                )),
+                h('td',null,c.label||h('span',{style:{color:'#4C4C7A'}},'—')),
+                h('td',null,h('span',{className:'bdg bp2',style:{fontSize:10}},c.plan||'—')),
+                h('td',null,
+                  h('div',{style:{fontSize:12,color:exp?'#EF4444':d<=7?'#F59E0B':'#10B981',fontWeight:600}},fmtD(c.expires_at)),
+                  !exp&&h('div',{style:{fontSize:10,color:'#7878A8'}},d,' يوم')
+                ),
+                h('td',null,h('div',null,h('div',{style:{fontSize:12,color:'#7878A8'}},c.use_count||0,' مرة'),c.last_used_at&&h('div',{style:{fontSize:10,color:'#4C4C7A'}},fmtD(c.last_used_at)))),
+                h('td',null,h('span',{className:'bdg '+bc},status)),
+                h('td',null,h('div',{style:{display:'flex',gap:4,flexWrap:'wrap'}},
+                  h('button',{className:'btn bsm '+(c.is_active?'br':'bg'),onClick:()=>toggle(c.id,c.is_active)},c.is_active?'إيقاف':'تفعيل'),
+                  h('button',{className:'btn bo bsm',onClick:()=>extend(c.id,1)},'＋شهر'),
+                  h('button',{className:'btn bo bsm',onClick:()=>extend(c.id,3)},'＋٣'),
+                  h('button',{className:'btn br bsm',onClick:()=>delCode(c.id)},'🗑')
+                ))
+              );
+            }))
+          ))
+    )
+  );
+}
+
+/* ════════════════════════
+   Users
+════════════════════════ */
+function Users({codes}){
+  const active=codes.filter(c=>c.is_active&&new Date(c.expires_at)>new Date()&&c.last_used_at);
+  return h('div',null,
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:4}},'👥 المستخدمون النشطون (',active.length,')'),
+      h('p',{style:{fontSize:12,color:'#7878A8',marginBottom:14}},'الذين دخلوا التطبيق مرة على الأقل'),
+      active.length===0
+        ?h('p',{style:{color:'#4C4C7A',fontSize:13,textAlign:'center',padding:'20px 0'}},'لا يوجد مستخدمون نشطون بعد')
+        :h('div',{className:'tw'},h('table',null,
+            h('thead',null,h('tr',null,h('th',null,'الكود'),h('th',null,'التسمية'),h('th',null,'آخر دخول'),h('th',null,'عدد الدخول'),h('th',null,'ينتهي بعد'))),
+            h('tbody',null,active.sort((a,b)=>new Date(b.last_used_at)-new Date(a.last_used_at)).map(c=>h('tr',{key:c.id},
+              h('td',null,h('b',{style:{fontFamily:'monospace',letterSpacing:1,color:'#9D60FF'}},c.code)),
+              h('td',null,c.label||h('span',{style:{color:'#4C4C7A'}},'—')),
+              h('td',null,h('span',{style:{fontSize:12}},fmtD(c.last_used_at))),
+              h('td',null,h('b',null,c.use_count||0,' مرة')),
+              h('td',null,h('span',{style:{color:dl(c.expires_at)<30?'#F59E0B':'#10B981',fontWeight:600}},dl(c.expires_at),' يوم'))
+            )))
+          ))
+    ),
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:4}},'📱 آخر الأجهزة المستخدمة'),
+      codes.filter(c=>c.device_info).slice(0,8).length===0
+        ?h('p',{style:{color:'#4C4C7A',fontSize:13,textAlign:'center',padding:'14px'}},'لا توجد بيانات أجهزة')
+        :h('div',{className:'tw'},h('table',null,
+            h('thead',null,h('tr',null,h('th',null,'الكود'),h('th',null,'الجهاز / المتصفح'))),
+            h('tbody',null,codes.filter(c=>c.device_info).slice(0,8).map(c=>h('tr',{key:c.id},
+              h('td',null,h('b',{style:{fontFamily:'monospace',fontSize:12,color:'#9D60FF'}},c.code)),
+              h('td',null,h('span',{style:{fontSize:11,color:'#7878A8'}},(c.device_info||'').slice(0,100)))
+            )))
+          ))
+    )
+  );
+}
+
+/* ════════════════════════
+   Notifications
+════════════════════════ */
+function Notifs({codes,showToast}){
+  const[title,setTitle]=useState('');
+  const[body,setBody]=useState('');
+  const[target,setTarget]=useState('all');
+  const[log,setLog]=useLS('cc-nlog',[]);
+  const active=codes.filter(c=>c.is_active&&new Date(c.expires_at)>new Date());
+
+  const send=async()=>{
+    if(!title.trim())return;
+    if(!('Notification' in window)){showToast('المتصفح لا يدعم الإشعارات','err');return}
+    const perm=await Notification.requestPermission();
+    if(perm==='granted'){
+      new Notification(title,{body,icon:'./icon.png',dir:'rtl',lang:'ar'});
+      if(rdy())await supa.post('notifications_log',{title,body,target});
+      setLog(p=>[{id:uid(),title,body,target,at:new Date().toISOString()},...p]);
+      showToast('✓ تم إرسال الإشعار');
+      setTitle('');setBody('');
+    }else showToast('لم يتم منح إذن الإشعارات','warn');
+  };
+
+  return h('div',null,
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:8}},'🔔 إرسال إشعار'),
+      h('div',{className:'ibox'},'💡 الإشعارات تصل للمستخدمين الذين منحوا الإذن. للإشعارات السحابية لجميع المستخدمين تحتاج إعداد Firebase FCM الكامل من الباك-إند.'),
+      h('div',{style:{marginBottom:10}},h('label',{className:'lbl'},'العنوان *'),h('input',{value:title,onChange:e=>setTitle(e.target.value),placeholder:'مثال: تحديث جديد ✨'})),
+      h('div',{style:{marginBottom:10}},h('label',{className:'lbl'},'النص'),h('textarea',{value:body,onChange:e=>setBody(e.target.value),rows:3,placeholder:'تفاصيل...'})),
+      h('div',{style:{marginBottom:14}},
+        h('label',{className:'lbl'},'المستلمون'),
+        h('select',{value:target,onChange:e=>setTarget(e.target.value)},
+          h('option',{value:'all'},'الجميع (',active.length,' مستخدم نشط)'),
+          active.map(c=>h('option',{key:c.id,value:c.code},c.code,' — ',c.label||'بدون تسمية'))
+        )
+      ),
+      h('button',{className:'btn bp',onClick:send,disabled:!title.trim()},'📨 إرسال')
+    ),
+    log.length>0&&h('div',{className:'sec'},
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'📋 سجل الإشعارات (',log.length,')'),
+      h('div',{className:'tw'},h('table',null,
+        h('thead',null,h('tr',null,h('th',null,'العنوان'),h('th',null,'النص'),h('th',null,'المستلمون'),h('th',null,'التاريخ'),h('th',null,''))),
+        h('tbody',null,log.map(n=>h('tr',{key:n.id},
+          h('td',null,h('b',null,n.title)),
+          h('td',null,h('span',{style:{fontSize:12,color:'#7878A8'}},n.body||'—')),
+          h('td',null,h('span',{className:'bdg bp2',style:{fontSize:10}},n.target==='all'?'الجميع':n.target)),
+          h('td',null,h('span',{style:{fontSize:12}},fmtD(n.at))),
+          h('td',null,h('button',{onClick:()=>setLog(p=>p.filter(x=>x.id!==n.id)),style:{background:'none',border:'none',color:'#EF4444',fontSize:12,cursor:'pointer'}},'🗑'))
+        )))
+      ))
+    )
+  );
+}
+
+/* ════════════════════════
+   Settings / Info
+════════════════════════ */
+function AdminSettings({showToast}){
+  const[testCode,setTestCode]=useState('');
+  const[testRes,setTestRes]=useState(null);
+  const[testing,setTesting]=useState(false);
+  const test=async()=>{
+    if(!testCode.trim())return;
+    setTesting(true);setTestRes(null);
+    if(!rdy()){setTestRes({err:true,msg:'Supabase غير مُربوط'});setTesting(false);return}
+    const d=await supa.get('subscription_codes',`code=eq.${encodeURIComponent(testCode.toUpperCase())}&select=*`);
+    setTesting(false);
+    if(!d?.length)setTestRes({err:true,msg:'الكود غير موجود'});
+    else{const r=d[0];setTestRes({err:false,code:r.code,expires:r.expires_at,active:r.is_active,plan:r.plan,uses:r.use_count})}
+  };
+  return h('div',null,
+    // Connection status
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'🔌 حالة الاتصال'),
+      h('div',{className:'g2'},
+        h('div',{style:{background:rdy()?'rgba(16,185,129,.1)':'rgba(239,68,68,.1)',border:`1px solid ${rdy()?'rgba(16,185,129,.25)':'rgba(239,68,68,.25)'}`,borderRadius:10,padding:'12px 14px'}},
+          h('div',{style:{fontWeight:700,marginBottom:3,color:rdy()?'#10B981':'#EF4444'}},rdy()?'✅ Supabase متصل':'❌ Supabase غير متصل'),
+          h('div',{style:{fontSize:11,color:'#7878A8'}},rdy()?SUPA_URL.slice(0,40)+'...':'أضف SUPA_URL في الكود')
+        ),
+        h('div',{style:{background:'rgba(59,130,246,.1)',border:'1px solid rgba(59,130,246,.25)',borderRadius:10,padding:'12px 14px'}},
+          h('div',{style:{fontWeight:700,marginBottom:3,color:'#3B82F6'}},'ℹ️ Firebase FCM'),
+          h('div',{style:{fontSize:11,color:'#7878A8'}},'يحتاج إعداد في firebase-messaging-sw.js')
+        )
+      )
+    ),
+    // Code tester
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'🧪 اختبار كود'),
+      h('div',{style:{display:'flex',gap:9,marginBottom:10}},
+        h('input',{value:testCode,onChange:e=>setTestCode(e.target.value.toUpperCase()),placeholder:'أدخل كود للاختبار',style:{flex:1,letterSpacing:2,fontWeight:700}}),
+        h('button',{className:'btn bp',onClick:test,disabled:testing||!testCode.trim(),style:{flexShrink:0}},testing?'..':'اختبار')
+      ),
+      testRes&&h('div',{style:{background:testRes.err?'rgba(239,68,68,.1)':'rgba(16,185,129,.1)',border:`1px solid ${testRes.err?'rgba(239,68,68,.25)':'rgba(16,185,129,.25)'}`,borderRadius:9,padding:'10px 14px',fontSize:13,color:testRes.err?'#EF4444':'#10B981'}},
+        testRes.err?`❌ ${testRes.msg}`:h('div',null,
+          h('div',null,'✅ الكود صحيح وصالح'),
+          h('div',{style:{marginTop:4,fontSize:12,color:'#7878A8'}},'الخطة: ',testRes.plan,' · ينتهي: ',fmtD(testRes.expires),' · الاستخدام: ',testRes.uses,' مرة · الحالة: ',testRes.active?'نشط':'موقوف')
+        )
+      )
+    ),
+    // SQL
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'📋 SQL الإعداد — شغّله في Supabase → SQL Editor'),
+      h('div',{style:{background:'#0E0E1C',borderRadius:10,padding:14,fontFamily:'monospace',fontSize:11,color:'#9D60FF',whiteSpace:'pre-wrap',border:'1px solid #272750',lineHeight:1.8,maxHeight:280,overflowY:'auto'}},
+`CREATE TABLE IF NOT EXISTS subscription_codes (
+  id           UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  code         TEXT UNIQUE NOT NULL,
+  label        TEXT DEFAULT '',
+  note         TEXT DEFAULT '',
+  plan         TEXT DEFAULT 'monthly',
+  expires_at   TIMESTAMPTZ NOT NULL,
+  is_active    BOOLEAN DEFAULT true,
+  created_at   TIMESTAMPTZ DEFAULT NOW(),
+  last_used_at TIMESTAMPTZ,
+  use_count    INT DEFAULT 0,
+  device_info  TEXT DEFAULT ''
+);
+ALTER TABLE subscription_codes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "r" ON subscription_codes FOR SELECT USING (true);
+CREATE POLICY "u" ON subscription_codes FOR UPDATE USING (true) WITH CHECK (true);
+INSERT INTO subscription_codes (code,label,plan,expires_at)
+VALUES ('CRAFTDEMO','كود تجريبي','yearly',NOW()+INTERVAL '1 year')
+ON CONFLICT (code) DO NOTHING;`
+      ),
+      h('button',{className:'btn bo bsm',style:{marginTop:8},onClick:()=>{
+        navigator.clipboard?.writeText(`CREATE TABLE IF NOT EXISTS subscription_codes (id UUID DEFAULT gen_random_uuid() PRIMARY KEY,code TEXT UNIQUE NOT NULL,label TEXT DEFAULT '',note TEXT DEFAULT '',plan TEXT DEFAULT 'monthly',expires_at TIMESTAMPTZ NOT NULL,is_active BOOLEAN DEFAULT true,created_at TIMESTAMPTZ DEFAULT NOW(),last_used_at TIMESTAMPTZ,use_count INT DEFAULT 0,device_info TEXT DEFAULT '');ALTER TABLE subscription_codes ENABLE ROW LEVEL SECURITY;CREATE POLICY "r" ON subscription_codes FOR SELECT USING (true);CREATE POLICY "u" ON subscription_codes FOR UPDATE USING (true) WITH CHECK (true);INSERT INTO subscription_codes (code,label,plan,expires_at) VALUES ('CRAFTDEMO','كود تجريبي','yearly',NOW()+INTERVAL '1 year') ON CONFLICT (code) DO NOTHING;`);
+        showToast('✓ تم نسخ SQL');
+      }},'📋 نسخ SQL')
+    ),
+    // Info
+    h('div',{className:'sec'},
+      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'ℹ️ معلومات'),
+      [
+        ['رابط التطبيق',APP_URL||'لم يُحدَّد بعد'],
+        ['كود التجربة','CRAFTDEMO'],
+        ['كلمة سر الإدارة','(مخفية — راجع admin.html)'],
+        ['الإصدار','CraftCost Pro v3.0'],
+        ['الشركة','AdVax'],
+      ].map(([l,v],i)=>h('div',{key:i,style:{display:'flex',justifyContent:'space-between',fontSize:13,padding:'7px 11px',background:'#181830',borderRadius:8,marginBottom:6}},
+        h('span',{style:{color:'#7878A8'}},l),
+        h('b',null,v)
+      ))
+    )
+  );
+}
+
+/* ════════════════════════
+   App Root
+════════════════════════ */
+function AdminApp(){
+  const[auth,setAuth]=useState(()=>sessionStorage.getItem('cc-adm')==='1');
+  const[tab,setTab]=useState('codes');
+  const[codes,setCodes]=useLS('cc-adm-codes',[]);
+  const[loading,setLoading]=useState(false);
+  const{t,show:showToast}=useToast();
+
+  const logout=()=>{sessionStorage.removeItem('cc-adm');setAuth(false)};
+
+  const refresh=async()=>{
+    if(!rdy()){showToast('Supabase غير مُربوط','warn');return}
+    setLoading(true);
+    const data=await supa.get('subscription_codes','select=*&order=created_at.desc');
+    if(data){setCodes(data);showToast(`✓ تم تحميل ${data.length} كود`)}
+    else showToast('خطأ في التحميل','err');
+    setLoading(false);
+  };
+
+  useEffect(()=>{if(auth&&rdy())refresh()},[auth]);
+
+  if(!auth)return h(Fragment,null,h(Login,{onLogin:()=>setAuth(true)}),h(Toast,{t}));
+
+  const active=codes.filter(c=>c.is_active&&new Date(c.expires_at)>new Date()).length;
+  const tabs=[{id:'codes',ic:'🔑',l:'الأكواد'},{id:'users',ic:'👥',l:'المستخدمون'},{id:'notifs',ic:'🔔',l:'الإشعارات'},{id:'settings',ic:'⚙️',l:'إعدادات'}];
+
+  return h(Fragment,null,
+    h('div',{className:'top'},
+      h('div',{style:{width:38,height:38,borderRadius:10,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0}},'🔐'),
+      h('div',{style:{flex:1}},
+        h('div',{style:{fontWeight:900,fontSize:16,color:'#9D60FF'}},'لوحة إدارة AdVax'),
+        h('div',{style:{fontSize:12,color:'#7878A8'}},'CraftCost Pro · ',active,' اشتراك نشط · ',rdy()?h('span',{style:{color:'#10B981'}},'Supabase ✓'):h('span',{style:{color:'#EF4444'}},'Supabase غير مُربوط'))
+      ),
+      APP_URL&&h('a',{href:APP_URL,target:'_blank',className:'btn bo bsm',style:{textDecoration:'none',marginLeft:6}},'التطبيق ↗'),
+      h('button',{className:'btn br bsm',onClick:logout},'خروج')
+    ),
+    h('div',{className:'wrap fu'},
+      h(StatsBar,{codes,onRefresh:refresh,loading}),
+      h('div',{className:'tabs'},tabs.map(t2=>h('button',{key:t2.id,onClick:()=>setTab(t2.id),className:'tab'+(tab===t2.id?' on':'')},t2.ic,' ',t2.l))),
+      tab==='codes'   &&h(CodeMgr,   {codes,setCodes,showToast}),
+      tab==='users'   &&h(Users,     {codes}),
+      tab==='notifs'  &&h(Notifs,    {codes,showToast}),
+      tab==='settings'&&h(AdminSettings,{showToast})
+    ),
+    h(Toast,{t})
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(AdminApp,null));
+</script>
+</body>
+</html>
