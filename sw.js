@@ -1,4 +1,4 @@
-const V='cc-v4';
+const V='cc-v5';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(['./index.html','./icon.png']).catch(()=>{})));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))));self.clients.claim()});
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request).then(r=>{if(r&&r.status===200){const cl=r.clone();caches.open(V).then(x=>x.put(e.request,cl))}return r}).catch(()=>caches.match('./index.html'))))});
