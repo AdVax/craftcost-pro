@@ -147,7 +147,7 @@ const CFG={
   SUB:  'إدارة تكاليف الهاند ميد بذكاء',
   CO:   'AdVax',
   VER:  '3.0',
-  DEMO: 'CRAFTDEMO',
+  // No demo code — all codes managed from admin panel
   // ← Supabase
   SUPA_URL: 'https://jqkmtqbhxsuvvumudgrj.supabase.co',
   SUPA_KEY: 'sb_publishable_0KbQ1aL7rWoJCkk84OUVKQ_Krc4nvwS',
@@ -211,21 +211,61 @@ async function supaPatch(table,q,body){
 /* ══════════════════════════════
    Code verification
 ══════════════════════════════ */
+/* ════════════════════════════════════════
+   Device ID — fingerprint stored locally
+════════════════════════════════════════ */
+function getDeviceId(){
+  let id=localStorage.getItem('cc-device-id');
+  if(!id){
+    id='dev_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);
+    localStorage.setItem('cc-device-id',id);
+  }
+  return id;
+}
+
 async function verifyCode(code){
   const up=code.trim().toUpperCase();
-  if(up===CFG.DEMO)return{ok:true,expires:new Date(Date.now()+365*864e5).toISOString(),label:'تجريبي',plan:'yearly'};
-  if(!ready())return{ok:false,msg:'الكود غير صحيح'};
-  const data=await supaGet('subscription_codes',`code=eq.${encodeURIComponent(up)}&is_active=eq.true&select=*`);
+  if(!ready())return{ok:false,msg:'يتطلب اتصال بالإنترنت للتحقق من الكود'};
+  
+  const data=await supaGet('subscription_codes',
+    `code=eq.${encodeURIComponent(up)}&is_active=eq.true&select=*`);
   if(!data?.length)return{ok:false,msg:'الكود غير صحيح أو غير موجود'};
   const row=data[0];
   if(new Date(row.expires_at)<new Date())return{ok:false,msg:'انتهت صلاحية هذا الكود'};
-  // Update usage
-  supaPatch('subscription_codes',`code=eq.${encodeURIComponent(up)}`,{
+  
+  const myDevice=getDeviceId();
+  const savedDevice=row.device_id||'';
+  
+  // Device check — if another device already registered
+  if(savedDevice && savedDevice!==myDevice){
+    return{ok:false,msg:'هذا الكود مُستخدم على جهاز آخر — تواصل مع AdVax'};
+  }
+  
+  // Register this device + update usage
+  await supaPatch('subscription_codes',`code=eq.${encodeURIComponent(up)}`,{
     last_used_at:new Date().toISOString(),
     use_count:(row.use_count||0)+1,
+    device_id:myDevice,
     device_info:navigator.userAgent.slice(0,200)
   });
+  
   return{ok:true,expires:row.expires_at,label:row.label,plan:row.plan};
+}
+
+/* Silent re-verification on every app open */
+async function silentVerify(sess){
+  if(!ready())return true; // offline — allow if session exists
+  try{
+    const data=await supaGet('subscription_codes',
+      `code=eq.${encodeURIComponent(sess.code)}&select=id,is_active,expires_at,device_id`);
+    if(!data?.length)return false;
+    const row=data[0];
+    if(!row.is_active)return false;
+    if(new Date(row.expires_at)<new Date())return false;
+    const myDevice=getDeviceId();
+    if(row.device_id && row.device_id!==myDevice)return false;
+    return true;
+  }catch{return true;} // network error — allow
 }
 
 /* ══════════════════════════════
@@ -653,6 +693,7 @@ function MatModal({mat,onSave,onClose,cur}){
   const[purch,setPurch]=useState(mat?.purchases||[]);
   const[usedQty]=useState(mat?.usedQty||0);
   const[np,setNp]=useState({date:today(),qty:'',price:''});
+  const[manualPrice,setManualPrice]=useState('');
   const addP=()=>{
     const qty=parseFloat(np.qty),price=parseFloat(np.price);
     if(!qty||!price)return;
@@ -698,13 +739,40 @@ function MatModal({mat,onSave,onClose,cur}){
         border:`1px solid ${i===purch.length-1?'rgba(124,58,237,.25)':'#1C1C3A'}`,
         borderRadius:10,marginBottom:5
       }},
-        h('div',null,h('div',{style:{fontSize:12,fontWeight:700}},p.date,' — ',p.qty,' ',unit),h('div',{style:{fontSize:11,color:'#7878A8'}},fmt(p.totalPrice,cur),' | ',p.unitCost.toFixed(4),'/وحدة')),
+        h('div',null,h('div',{style:{fontSize:12,fontWeight:700}},p.date,' — ',p.isManual?h('span',{style:{color:'#F59E0B'}},'تعديل يدوي'):p.qty+' '+unit),h('div',{style:{fontSize:11,color:'#7878A8'}},fmt(p.totalPrice,cur),' | ',p.unitCost.toFixed(4),'/وحدة')),
         h('div',{style:{display:'flex',gap:6,alignItems:'center'}},
           i===purch.length-1&&h('span',{className:'bdg bdg-p',style:{fontSize:9}},'الأحدث'),
           h('button',{onClick:()=>setPurch(pr=>pr.filter(x=>x.id!==p.id)),style:{background:'none',border:'none',color:'#EF4444',fontSize:14,cursor:'pointer'}},'✕')
         )
       )),
       !purch.length&&h('p',{style:{color:'#EF4444',fontSize:12,textAlign:'center'}},'* أضف عملية شراء واحدة على الأقل'),
+      
+      purch.length>0&&h('div',{style:{background:'rgba(245,158,11,.08)',border:'1px solid rgba(245,158,11,.2)',borderRadius:10,padding:'11px 13px',marginTop:4}},
+        h('div',{style:{fontSize:12,fontWeight:700,color:'#F59E0B',marginBottom:8}},'✏️ تعديل سعر الوحدة يدوياً'),
+        h('p',{style:{fontSize:11,color:'#7878A8',marginBottom:8}},'إذا تغير السعر دون شراء جديد — يؤثر على حسابات التكلفة فوراً'),
+        h('div',{style:{display:'flex',gap:8,alignItems:'center'}},
+          h('input',{
+            type:'number',
+            value:manualPrice,
+            onChange:e=>setManualPrice(e.target.value),
+            placeholder:'السعر الجديد للوحدة...',
+            min:0,step:'any',
+            style:{flex:1}
+          }),
+          h('span',{style:{fontSize:12,color:'#7878A8',whiteSpace:'nowrap'}},cur,'/',unit),
+          h('button',{
+            className:'btn bw bsm',
+            disabled:!manualPrice||parseFloat(manualPrice)<=0,
+            onClick:()=>{
+              if(!manualPrice||parseFloat(manualPrice)<=0)return;
+              const newP={id:uid(),date:today(),qty:1,totalPrice:parseFloat(manualPrice),unitCost:parseFloat(manualPrice),isManual:true};
+              setPurch(p=>[...p,newP]);
+              setManualPrice('');
+            }
+          },'+ تطبيق')
+        )
+      ),
+      
       h('div',{style:{display:'flex',gap:10}},
         h('button',{className:'btn bp',style:{flex:1,justifyContent:'center'},onClick:save,disabled:!name.trim()||!purch.length},'✓ ',mat?'حفظ':'إضافة'),
         h('button',{className:'btn bo',onClick:onClose},'إلغاء')
@@ -1061,7 +1129,7 @@ function WasteModal({mats,cur,onSave,onClose}){
     h('div',{style:{display:'flex',flexDirection:'column',gap:12}},
       h('div',null,h('label',{className:'lbl'},'المادة *'),h('select',{value:mid,onChange:e=>setMid(e.target.value)},h('option',{value:''},'اختر...'),mats.map(m=>h('option',{key:m.id,value:m.id},m.name,' (',matStock(m).toFixed(2),' ',m.unit,')')))),
       h('div',{className:'g2'},
-        h('div',null,h('label',{className:'lbl'},'الكمية المهدرة (',m?.unit||'وحدة',')'),h('input',{type:'number',value:qty,onChange:e=>setQty(e.target.value),placeholder:'0',min:0,step:'any'})),
+        h('div',null,h('label',{className:'lbl'},'الكمية المهدرة (',h('b',{style:{color:'#9D60FF'}},m?.unit||'وحدة'),')'),h('input',{type:'number',value:qty,onChange:e=>setQty(e.target.value),placeholder:'0',min:0,step:'any'})),
         h('div',null,h('label',{className:'lbl'},'التاريخ'),h('input',{type:'date',value:date,onChange:e=>setDate(e.target.value)}))
       ),
       val!==null&&h('div',{style:{background:'rgba(239,68,68,.1)',border:'1px solid rgba(239,68,68,.25)',borderRadius:9,padding:'8px 12px',fontSize:13,color:'#EF4444'}},'⚠️ قيمة هذا الهدر: ',h('b',null,fmt(val,cur))),
@@ -1334,12 +1402,26 @@ function App(){
   // Notifications handled by NotifBanner component
 
   useEffect(()=>{
-    // Check expiry
-    if(sess?.expires&&new Date(sess.expires)<new Date()){logout();setTimeout(()=>alert('انتهت صلاحية اشتراكك'),100);return}
-    // Warn 3 days before
-    if(sess?.expires){const dl=Math.ceil((new Date(sess.expires)-new Date())/(864e5));if(dl<=3&&dl>0)setTimeout(()=>localNotif('⚠️ اشتراكك ينتهي قريباً',`ينتهي بعد ${dl} أيام — تواصل مع AdVax`),2000)}
     // Register SW
-    if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+    if('serviceWorker' in navigator)
+      window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+    
+    if(!sess)return;
+    
+    // Silent re-verification with Supabase on every open
+    silentVerify(sess).then(valid=>{
+      if(!valid){
+        logout();
+        setTimeout(()=>alert('انتهت صلاحية اشتراكك أو تم إيقافه — تواصل مع AdVax'),100);
+        return;
+      }
+      // Warn 3 days before expiry
+      const dl=Math.ceil((new Date(sess.expires)-new Date())/(864e5));
+      if(dl<=3&&dl>0){
+        setTimeout(()=>localNotif('⚠️ اشتراكك ينتهي قريباً',`ينتهي بعد ${dl} أيام — تواصل مع AdVax`),2000);
+      }
+    });
+    
     // Ask notif permission silently after 5s
     setTimeout(askNotif,5000);
   },[]);
