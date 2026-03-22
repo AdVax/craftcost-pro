@@ -7,933 +7,1106 @@
 <title>لوحة إدارة AdVax — CraftCost Pro</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Cairo',sans-serif;direction:rtl;background:#08080F;color:#E4E4F0;min-height:100vh}
+body{font-family:'Cairo',sans-serif;direction:rtl;background:#07060F;color:#E2E0F0;min-height:100vh}
 input,select,textarea,button{font-family:'Cairo',sans-serif}
-input,select,textarea{background:#0E0E1C;border:1.5px solid #272750;color:#E4E4F0;padding:10px 14px;border-radius:10px;width:100%;outline:none;transition:border-color .2s;direction:rtl;font-size:15px}
-input:focus,select:focus,textarea:focus{border-color:#9D60FF;box-shadow:0 0 0 3px rgba(124,58,237,.1)}
-input[type="email"]{direction:ltr;text-align:right}
-select option{background:#181830}
-button{cursor:pointer;user-select:none;border:none;font-family:'Cairo',sans-serif}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#272750;border-radius:4px}
-.top{background:#0E0E1C;border-bottom:1.5px solid #1C1C3A;padding:14px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
-.wrap{max-width:940px;margin:0 auto;padding:22px 16px}
-.lp{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 30% 50%,rgba(124,58,237,.06),transparent 60%)}
-.lb{background:#111124;border:1.5px solid #272750;border-radius:24px;padding:36px;width:100%;max-width:400px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5)}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:700;transition:all .2s;white-space:nowrap;cursor:pointer}
-.bp{background:linear-gradient(135deg,#7C3AED,#9D60FF);color:#fff;box-shadow:0 2px 10px rgba(124,58,237,.3)}
-.bp:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(124,58,237,.45)}
-.bp:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
-.bo{background:transparent;border:1.5px solid #272750;color:#E4E4F0}
-.bo:hover{border-color:#9D60FF;color:#9D60FF}
-.br{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.28);color:#EF4444}
-.br:hover{background:rgba(239,68,68,.2)}
-.bg2{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.28);color:#10B981}
-.bw{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.28);color:#F59E0B}
-.bsm{padding:5px 11px;font-size:12px;border-radius:7px}
-.sec{background:#111124;border:1.5px solid #1C1C3A;border-radius:14px;padding:20px;margin-bottom:16px}
-.lbl{display:block;margin-bottom:5px;font-size:12px;font-weight:700;color:#7878A8}
-.bdg{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
-.bok{background:rgba(16,185,129,.12);color:#10B981}
-.berr{background:rgba(239,68,68,.12);color:#EF4444}
-.bwrn{background:rgba(245,158,11,.12);color:#F59E0B}
-.bpur{background:rgba(124,58,237,.12);color:#9D60FF}
-.bmut{background:rgba(255,255,255,.07);color:#7878A8}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}}
-.tw{overflow-x:auto;border-radius:12px;border:1.5px solid #1C1C3A}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{padding:10px 12px;text-align:right;color:#7878A8;font-weight:700;border-bottom:1.5px solid #1C1C3A;background:#181830}
-td{padding:10px 12px;border-bottom:1px solid #1C1C3A;vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,.02)}
-.tabs{display:flex;gap:7px;margin-bottom:20px;flex-wrap:wrap}
-.tab{padding:9px 16px;border-radius:9px;font-size:13px;font-weight:700;color:#7878A8;background:#181830;border:1.5px solid #1C1C3A;transition:all .2s;cursor:pointer}
-.tab.on{background:rgba(124,58,237,.12);color:#9D60FF;border-color:rgba(124,58,237,.28)}
-.sc{background:#111124;border:1.5px solid #1C1C3A;border-radius:13px;padding:16px}
-.ibox{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);border-radius:10px;padding:11px 14px;font-size:12px;margin-bottom:12px;color:#9D60FF;display:flex;gap:8px;line-height:1.6}
-.wbox{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:12px;color:#F59E0B;line-height:1.6}
-.ebox{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:11px 14px;font-size:13px;color:#EF4444}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:10px 22px;border-radius:11px;font-weight:800;font-size:13px;z-index:9999;box-shadow:0 8px 28px rgba(0,0,0,.5);white-space:nowrap;color:#fff;animation:fu .3s}
-@keyframes fu{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-.fu{animation:fu .3s}
+input,select,textarea{
+  background:#100F20;border:1.5px solid #252345;color:#E2E0F0;
+  padding:9px 13px;border-radius:9px;width:100%;outline:none;
+  transition:border-color .15s;direction:rtl;font-size:14px;
+}
+input:focus,select:focus,textarea:focus{border-color:#7C3AED;box-shadow:0 0 0 2px rgba(124,58,237,.15)}
+input[type=email]{direction:ltr;text-align:right}
+select option{background:#181730}
+button{cursor:pointer;border:none;font-family:'Cairo',sans-serif;transition:opacity .15s,transform .1s}
+button:active{transform:scale(.96)}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:#252345;border-radius:3px}
+
+/* ── Layout ── */
+#bar{
+  background:#0C0B1C;border-bottom:1px solid #1A1835;
+  padding:12px 20px;display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:99;
+}
+#bar .logo{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,#7C3AED,#A78BFA);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+#bar .title{font-weight:900;font-size:15px;color:#A78BFA;line-height:1.2}
+#bar .sub{font-size:11px;color:#4A4870;margin-top:1px}
+#wrap{max-width:980px;margin:0 auto;padding:20px 14px 60px}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.tab{padding:8px 15px;border-radius:8px;font-size:13px;font-weight:700;
+     color:#4A4870;background:#100F20;border:1px solid #1A1835;cursor:pointer}
+.tab.on{background:rgba(124,58,237,.18);color:#A78BFA;border-color:rgba(124,58,237,.35)}
+
+/* ── Cards ── */
+.card{background:#100F20;border:1px solid #1A1835;border-radius:12px;padding:16px;margin-bottom:14px}
+.card-h{font-size:14px;font-weight:800;color:#C4B5FD;margin-bottom:14px}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;
+     border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.b-p{background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff}
+.b-o{background:transparent;border:1px solid #252345;color:#C0BDDF}
+.b-o:hover{border-color:#7C3AED;color:#A78BFA}
+.b-r{background:rgba(239,68,68,.13);border:1px solid rgba(239,68,68,.3);color:#EF4444}
+.b-g{background:rgba(16,185,129,.13);border:1px solid rgba(16,185,129,.3);color:#10B981}
+.b-y{background:rgba(245,158,11,.13);border:1px solid rgba(245,158,11,.3);color:#F59E0B}
+.b-lg{padding:11px 22px;font-size:14px;border-radius:10px}
+
+/* ── Grid ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* ── Stat box ── */
+.sbox{background:#100F20;border:1px solid #1A1835;border-radius:10px;padding:13px}
+.snum{font-size:26px;font-weight:900;line-height:1}
+.slbl{font-size:11px;color:#4A4870;margin-top:4px}
+
+/* ── Table ── */
+.tw{overflow-x:auto;border-radius:10px;border:1px solid #1A1835}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:680px}
+th{padding:9px 11px;text-align:right;color:#4A4870;font-weight:700;
+   background:#0C0B1C;border-bottom:1px solid #1A1835;white-space:nowrap}
+td{padding:9px 11px;border-bottom:1px solid #130F25;vertical-align:middle}
+tr:last-child td{border:none}
+tr:hover td{background:rgba(124,58,237,.04)}
+tr.dim td{opacity:.45}
+
+/* ── Badges ── */
+.bg{display:inline-flex;align-items:center;gap:3px;
+    padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.bg-g{background:rgba(16,185,129,.12);color:#10B981;border:1px solid rgba(16,185,129,.2)}
+.bg-r{background:rgba(239,68,68,.12); color:#EF4444;border:1px solid rgba(239,68,68,.2)}
+.bg-y{background:rgba(245,158,11,.12);color:#F59E0B;border:1px solid rgba(245,158,11,.2)}
+.bg-p{background:rgba(124,58,237,.12);color:#A78BFA;border:1px solid rgba(124,58,237,.2)}
+.bg-d{background:rgba(255,255,255,.05);color:#4A4870;border:1px solid rgba(255,255,255,.07)}
+
+/* ── Form ── */
+.lbl{display:block;margin-bottom:5px;font-size:11px;font-weight:700;color:#4A4870;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── Toast ── */
+.toast{
+  position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+  padding:10px 20px;border-radius:10px;font-weight:700;font-size:13px;
+  z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.7);
+  white-space:nowrap;color:#fff;pointer-events:none;
+  animation:tin .2s ease-out;
+}
+@keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(6px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* ── Login ── */
+.lp{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+    background:radial-gradient(ellipse 70% 60% at 50% 20%,rgba(124,58,237,.1),transparent)}
+.lc{background:#100F20;border:1px solid #252345;border-radius:20px;
+    padding:32px 26px;width:100%;max-width:370px;text-align:center}
+.li{width:60px;height:60px;border-radius:16px;
+    background:linear-gradient(135deg,#7C3AED,#A78BFA);
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;margin:0 auto 14px}
+
+/* ── Loading overlay ── */
+.loading-row td{text-align:center;padding:24px;color:#4A4870}
 </style>
 </head>
 <body>
 <div id="root"></div>
+
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script>
 'use strict';
-var _useState=React.useState,_useEffect=React.useEffect,_useCallback=React.useCallback;
-function h(){return React.createElement.apply(React,arguments)}
 
-/* ════════ CONFIG ════════ */
-var SUPA_URL='https://jqkmtqbhxsuvvumudgrj.supabase.co';
-var SUPA_KEY='sb_publishable_0KbQ1aL7rWoJCkk84OUVKQ_Krc4nvwS';
-var APP_URL ='https://craftcost-pro.advax.workers.dev';
-var GH_OWNER='Advax';
-var GH_REPO ='craftcost-notification';
-var GH_FILE ='latest.json';
-var GH_API  ='https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/contents/'+GH_FILE;
+/* ══════════════════════════════════════
+   CONFIG
+══════════════════════════════════════ */
+var SUPA = 'https://jqkmtqbhxsuvvumudgrj.supabase.co';
+var AKEY = 'sb_publishable_0KbQ1aL7rWoJCkk84OUVKQ_Krc4nvwS';
+var APP  = 'https://craftcost-pro.advax.workers.dev';
+var GH_API = 'https://api.github.com/repos/Advax/craftcost-notification/contents/latest.json';
 
-/* ════════ Supabase Auth ════════ */
-function authHdrs(token){
-  return{
-    'apikey':SUPA_KEY,
-    'Authorization':'Bearer '+(token||SUPA_KEY),
-    'Content-Type':'application/json'
+/* ══════════════════════════════════════
+   REACT ALIASES
+══════════════════════════════════════ */
+var h  = React.createElement;
+var St = React.useState;
+var Ef = React.useEffect;
+var Cb = React.useCallback;
+var Fr = React.Fragment;
+
+/* ══════════════════════════════════════
+   SUPABASE AUTH
+══════════════════════════════════════ */
+function signIn(email, password) {
+  return fetch(SUPA + '/auth/v1/token?grant_type=password', {
+    method: 'POST',
+    headers: { 'apikey': AKEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email.trim(), password: password })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.access_token) return { ok: true, token: d.access_token, email: d.user.email };
+    return { ok: false, err: d.error_description || d.msg || 'بريد أو كلمة مرور خاطئة' };
+  })
+  .catch(function() { return { ok: false, err: 'خطأ في الاتصال بالإنترنت' }; });
+}
+
+/* ══════════════════════════════════════
+   SUPABASE DB — ONE FUNCTION PER ACTION
+   Each returns: null on fail | data on success
+══════════════════════════════════════ */
+function hdrs(token) {
+  return {
+    'apikey': AKEY,
+    'Authorization': 'Bearer ' + (token || AKEY),
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation'
   };
 }
 
-/* Sign in with email + password — returns {ok, token, email, error} */
-function supaSignIn(email,password){
-  return fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{
-    method:'POST',
-    headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
-    body:JSON.stringify({email:email.trim(),password:password})
-  }).then(function(r){
-    return r.json().then(function(d){
-      if(d.access_token)return{ok:true,token:d.access_token,email:d.user&&d.user.email};
-      return{ok:false,error:d.error_description||d.msg||'بريد أو كلمة مرور غير صحيحة'};
-    });
-  }).catch(function(){return{ok:false,error:'خطأ في الاتصال — تحقق من الإنترنت'};});
+/* Get all codes ordered by created_at */
+function apiGetCodes(token) {
+  return fetch(SUPA + '/rest/v1/subscription_codes?select=*&order=created_at.desc', {
+    headers: hdrs(token)
+  })
+  .then(function(r) {
+    if (!r.ok) { console.error('GET codes failed:', r.status); return null; }
+    return r.json();
+  })
+  .catch(function(e) { console.error('GET codes error:', e); return null; });
 }
 
-/* Refresh session */
-function supaRefresh(refreshToken){
-  return fetch(SUPA_URL+'/auth/v1/token?grant_type=refresh_token',{
-    method:'POST',
-    headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
-    body:JSON.stringify({refresh_token:refreshToken})
-  }).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
+/* Insert new code */
+function apiInsert(token, row) {
+  return fetch(SUPA + '/rest/v1/subscription_codes', {
+    method: 'POST',
+    headers: hdrs(token),
+    body: JSON.stringify(row)
+  })
+  .then(function(r) {
+    if (!r.ok) {
+      return r.text().then(function(t) {
+        console.error('INSERT failed:', r.status, t);
+        return null;
+      });
+    }
+    return r.json();
+  })
+  .catch(function(e) { console.error('INSERT error:', e); return null; });
 }
 
-/* Supabase REST — uses admin token */
-function dbGet(token,table,q){
-  return fetch(SUPA_URL+'/rest/v1/'+table+'?'+(q||''),{
-    headers:authHdrs(token)
-  }).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
+/* Toggle is_active for one code */
+function apiToggle(token, id, newValue) {
+  return fetch(SUPA + '/rest/v1/subscription_codes?id=eq.' + id, {
+    method: 'PATCH',
+    headers: hdrs(token),
+    body: JSON.stringify({ is_active: newValue })
+  })
+  .then(function(r) {
+    if (!r.ok) {
+      return r.text().then(function(t) {
+        console.error('TOGGLE failed:', r.status, t);
+        return null;
+      });
+    }
+    return r.json(); // returns [{...updated row...}]
+  })
+  .catch(function(e) { console.error('TOGGLE error:', e); return null; });
 }
-function dbPost(token,table,body){
-  return fetch(SUPA_URL+'/rest/v1/'+table,{
-    method:'POST',
-    headers:Object.assign({},authHdrs(token),{Prefer:'return=representation'}),
-    body:JSON.stringify(body)
-  }).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});
+
+/* Patch any fields */
+function apiPatch(token, id, fields) {
+  return fetch(SUPA + '/rest/v1/subscription_codes?id=eq.' + id, {
+    method: 'PATCH',
+    headers: hdrs(token),
+    body: JSON.stringify(fields)
+  })
+  .then(function(r) {
+    if (!r.ok) {
+      return r.text().then(function(t) {
+        console.error('PATCH failed:', r.status, t);
+        return null;
+      });
+    }
+    return r.json();
+  })
+  .catch(function(e) { console.error('PATCH error:', e); return null; });
 }
-function dbPatch(token,table,q,body){
-  return fetch(SUPA_URL+'/rest/v1/'+table+'?'+q,{
-    method:'PATCH',
-    headers:Object.assign({},authHdrs(token),{
-      'Prefer':'return=representation',
-      'Content-Type':'application/json'
-    }),
-    body:JSON.stringify(body)
-  }).then(function(r){
-    if(!r.ok)return r.text().then(function(t){console.error('PATCH error:',r.status,t);return false;});
-    return r.json().then(function(d){
-      // Supabase returns array of updated rows
-      var updated=Array.isArray(d)?d.length:1;
-      if(updated===0){console.warn('PATCH: 0 rows affected — check RLS policies');}
-      return updated>0;
-    }).catch(function(){return r.ok;});
-  }).catch(function(e){console.error('PATCH fetch error:',e);return false;});
+
+/* Delete one code */
+function apiDelete(token, id) {
+  return fetch(SUPA + '/rest/v1/subscription_codes?id=eq.' + id, {
+    method: 'DELETE',
+    headers: hdrs(token)
+  })
+  .then(function(r) {
+    if (!r.ok) {
+      return r.text().then(function(t) {
+        console.error('DELETE failed:', r.status, t);
+        return false;
+      });
+    }
+    return true;
+  })
+  .catch(function(e) { console.error('DELETE error:', e); return false; });
 }
-function dbDel(token,table,q){
-  return fetch(SUPA_URL+'/rest/v1/'+table+'?'+q,{
-    method:'DELETE',
-    headers:Object.assign({},authHdrs(token),{
-      'Prefer':'return=representation'
+
+/* ══════════════════════════════════════
+   GITHUB NOTIFICATIONS
+══════════════════════════════════════ */
+function ghGetSha(ghToken) {
+  return fetch(GH_API, {
+    headers: { 'Authorization': 'token ' + ghToken, 'Accept': 'application/vnd.github.v3+json' }
+  })
+  .then(function(r) {
+    if (r.status === 404) return null;
+    if (!r.ok) return 'ERR';
+    return r.json().then(function(d) { return d.sha || null; });
+  })
+  .catch(function() { return 'ERR'; });
+}
+
+function ghSend(ghToken, title, body) {
+  var notif = { id: 'n_' + Date.now(), title: title.trim(), body: body.trim(), sentAt: new Date().toISOString() };
+  var content = btoa(unescape(encodeURIComponent(JSON.stringify(notif, null, 2))));
+  return ghGetSha(ghToken).then(function(sha) {
+    if (sha === 'ERR') return { ok: false, msg: 'خطأ في GitHub Token — تحقق منه' };
+    var payload = { message: 'إشعار: ' + title, content: content };
+    if (sha) payload.sha = sha;
+    return fetch(GH_API, {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + ghToken, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     })
-  }).then(function(r){
-    if(!r.ok)return r.text().then(function(t){console.error('DELETE error:',r.status,t);return false;});
-    return r.json().then(function(d){
-      var deleted=Array.isArray(d)?d.length:1;
-      if(deleted===0){console.warn('DELETE: 0 rows affected — check RLS policies');}
-      return deleted>0;
-    }).catch(function(){return r.ok;});
-  }).catch(function(e){console.error('DELETE fetch error:',e);return false;});
-}
-
-/* ════════ GitHub Notifications ════════ */
-function ghGetSha(token){
-  return fetch(GH_API,{
-    headers:{'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json'}
-  }).then(function(r){
-    if(r.status===404)return null;
-    if(!r.ok)return 'ERR';
-    return r.json().then(function(d){return d.sha||null;});
-  }).catch(function(){return 'ERR';});
-}
-function ghSend(ghToken,title,body){
-  if(!ghToken)return Promise.resolve({ok:false,msg:'أدخل GitHub Token أولاً'});
-  var notif={id:'n_'+Date.now(),title:title.trim(),body:body.trim(),sentAt:new Date().toISOString()};
-  var content=btoa(unescape(encodeURIComponent(JSON.stringify(notif,null,2))));
-  return ghGetSha(ghToken).then(function(sha){
-    if(sha==='ERR')return{ok:false,msg:'خطأ في الاتصال بـ GitHub'};
-    var payload={message:'إشعار: '+title,content:content};
-    if(sha)payload.sha=sha;
-    return fetch(GH_API,{
-      method:'PUT',
-      headers:{'Authorization':'token '+ghToken,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    }).then(function(r){
-      if(r.ok)return{ok:true,notif:notif};
-      return r.json().then(function(e){return{ok:false,msg:e.message||'GitHub Error '+r.status};});
-    }).catch(function(){return{ok:false,msg:'خطأ في الشبكة'};});
+    .then(function(r) {
+      if (r.ok) return { ok: true, notif: notif };
+      return r.json().then(function(e) { return { ok: false, msg: e.message || 'GitHub Error ' + r.status }; });
+    })
+    .catch(function() { return { ok: false, msg: 'خطأ في الشبكة' }; });
   });
 }
 
-/* ════════ Utils ════════ */
-function uid(){return Math.random().toString(36).slice(2,9);}
-function fmtD(d){return d?new Date(d).toLocaleDateString('ar-SA'):'—';}
-function dLeft(d){return Math.ceil((new Date(d)-new Date())/864e5);}
-function genCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length:8},function(){return c[Math.floor(Math.random()*c.length)];}).join('');}
-function expDate(m){var d=new Date();d.setMonth(d.getMonth()+m);return d.toISOString();}
-function expLabel(m){var d=new Date();d.setMonth(d.getMonth()+m);return d.toLocaleDateString('ar-SA');}
-
-function useLS(k,d0){
-  var s=_useState(function(){try{var x=localStorage.getItem(k);return x?JSON.parse(x):d0;}catch(e){return d0;}});
-  var v=s[0],sv=s[1];
-  _useEffect(function(){localStorage.setItem(k,JSON.stringify(v));},[v,k]);
-  return[v,sv];
+/* ══════════════════════════════════════
+   UTILS
+══════════════════════════════════════ */
+function uid() { return Math.random().toString(36).slice(2, 9); }
+function dFmt(d) { return d ? new Date(d).toLocaleDateString('ar-SA') : '—'; }
+function dLeft(d) { return Math.ceil((new Date(d) - new Date()) / 864e5); }
+function expDate(m) { var d = new Date(); d.setMonth(d.getMonth() + m); return d.toISOString(); }
+function expLabel(m) { var d = new Date(); d.setMonth(d.getMonth() + m); return d.toLocaleDateString('ar-SA'); }
+function genCode() {
+  var c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var out = '';
+  for (var i = 0; i < 8; i++) out += c[Math.floor(Math.random() * c.length)];
+  return out;
 }
 
-/* ════════ Toast ════════ */
-function useToast(){
-  var s=_useState(null);var t=s[0],st=s[1];
-  var show=_useCallback(function(msg,type){
-    st({msg:msg,type:type||'ok'});
-    setTimeout(function(){st(null);},3500);
-  },[]);
-  return{t:t,show:show};
+/* ══════════════════════════════════════
+   TOAST — simple global
+══════════════════════════════════════ */
+function useToast() {
+  var s = St(null);
+  var toast = s[0]; var setToast = s[1];
+  var timer = { v: null };
+  var show = Cb(function(msg, type) {
+    if (timer.v) clearTimeout(timer.v);
+    setToast({ msg: msg, type: type || 'ok', key: Date.now() });
+    timer.v = setTimeout(function() { setToast(null); }, 3200);
+  }, []);
+  return { toast: toast, show: show };
 }
-function Toast(props){
-  if(!props.t)return null;
-  var C={ok:'#10B981',err:'#EF4444',warn:'#F59E0B',info:'#3B82F6'};
-  return h('div',{className:'toast',style:{background:C[props.t.type]||C.ok}},props.t.msg);
+function Toast(p) {
+  if (!p.t) return null;
+  var C = { ok: '#10B981', err: '#EF4444', warn: '#F59E0B', info: '#6366F1' };
+  return h('div', { className: 'toast', key: p.t.key, style: { background: C[p.t.type] || C.ok } }, p.t.msg);
 }
 
-/* ════════ Login — Supabase Auth ════════ */
-function Login(props){
-  var es=_useState('');var email=es[0],setEmail=es[1];
-  var ps=_useState('');var pass=ps[0],setPass=ps[1];
-  var ls=_useState(false);var loading=ls[0],setL=ls[1];
-  var ers=_useState('');var err=ers[0],setErr=ers[1];
-  var ss=_useState(false);var showPass=ss[0],setSP=ss[1];
+/* ══════════════════════════════════════
+   LOGIN
+══════════════════════════════════════ */
+function Login(p) {
+  var es = St(''); var email = es[0]; var setEmail = es[1];
+  var ps = St(''); var pass = ps[0]; var setPass = ps[1];
+  var ls = St(false); var loading = ls[0]; var setLoading = ls[1];
+  var ms = St(''); var msg = ms[0]; var setMsg = ms[1];
+  var ss = St(false); var showP = ss[0]; var setShowP = ss[1];
 
-  function submit(){
-    if(!email.trim()||!pass)return;
-    setL(true);setErr('');
-    supaSignIn(email,pass).then(function(res){
-      setL(false);
-      if(res.ok){props.onLogin(res);}
-      else{setErr(res.error||'بريد أو كلمة مرور غير صحيحة');}
+  function submit() {
+    if (!email.trim() || !pass) { setMsg('أدخل البريد الإلكتروني وكلمة المرور'); return; }
+    setLoading(true); setMsg('');
+    signIn(email, pass).then(function(res) {
+      setLoading(false);
+      if (res.ok) p.onLogin(res);
+      else setMsg(res.err);
     });
   }
 
-  return h('div',{className:'lp'},
-    h('div',{className:'lb'},
-      h('div',{style:{width:72,height:72,borderRadius:18,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:32,margin:'0 auto 16px',boxShadow:'0 8px 28px rgba(124,58,237,.4)'}},'🔐'),
-      h('h1',{style:{fontSize:22,fontWeight:900,marginBottom:4}},'لوحة إدارة AdVax'),
-      h('p',{style:{fontSize:13,color:'#7878A8',marginBottom:6}},'CraftCost Pro'),
-      h('div',{style:{background:'rgba(16,185,129,.1)',border:'1px solid rgba(16,185,129,.2)',borderRadius:8,padding:'7px 12px',fontSize:11,color:'#10B981',marginBottom:24}},'🔒 محمية بـ Supabase Authentication'),
+  return h('div', { className: 'lp' },
+    h('div', { className: 'lc' },
+      h('div', { className: 'li' }, '🔐'),
+      h('div', { style: { fontSize: 20, fontWeight: 900, marginBottom: 4 } }, 'لوحة إدارة AdVax'),
+      h('div', { style: { fontSize: 12, color: '#4A4870', marginBottom: 8 } }, 'CraftCost Pro'),
+      h('div', { style: {
+        background: 'rgba(16,185,129,.08)', border: '1px solid rgba(16,185,129,.18)',
+        borderRadius: 8, padding: '6px 12px', fontSize: 11, color: '#10B981', marginBottom: 24
+      } }, '🔒 مؤمّنة بـ Supabase Authentication'),
 
-      h('div',{style:{textAlign:'right',marginBottom:12}},
-        h('label',{className:'lbl'},'البريد الإلكتروني'),
-        h('input',{type:'email',value:email,onChange:function(e){setEmail(e.target.value);},onKeyDown:function(e){if(e.key==='Enter')submit();},placeholder:'admin@advax.com'})
+      h('div', { style: { textAlign: 'right', marginBottom: 10 } },
+        h('label', { className: 'lbl' }, 'البريد الإلكتروني'),
+        h('input', {
+          type: 'email', value: email, placeholder: 'admin@advax.com',
+          onChange: function(e) { setEmail(e.target.value); },
+          onKeyDown: function(e) { if (e.key === 'Enter') submit(); }
+        })
       ),
-      h('div',{style:{textAlign:'right',marginBottom:err?0:16}},
-        h('label',{className:'lbl'},'كلمة المرور'),
-        h('div',{style:{position:'relative'}},
-          h('input',{type:showPass?'text':'password',value:pass,onChange:function(e){setPass(e.target.value);},onKeyDown:function(e){if(e.key==='Enter')submit();},placeholder:'••••••••',style:{paddingLeft:44}}),
-          h('button',{onClick:function(){setSP(!showPass);},style:{position:'absolute',left:10,top:'50%',transform:'translateY(-50%)',background:'none',color:'#7878A8',fontSize:16,padding:'2px 4px'}},showPass?'🙈':'👁')
+      h('div', { style: { textAlign: 'right', marginBottom: 14 } },
+        h('label', { className: 'lbl' }, 'كلمة المرور'),
+        h('div', { style: { position: 'relative' } },
+          h('input', {
+            type: showP ? 'text' : 'password', value: pass, placeholder: '••••••••',
+            style: { paddingLeft: 40 },
+            onChange: function(e) { setPass(e.target.value); },
+            onKeyDown: function(e) { if (e.key === 'Enter') submit(); }
+          }),
+          h('button', {
+            onClick: function() { setShowP(!showP); },
+            style: { position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', color: '#4A4870', padding: '2px 5px', fontSize: 15 }
+          }, showP ? '🙈' : '👁')
         )
       ),
-      err&&h('div',{className:'ebox',style:{margin:'10px 0',borderRadius:9}},err),
-      h('button',{className:'btn bp',style:{width:'100%',justifyContent:'center',padding:'13px',marginTop:8,fontSize:15},onClick:submit,disabled:loading||!email.trim()||!pass},
-        loading?h('span',null,'جاري التحقق...'):'دخول ←'
-      ),
-      h('p',{style:{marginTop:16,fontSize:11,color:'#4C4C7A',lineHeight:1.7}},
-        'الدخول عبر Supabase Authentication فقط',h('br'),
-        'لا يوجد كلمة سر مكشوفة في الكود 🔒'
-      )
+      msg && h('div', { style: {
+        background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.22)',
+        borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#EF4444', marginBottom: 10
+      } }, msg),
+      h('button', {
+        className: 'btn b-p b-lg', style: { width: '100%', justifyContent: 'center' },
+        onClick: submit, disabled: loading || !email.trim() || !pass
+      }, loading ? '⏳ جاري التحقق...' : 'دخول ←')
     )
   );
 }
 
-/* ════════ Stats ════════ */
-function StatsBar(props){
-  var codes=props.codes;
-  var active  =codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date();}).length;
-  var expired =codes.filter(function(c){return new Date(c.expires_at)<new Date();}).length;
-  var soon    =codes.filter(function(c){return c.is_active&&dLeft(c.expires_at)<=7&&dLeft(c.expires_at)>0;}).length;
-  var stopped =codes.filter(function(c){return !c.is_active&&new Date(c.expires_at)>new Date();}).length;
-  var stats=[
-    {ic:'🔑',l:'إجمالي الأكواد',v:codes.length,c:'#9D60FF'},
-    {ic:'✅',l:'نشط',v:active,c:'#10B981'},
-    {ic:'⏰',l:'ينتهي قريباً',v:soon,c:'#F59E0B'},
-    {ic:'❌',l:'منتهي/موقوف',v:expired+stopped,c:'#EF4444'},
-  ];
-  return h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20,flexWrap:'wrap',gap:12}},
-    h('div',{className:'g4',style:{flex:1}},
-      stats.map(function(s,i){
-        return h('div',{key:i,className:'sc'},
-          h('div',{style:{fontSize:20,marginBottom:7}},s.ic),
-          h('div',{style:{fontSize:22,fontWeight:900,color:s.c,marginBottom:2}},s.v),
-          h('div',{style:{fontSize:12,color:'#7878A8'}},s.l)
-        );
-      })
-    ),
-    h('button',{className:'btn bo bsm',onClick:props.onRefresh,disabled:props.loading},props.loading?'جاري..':'🔄 تحديث')
-  );
-}
-
-/* ════════ Code Manager ════════ */
-var PLANS=[
-  {v:'monthly',  l:'شهري',      m:1},
-  {v:'quarterly',l:'ربع سنوي', m:3},
-  {v:'biannual', l:'نصف سنوي', m:6},
-  {v:'yearly',   l:'سنوي',     m:12},
+/* ══════════════════════════════════════
+   CODES PAGE
+   Logic: every action → call Supabase → reload list
+   No optimistic updates. No ops state. Simple.
+══════════════════════════════════════ */
+var PLANS = [
+  { v: 'monthly',   l: 'شهري',       m: 1  },
+  { v: 'quarterly', l: 'ربع سنوي',  m: 3  },
+  { v: 'biannual',  l: 'نصف سنوي',  m: 6  },
+  { v: 'yearly',    l: 'سنوي',       m: 12 }
 ];
 
-function CodeMgr(props){
-  var token=props.token, showToast=props.showToast, onRefresh=props.onRefresh;
-  var codes=props.codes;
+function CodesPage(p) {
+  var token = p.token; var show = p.show;
 
-  // Form state
-  var ns=_useState({code:'',label:'',note:'',plan:'monthly',months:1});
-  var nc=ns[0],setNc=ns[1];
+  /* State */
+  var cs = St([]); var codes = cs[0]; var setCodes = cs[1];
+  var ls = St(true); var loading = ls[0]; var setLoading = ls[1];
+  var fs = St('all'); var filter = fs[0]; var setFilter = fs[1];
+  var ws = St(null); var working = ws[0]; var setWorking = ws[1]; // which row is busy
+  var as = St(false); var adding = as[0]; var setAdding = as[1];
 
-  // Filter state
-  var fs=_useState('all');
-  var filter=fs[0],setF=fs[1];
+  /* Form */
+  var ns = St({ code: '', label: '', note: '', plan: 'monthly', months: 1 });
+  var nc = ns[0]; var setNc = ns[1];
 
-  // Loading state per operation
-  var ls=_useState(false);
-  var loading=ls[0],setL=ls[1];
+  /* ── Load all codes from Supabase ── */
+  function load(silent) {
+    if (!silent) setLoading(true);
+    apiGetCodes(token).then(function(data) {
+      setLoading(false);
+      if (data) setCodes(data);
+      else show('❌ فشل تحميل الأكواد من Supabase', 'err');
+    });
+  }
 
-  // ── Add new code ──────────────────────────────
-  function addCode(){
-    var code=nc.code.trim().toUpperCase();
-    if(!code){showToast('أدخل الكود','warn');return;}
-    
-    // Check duplicate
-    var exists=codes.find(function(c){return c.code===code;});
-    if(exists){showToast('❌ الكود موجود مسبقاً','err');return;}
-    
-    setL(true);
-    var row={
-      code:code,
-      label:nc.label.trim(),
-      note:nc.note.trim(),
-      plan:nc.plan,
-      expires_at:expDate(nc.months),
-      is_active:true,
-      device_id:'',
-      device_info:'',
-      use_count:0
+  Ef(function() { load(false); }, []);
+
+  /* ── Add new code ── */
+  function doAdd() {
+    var code = nc.code.trim().toUpperCase();
+    if (!code) { show('أدخل الكود', 'warn'); return; }
+    if (codes.find(function(c) { return c.code === code; })) {
+      show('❌ الكود ' + code + ' موجود مسبقاً', 'err'); return;
+    }
+    setAdding(true);
+    var row = {
+      code: code, label: nc.label.trim(), note: nc.note.trim(),
+      plan: nc.plan, expires_at: expDate(nc.months),
+      is_active: true, device_id: '', device_info: '', use_count: 0
     };
-    
-    dbPost(token,'subscription_codes',row).then(function(res){
-      setL(false);
-      // Supabase returns array on success
-      var created = Array.isArray(res)?res[0]:res;
-      if(created && created.id){
-        showToast('✅ تم إنشاء الكود: '+code);
-        setNc({code:'',label:'',note:'',plan:'monthly',months:1});
-        // Refresh to get latest data
-        onRefresh();
-      }else{
-        showToast('❌ فشل الحفظ — حاول مرة أخرى','err');
+    apiInsert(token, row).then(function(res) {
+      setAdding(false);
+      if (res && (Array.isArray(res) ? res.length > 0 : res.id)) {
+        show('✅ تم إنشاء الكود: ' + code);
+        setNc({ code: '', label: '', note: '', plan: 'monthly', months: 1 });
+        load(true); // reload list silently
+      } else {
+        show('❌ فشل إنشاء الكود — شغّل supabase-fix-policies.sql', 'err');
       }
     });
   }
 
-  // ── Toggle active/inactive ────────────────────
-  function toggle(id,currentActive){
-    var newVal=!currentActive;
-    // Optimistic update — show change immediately
-    setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{is_active:newVal}):c;});});
-    showToast(newVal?'✅ تم التفعيل':'⛔ تم الإيقاف', newVal?'ok':'warn');
-    // Then sync with Supabase in background
-    dbPatch(token,'subscription_codes','id=eq.'+id,{is_active:newVal}).then(function(ok){
-      if(!ok){
-        // Revert if failed
-        setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{is_active:currentActive}):c;});});
-        showToast('❌ فشل — تأكد من تشغيل SQL الأمان','err');
-      }else{
-        onRefresh(); // silent sync
+  /* ── Toggle active/inactive ──
+     THE KEY FIX: update codes state directly from the returned row,
+     no full reload needed, no ops state confusion */
+  function doToggle(id, currentActive) {
+    var newVal = !currentActive;
+    setWorking(id);
+    apiToggle(token, id, newVal).then(function(res) {
+      setWorking(null);
+      if (res && Array.isArray(res) && res.length > 0) {
+        /* Supabase returned the updated row — update it directly in state */
+        var updated = res[0];
+        setCodes(function(prev) {
+          return prev.map(function(c) { return c.id === id ? updated : c; });
+        });
+        show(newVal ? '✅ تم تفعيل الكود' : '⛔ تم إيقاف الكود', newVal ? 'ok' : 'warn');
+      } else {
+        show('❌ فشل — شغّل supabase-fix-policies.sql في Supabase', 'err');
       }
     });
   }
 
-  // ── Reset device binding ──────────────────────
-  function resetDev(id,codeName){
-    if(!window.confirm('Reset device for code: '+codeName))return;
-    // Optimistic
-    setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{device_id:'',device_info:''}):c;});});
-    showToast('✅ تم إعادة تعيين الجهاز');
-    dbPatch(token,'subscription_codes','id=eq.'+id,{device_id:'',device_info:''}).then(function(ok){
-      if(!ok){showToast('❌ فشل التحديث','err');onRefresh();}
-    });
-  }
-
-  // ── Extend expiry ─────────────────────────────
-  function extend(id,months,codeName){
-    var c=codes.find(function(x){return x.id===id;});
-    if(!c)return;
-    var base=new Date(c.expires_at)>new Date()?new Date(c.expires_at):new Date();
-    base.setMonth(base.getMonth()+months);
-    var iso=base.toISOString();
-    // Optimistic
-    setCodes(function(p){return p.map(function(x){return x.id===id?Object.assign({},x,{expires_at:iso,is_active:true}):x;});});
-    showToast('✅ تم تمديد '+codeName+' '+months+' شهر');
-    dbPatch(token,'subscription_codes','id=eq.'+id,{expires_at:iso,is_active:true}).then(function(ok){
-      if(!ok){showToast('❌ فشل التمديد','err');onRefresh();}
-    });
-  }
-
-  // ── Delete code ───────────────────────────────
-  function delCode(id,codeName){
-    if(!window.confirm('Delete: '+codeName+'? Cannot undo.'))return;
-    // Optimistic remove
-    setCodes(function(p){return p.filter(function(c){return c.id!==id;});});
-    showToast('🗑 تم حذف '+codeName,'err');
-    dbDel(token,'subscription_codes','id=eq.'+id).then(function(ok){
-      if(!ok){
-        showToast('❌ فشل الحذف — سيُعاد تحميل البيانات','err');
-        onRefresh(); // reload to restore
+  /* ── Delete ── */
+  function doDelete(id, code) {
+    if (!window.confirm('حذف الكود ' + code + '؟\nلا يمكن التراجع.')) return;
+    setWorking(id);
+    apiDelete(token, id).then(function(ok) {
+      setWorking(null);
+      if (ok) {
+        setCodes(function(prev) { return prev.filter(function(c) { return c.id !== id; }); });
+        show('🗑 تم حذف ' + code, 'err');
+      } else {
+        show('❌ فشل الحذف — تأكد من الـ policies في Supabase', 'err');
       }
     });
   }
 
-  // ── Copy code ─────────────────────────────────
-  function copy(code){
-    if(navigator.clipboard){
-      navigator.clipboard.writeText(code).then(function(){showToast('📋 تم نسخ: '+code);});
-    }else{
-      showToast('❌ النسخ غير مدعوم في هذا المتصفح','err');
+  /* ── Reset device ── */
+  function doResetDevice(id, code) {
+    if (!window.confirm('إعادة تعيين الجهاز للكود ' + code + '؟')) return;
+    setWorking(id);
+    apiPatch(token, id, { device_id: '', device_info: '' }).then(function(res) {
+      setWorking(null);
+      if (res && Array.isArray(res) && res.length > 0) {
+        var updated = res[0];
+        setCodes(function(prev) { return prev.map(function(c) { return c.id === id ? updated : c; }); });
+        show('✅ تم إعادة تعيين الجهاز');
+      } else {
+        show('❌ فشل التحديث', 'err');
+      }
+    });
+  }
+
+  /* ── Extend ── */
+  function doExtend(id, code, months) {
+    var c = codes.find(function(x) { return x.id === id; });
+    if (!c) return;
+    var base = new Date(c.expires_at) > new Date() ? new Date(c.expires_at) : new Date();
+    base.setMonth(base.getMonth() + months);
+    var iso = base.toISOString();
+    setWorking(id);
+    apiPatch(token, id, { expires_at: iso, is_active: true }).then(function(res) {
+      setWorking(null);
+      if (res && Array.isArray(res) && res.length > 0) {
+        var updated = res[0];
+        setCodes(function(prev) { return prev.map(function(x) { return x.id === id ? updated : x; }); });
+        show('✅ تم تمديد ' + code + ' ' + months + ' شهر');
+      } else {
+        show('❌ فشل التمديد', 'err');
+      }
+    });
+  }
+
+  /* ── Copy code ── */
+  function doCopy(code) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(code).then(function() { show('📋 تم نسخ: ' + code); });
     }
   }
 
-  // ── Filter list ───────────────────────────────
-  var list=codes.filter(function(c){
-    var exp=new Date(c.expires_at)<new Date();
-    var dl=dLeft(c.expires_at);
-    if(filter==='active') return c.is_active&&!exp;
-    if(filter==='expired')return exp;
-    if(filter==='stopped')return !c.is_active&&!exp;
-    if(filter==='soon')   return c.is_active&&!exp&&dl<=7&&dl>0;
+  /* ── Filter ── */
+  var list = codes.filter(function(c) {
+    var exp = new Date(c.expires_at) < new Date();
+    var dl  = dLeft(c.expires_at);
+    if (filter === 'active')  return c.is_active && !exp;
+    if (filter === 'stopped') return !c.is_active;
+    if (filter === 'expired') return exp;
+    if (filter === 'soon')    return c.is_active && !exp && dl <= 7 && dl > 0;
     return true;
   });
 
-  var planLabel=PLANS.find(function(p){return p.v===nc.plan;})||PLANS[0];
+  var cnt = {
+    all:     codes.length,
+    active:  codes.filter(function(c) { return c.is_active && new Date(c.expires_at) > new Date(); }).length,
+    stopped: codes.filter(function(c) { return !c.is_active; }).length,
+    expired: codes.filter(function(c) { return new Date(c.expires_at) < new Date(); }).length,
+    soon:    codes.filter(function(c) { var d = dLeft(c.expires_at); return c.is_active && d <= 7 && d > 0; }).length
+  };
 
-  return h('div',null,
+  return h('div', null,
+    /* Stats */
+    h('div', { className: 'g4', style: { marginBottom: 14 } },
+      h('div', { className: 'sbox' }, h('div', { className: 'snum', style: { color: '#A78BFA' } }, cnt.all),     h('div', { className: 'slbl' }, 'إجمالي')),
+      h('div', { className: 'sbox' }, h('div', { className: 'snum', style: { color: '#10B981' } }, cnt.active),  h('div', { className: 'slbl' }, 'نشط')),
+      h('div', { className: 'sbox' }, h('div', { className: 'snum', style: { color: '#F59E0B' } }, cnt.soon),    h('div', { className: 'slbl' }, 'ينتهي قريباً')),
+      h('div', { className: 'sbox' }, h('div', { className: 'snum', style: { color: '#EF4444' } }, cnt.stopped + cnt.expired), h('div', { className: 'slbl' }, 'موقوف/منتهي'))
+    ),
 
-    // ── Create form ──────────────────────────────
-    h('div',{className:'sec'},
-      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12,color:'#9D60FF'}},'➕ إنشاء كود اشتراك جديد'),
-      
-      h('div',{className:'g3',style:{marginBottom:12}},
-        h('div',null,
-          h('label',{className:'lbl'},'الكود *'),
-          h('div',{style:{display:'flex',gap:7}},
-            h('input',{
-              value:nc.code,
-              onChange:function(e){setNc(function(p){return Object.assign({},p,{code:e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'')});});},
-              placeholder:'CRAFT2025',
-              maxLength:12,
-              style:{letterSpacing:2,fontWeight:700,fontSize:14}
+    /* Create form */
+    h('div', { className: 'card' },
+      h('div', { className: 'card-h' }, '➕ إنشاء كود اشتراك'),
+      h('div', { className: 'g3', style: { marginBottom: 12 } },
+        h('div', null,
+          h('label', { className: 'lbl' }, 'الكود *'),
+          h('div', { style: { display: 'flex', gap: 7 } },
+            h('input', {
+              value: nc.code,
+              placeholder: 'CRAFT2025',
+              maxLength: 12,
+              style: { letterSpacing: 2, fontWeight: 700, fontSize: 15 },
+              onChange: function(e) {
+                var v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                setNc(function(p) { return Object.assign({}, p, { code: v }); });
+              }
             }),
-            h('button',{
-              className:'btn bo bsm',
-              onClick:function(){setNc(function(p){return Object.assign({},p,{code:genCode()});});},
-              style:{flexShrink:0},
-              title:'توليد كود عشوائي'
-            },'🔀')
+            h('button', {
+              className: 'btn b-o',
+              style: { flexShrink: 0, padding: '9px 11px' },
+              title: 'توليد كود عشوائي',
+              onClick: function() { setNc(function(p) { return Object.assign({}, p, { code: genCode() }); }); }
+            }, '🔀')
           )
         ),
-        h('div',null,
-          h('label',{className:'lbl'},'اسم العميل'),
-          h('input',{value:nc.label,onChange:function(e){setNc(function(p){return Object.assign({},p,{label:e.target.value});});},placeholder:'مثال: محمد أحمد'})
+        h('div', null,
+          h('label', { className: 'lbl' }, 'اسم العميل'),
+          h('input', {
+            value: nc.label, placeholder: 'محمد أحمد',
+            onChange: function(e) { setNc(function(p) { return Object.assign({}, p, { label: e.target.value }); }); }
+          })
         ),
-        h('div',null,
-          h('label',{className:'lbl'},'ملاحظة داخلية'),
-          h('input',{value:nc.note,onChange:function(e){setNc(function(p){return Object.assign({},p,{note:e.target.value});});},placeholder:'خاصة بك فقط...'})
-        )
-      ),
-
-      h('div',{style:{marginBottom:12}},
-        h('label',{className:'lbl'},'مدة الاشتراك'),
-        h('div',{style:{display:'flex',gap:7,flexWrap:'wrap'}},
-          PLANS.map(function(p){
-            return h('button',{
-              key:p.v,
-              onClick:function(){setNc(function(x){return Object.assign({},x,{plan:p.v,months:p.m});});},
-              className:'btn bsm '+(nc.plan===p.v?'bp':'bo')
-            },p.l,' (',p.m,' شهر)');
+        h('div', null,
+          h('label', { className: 'lbl' }, 'ملاحظة داخلية'),
+          h('input', {
+            value: nc.note, placeholder: 'خاصة بك...',
+            onChange: function(e) { setNc(function(p) { return Object.assign({}, p, { note: e.target.value }); }); }
           })
         )
       ),
-
-      nc.code.trim()&&h('div',{style:{
-        background:'rgba(124,58,237,.1)',border:'1px solid rgba(124,58,237,.25)',
-        borderRadius:9,padding:'9px 14px',marginBottom:12,fontSize:13
-      }},
-        h('span',{style:{color:'#9D60FF'}},'📅 ينتهي في: '),
-        h('b',{style:{color:'#fff'}},expLabel(nc.months)),
-        h('span',{style:{color:'#7878A8',marginRight:12}},' · ',planLabel.l)
+      h('div', { style: { marginBottom: 12 } },
+        h('label', { className: 'lbl' }, 'مدة الاشتراك'),
+        h('div', { style: { display: 'flex', gap: 6, flexWrap: 'wrap' } },
+          PLANS.map(function(plan) {
+            return h('button', {
+              key: plan.v,
+              className: 'btn ' + (nc.plan === plan.v ? 'b-p' : 'b-o'),
+              onClick: function() { setNc(function(p) { return Object.assign({}, p, { plan: plan.v, months: plan.m }); }); }
+            }, plan.l, ' (', plan.m, ')');
+          })
+        )
       ),
-
-      h('button',{
-        className:'btn bp',
-        onClick:addCode,
-        disabled:!nc.code.trim()||loading,
-        style:{minWidth:160}
-      },loading?h('span',null,'⏳ جاري الحفظ..'):h('span',null,'✅ إنشاء الكود'))
+      nc.code.trim() && h('div', { style: {
+        background: 'rgba(124,58,237,.1)', border: '1px solid rgba(124,58,237,.22)',
+        borderRadius: 8, padding: '7px 12px', marginBottom: 12, fontSize: 12, color: '#A78BFA'
+      } }, '📅 ينتهي في: ', h('b', null, expLabel(nc.months))),
+      h('button', {
+        className: 'btn b-p b-lg',
+        disabled: !nc.code.trim() || adding,
+        onClick: doAdd
+      }, adding ? '⏳ جاري الحفظ...' : '✅ إنشاء الكود')
     ),
 
-    // ── Codes table ──────────────────────────────
-    h('div',{className:'sec'},
-      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14,flexWrap:'wrap',gap:10}},
-        h('div',null,
-          h('h3',{style:{fontSize:15,fontWeight:800}},
-            '🔑 الأكواد',
-            h('span',{style:{color:'#7878A8',fontWeight:400,fontSize:13,marginRight:8}},'(',codes.length,' إجمالي)')
-          )
-        ),
-        h('div',{style:{display:'flex',gap:5,flexWrap:'wrap'}},
-          [
-            ['all',   'الكل',         codes.length],
-            ['active','نشط',          codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date();}).length],
-            ['expired','منتهي',        codes.filter(function(c){return new Date(c.expires_at)<new Date();}).length],
-            ['soon',  'ينتهي قريباً', codes.filter(function(c){return c.is_active&&dLeft(c.expires_at)<=7&&dLeft(c.expires_at)>0&&new Date(c.expires_at)>new Date();}).length],
-            ['stopped','موقوف',        codes.filter(function(c){return !c.is_active&&new Date(c.expires_at)>new Date();}).length],
-          ].map(function(item){
-            return h('button',{
-              key:item[0],
-              onClick:function(){setF(item[0]);},
-              className:'btn bsm '+(filter===item[0]?'bp':'bo')
-            },item[1],' (',item[2],')');
-          })
+    /* Codes table */
+    h('div', { className: 'card', style: { padding: 0, overflow: 'hidden' } },
+      /* Table header controls */
+      h('div', { style: { padding: '13px 16px', borderBottom: '1px solid #1A1835', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 } },
+        h('div', { style: { fontWeight: 800, color: '#C4B5FD', fontSize: 14 } }, '🔑 الأكواد (', codes.length, ')'),
+        h('div', { style: { display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' } },
+          [['all','الكل'],['active','نشط'],['stopped','موقوف'],['expired','منتهي'],['soon','ينتهي قريباً']].map(function(item) {
+            return h('button', {
+              key: item[0],
+              className: 'btn ' + (filter === item[0] ? 'b-p' : 'b-o'),
+              style: { padding: '5px 9px', fontSize: 11 },
+              onClick: function() { setFilter(item[0]); }
+            }, item[1], ' (', cnt[item[0]], ')');
+          }),
+          h('button', {
+            className: 'btn b-o',
+            style: { padding: '5px 10px', fontSize: 11 },
+            title: 'تحديث',
+            onClick: function() { load(false); }
+          }, loading ? '⏳' : '🔄 تحديث')
         )
       ),
 
-      list.length===0
-        ?h('div',{style:{textAlign:'center',padding:'32px 0',color:'#4C4C7A'}},
-            h('div',{style:{fontSize:36,marginBottom:10}},'🔍'),
-            h('p',{style:{fontSize:14}},'لا توجد أكواد في هذه الفئة')
-          )
-        :h('div',{className:'tw'},h('table',null,
-            h('thead',null,h('tr',null,
-              h('th',null,'الكود'),
-              h('th',null,'العميل'),
-              h('th',null,'الخطة'),
-              h('th',null,'تاريخ الانتهاء'),
-              h('th',null,'الجهاز'),
-              h('th',null,'الاستخدام'),
-              h('th',null,'الحالة'),
-              h('th',null,'الإجراءات')
-            )),
-            h('tbody',null,list.map(function(c){
-              var exp=new Date(c.expires_at)<new Date();
-              var dl=dLeft(c.expires_at);
-              var hasDev=!!(c.device_id&&c.device_id.length>3);
-              
-              var statusText, statusClass;
-              if(!c.is_active){statusText='موقوف';statusClass='bwrn';}
-              else if(exp){statusText='منتهي';statusClass='berr';}
-              else if(dl<=7){statusText='ينتهي قريباً';statusClass='bwrn';}
-              else{statusText='نشط';statusClass='bok';}
-
-              var rowBg=exp?'rgba(239,68,68,.04)':!c.is_active?'rgba(245,158,11,.04)':'transparent';
-
-              return h('tr',{key:c.id,style:{background:rowBg}},
-                // Code
-                h('td',null,
-                  h('div',{style:{display:'flex',alignItems:'center',gap:6}},
-                    h('b',{style:{
-                      fontFamily:'monospace',fontSize:14,letterSpacing:2,
-                      color:exp||!c.is_active?'#7878A8':'#9D60FF'
-                    }},c.code),
-                    h('button',{
-                      onClick:function(){copy(c.code);},
-                      style:{background:'none',color:'#7878A8',fontSize:11,padding:'2px 6px',borderRadius:5,border:'1px solid #272750',cursor:'pointer'},
-                      title:'نسخ الكود'
-                    },'📋')
-                  )
-                ),
-                // Label
-                h('td',null,
-                  h('div',null,
-                    h('div',{style:{fontWeight:600,fontSize:13}},c.label||h('span',{style:{color:'#4C4C7A'}},'—')),
-                    c.note&&h('div',{style:{fontSize:11,color:'#4C4C7A',marginTop:2}},c.note)
-                  )
-                ),
-                // Plan
-                h('td',null,h('span',{className:'bdg bpur',style:{fontSize:10}},c.plan||'monthly')),
-                // Expiry
-                h('td',null,
-                  h('div',null,
-                    h('div',{style:{fontSize:12,fontWeight:600,color:exp?'#EF4444':dl<=7?'#F59E0B':'#10B981'}},fmtD(c.expires_at)),
-                    !exp&&h('div',{style:{fontSize:10,color:'#7878A8'}},dl,' يوم متبقي'),
-                    exp&&h('div',{style:{fontSize:10,color:'#EF4444'}},'انتهى منذ ',Math.abs(dl),' يوم')
-                  )
-                ),
-                // Device
-                h('td',null,
-                  hasDev
-                    ?h('div',null,
-                        h('span',{className:'bdg bok',style:{fontSize:10,marginBottom:4,display:'block',width:'fit-content'}},'📱 مُسجَّل'),
-                        h('button',{
-                          className:'btn bsm bw',
-                          onClick:function(){resetDev(c.id,c.code);},
-                          style:{fontSize:10,marginTop:4}
-                        },'🔄 تعيين جديد')
-                      )
-                    :h('span',{className:'bdg bmut',style:{fontSize:10}},'لم يُستخدم بعد')
-                ),
-                // Usage
-                h('td',null,
-                  h('div',null,
-                    h('div',{style:{fontSize:13,fontWeight:700,color:c.use_count>0?'#10B981':'#7878A8'}},c.use_count||0,' مرة'),
-                    c.last_used_at&&h('div',{style:{fontSize:10,color:'#4C4C7A'}},fmtD(c.last_used_at))
-                  )
-                ),
-                // Status
-                h('td',null,h('span',{className:'bdg '+statusClass},statusText)),
-                // Actions
-                h('td',null,
-                  h('div',{style:{display:'flex',gap:4,flexWrap:'wrap'}},
-                    h('button',{
-                      className:'btn bsm '+(c.is_active?'br':'bg2'),
-                      onClick:function(){toggle(c.id,c.is_active);},
-                      title:c.is_active?'إيقاف الكود':'تفعيل الكود'
-                    },c.is_active?'⛔ إيقاف':'✅ تفعيل'),
-                    h('button',{
-                      className:'btn bsm bo',
-                      onClick:function(){extend(c.id,1,c.code);},
-                      title:'تمديد شهر'
-                    },'＋١ شهر'),
-                    h('button',{
-                      className:'btn bsm bo',
-                      onClick:function(){extend(c.id,3,c.code);},
-                      title:'تمديد 3 أشهر'
-                    },'＋٣'),
-                    h('button',{
-                      className:'btn bsm br',
-                      onClick:function(){delCode(c.id,c.code);},
-                      title:'حذف الكود'
-                    },'🗑')
-                  )
-                )
-              );
-            }))
-          ))
-    )
-  );
-}
-
-/* ════════ Users ════════ */
-function Users(props){
-  var codes=props.codes;
-  var active=codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date()&&c.last_used_at;});
-  return h('div',null,
-    h('div',{className:'sec'},
-      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:4}},'👥 المستخدمون النشطون (',active.length,')'),
-      h('p',{style:{fontSize:12,color:'#7878A8',marginBottom:14}},'الذين دخلوا التطبيق مرة على الأقل'),
-      active.length===0
-        ?h('p',{style:{color:'#4C4C7A',textAlign:'center',padding:'20px 0',fontSize:13}},'لا يوجد مستخدمون بعد')
-        :h('div',{className:'tw'},h('table',null,
-            h('thead',null,h('tr',null,
-              h('th',null,'الكود'),h('th',null,'العميل'),h('th',null,'آخر دخول'),
-              h('th',null,'عدد الدخول'),h('th',null,'الجهاز'),h('th',null,'ينتهي بعد')
-            )),
-            h('tbody',null,
-              active.slice().sort(function(a,b){return new Date(b.last_used_at)-new Date(a.last_used_at);}).map(function(c){
-                return h('tr',{key:c.id},
-                  h('td',null,h('b',{style:{fontFamily:'monospace',letterSpacing:1,color:'#9D60FF'}},c.code)),
-                  h('td',null,c.label||h('span',{style:{color:'#4C4C7A'}},'—')),
-                  h('td',null,h('span',{style:{fontSize:12}},fmtD(c.last_used_at))),
-                  h('td',null,h('b',null,c.use_count||0,' مرة')),
-                  h('td',null,c.device_id?h('span',{className:'bdg bok',style:{fontSize:10}},'📱 مُقيَّد'):h('span',{className:'bdg bwrn',style:{fontSize:10}},'مفتوح')),
-                  h('td',null,h('span',{style:{color:dLeft(c.expires_at)<30?'#F59E0B':'#10B981',fontWeight:600}},dLeft(c.expires_at),' يوم'))
-                );
-              })
+      /* Table body */
+      loading
+        ? h('div', { style: { textAlign: 'center', padding: '32px', color: '#4A4870' } }, '⏳ جاري التحميل...')
+        : list.length === 0
+          ? h('div', { style: { textAlign: 'center', padding: '32px', color: '#2A2550' } },
+              h('div', { style: { fontSize: 36, marginBottom: 8 } }, '🔍'),
+              h('p', null, 'لا توجد أكواد في هذه الفئة')
             )
-          ))
+          : h('div', { className: 'tw' },
+              h('table', null,
+                h('thead', null,
+                  h('tr', null,
+                    h('th', null, 'الكود'),
+                    h('th', null, 'العميل'),
+                    h('th', null, 'الخطة'),
+                    h('th', null, 'تاريخ الانتهاء'),
+                    h('th', null, 'الجهاز'),
+                    h('th', null, 'الاستخدام'),
+                    h('th', null, 'الحالة'),
+                    h('th', null, 'الإجراءات')
+                  )
+                ),
+                h('tbody', null,
+                  list.map(function(c) {
+                    var exp  = new Date(c.expires_at) < new Date();
+                    var dl   = dLeft(c.expires_at);
+                    var busy = working === c.id;
+
+                    /* Status badge — computed fresh from c.is_active each render */
+                    var badge;
+                    var rowCls = '';
+                    if (!c.is_active) {
+                      badge = h('span', { className: 'bg bg-y' }, '⛔ موقوف');
+                      rowCls = 'dim';
+                    } else if (exp) {
+                      badge = h('span', { className: 'bg bg-r' }, '⌛ منتهي');
+                      rowCls = 'dim';
+                    } else if (dl <= 7) {
+                      badge = h('span', { className: 'bg bg-y' }, '⚠️ ينتهي قريباً');
+                    } else {
+                      badge = h('span', { className: 'bg bg-g' }, '✅ نشط');
+                    }
+
+                    return h('tr', { key: c.id, className: rowCls },
+                      /* Code */
+                      h('td', null,
+                        h('div', { style: { display: 'flex', alignItems: 'center', gap: 6 } },
+                          h('b', { style: {
+                            fontFamily: 'monospace', fontSize: 13, letterSpacing: 2,
+                            color: (!c.is_active || exp) ? '#3A3660' : '#A78BFA'
+                          } }, c.code),
+                          h('button', {
+                            style: { background: 'none', color: '#3A3660', fontSize: 10, padding: '2px 5px', borderRadius: 4, border: '1px solid #1A1835' },
+                            onClick: function() { doCopy(c.code); }
+                          }, '📋')
+                        )
+                      ),
+                      /* Label */
+                      h('td', null,
+                        h('div', null,
+                          h('div', { style: { fontWeight: 600, fontSize: 12 } }, c.label || h('span', { style: { color: '#2A2550' } }, '—')),
+                          c.note && h('div', { style: { fontSize: 10, color: '#2A2550', marginTop: 2 } }, c.note)
+                        )
+                      ),
+                      /* Plan */
+                      h('td', null, h('span', { className: 'bg bg-p', style: { fontSize: 10 } }, c.plan || 'monthly')),
+                      /* Expiry */
+                      h('td', null,
+                        h('div', null,
+                          h('div', { style: { fontSize: 11, fontWeight: 600, color: exp ? '#EF4444' : dl <= 7 ? '#F59E0B' : '#5A5880' } }, dFmt(c.expires_at)),
+                          !exp && h('div', { style: { fontSize: 10, color: '#3A3660' } }, dl, ' يوم')
+                        )
+                      ),
+                      /* Device */
+                      h('td', null,
+                        (c.device_id && c.device_id.length > 3)
+                          ? h('div', null,
+                              h('span', { className: 'bg bg-g', style: { fontSize: 10, display: 'block', marginBottom: 4 } }, '📱 مُسجَّل'),
+                              !busy && h('button', {
+                                className: 'btn b-y', style: { padding: '3px 8px', fontSize: 10 },
+                                onClick: function() { doResetDevice(c.id, c.code); }
+                              }, '🔄 تعيين جديد')
+                            )
+                          : h('span', { className: 'bg bg-d', style: { fontSize: 10 } }, 'لم يُستخدم')
+                      ),
+                      /* Usage */
+                      h('td', null,
+                        h('div', null,
+                          h('div', { style: { fontWeight: 700, color: c.use_count > 0 ? '#10B981' : '#2A2550', fontSize: 13 } }, c.use_count || 0, ' مرة'),
+                          c.last_used_at && h('div', { style: { fontSize: 10, color: '#3A3660' } }, dFmt(c.last_used_at))
+                        )
+                      ),
+                      /* Status */
+                      h('td', null, busy ? h('span', { style: { fontSize: 12, color: '#4A4870' } }, '⏳') : badge),
+                      /* Actions */
+                      h('td', null,
+                        busy
+                          ? h('span', { style: { fontSize: 11, color: '#4A4870' } }, 'جاري...')
+                          : h('div', { style: { display: 'flex', gap: 4, flexWrap: 'wrap' } },
+                              /* Toggle */
+                              h('button', {
+                                className: 'btn ' + (c.is_active ? 'b-r' : 'b-g'),
+                                style: { padding: '5px 10px', fontSize: 11 },
+                                onClick: function() { doToggle(c.id, c.is_active); }
+                              }, c.is_active ? '⛔ إيقاف' : '✅ تفعيل'),
+                              /* +1 month */
+                              h('button', {
+                                className: 'btn b-o', style: { padding: '5px 8px', fontSize: 10 },
+                                onClick: function() { doExtend(c.id, c.code, 1); }
+                              }, '＋شهر'),
+                              /* +3 months */
+                              h('button', {
+                                className: 'btn b-o', style: { padding: '5px 8px', fontSize: 10 },
+                                onClick: function() { doExtend(c.id, c.code, 3); }
+                              }, '＋٣'),
+                              /* Delete */
+                              h('button', {
+                                className: 'btn b-r', style: { padding: '5px 8px', fontSize: 10 },
+                                onClick: function() { doDelete(c.id, c.code); }
+                              }, '🗑')
+                            )
+                      )
+                    );
+                  })
+                )
+              )
+            )
     )
   );
 }
 
-/* ════════ Notifications ════════ */
-function Notifs(props){
-  var showToast=props.showToast;
-  var ts=_useState('');var title=ts[0],setTitle=ts[1];
-  var bs=_useState('');var body=bs[0],setBody=bs[1];
-  var tks=_useState(function(){return localStorage.getItem('cc-gh-token')||'';});var ghTok=tks[0],setGhTok=tks[1];
-  var tis=_useState('');var tokInput=tis[0],setTI=tis[1];
-  var shs=_useState(false);var showTok=shs[0],setST=shs[1];
-  var sds=_useState(false);var sending=sds[0],setSending=sds[1];
-  var lg=useLS('cc-notif-log',[]);var log=lg[0],setLog=lg[1];
+/* ══════════════════════════════════════
+   USERS PAGE
+══════════════════════════════════════ */
+function UsersPage(p) {
+  var token = p.token; var show = p.show;
+  var cs = St([]); var codes = cs[0]; var setCodes = cs[1];
+  var ls = St(true); var loading = ls[0]; var setLoading = ls[1];
 
-  function saveTok(){
-    var t=tokInput.trim();if(!t)return;
-    localStorage.setItem('cc-gh-token',t);setGhTok(t);setTI('');setST(false);
-    showToast('✅ تم حفظ الـ Token');
-  }
-  function removeTok(){localStorage.removeItem('cc-gh-token');setGhTok('');showToast('تم الحذف','warn');}
+  Ef(function() {
+    setLoading(true);
+    apiGetCodes(token).then(function(d) { setLoading(false); if (d) setCodes(d); });
+  }, []);
 
-  function send(){
-    if(!title.trim()){showToast('اكتب العنوان','warn');return;}
-    if(!ghTok){showToast('أدخل GitHub Token','err');return;}
-    setSending(true);
-    ghSend(ghTok,title,body).then(function(res){
-      setSending(false);
-      if(res.ok){
-        setLog(function(p){return[Object.assign({},res.notif,{loggedAt:new Date().toISOString()})].concat(p.slice(0,49));});
-        showToast('✅ تم الإرسال — يصل للعملاء خلال ساعة');
-        setTitle('');setBody('');
-      }else showToast('❌ '+res.msg,'err');
-    });
-  }
+  var active = codes.filter(function(c) { return c.is_active && new Date(c.expires_at) > new Date() && c.last_used_at; });
 
-  var masked=ghTok?ghTok.slice(0,8)+'•••••••••••'+ghTok.slice(-4):'';
-
-  return h('div',null,
-    h('div',{className:'sec',style:{background:ghTok?'rgba(16,185,129,.07)':'rgba(245,158,11,.07)',borderColor:ghTok?'rgba(16,185,129,.25)':'rgba(245,158,11,.25)'}},
-      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}},
-        h('h3',{style:{fontSize:15,fontWeight:800}},'🔑 GitHub Token'),
-        ghTok?h('span',{className:'bdg bok'},'✓ مُعيَّن'):h('span',{className:'bdg bwrn'},'⚠️ مطلوب')
-      ),
-      ghTok
-        ?h('div',null,
-            h('div',{style:{display:'flex',alignItems:'center',gap:10,marginBottom:6}},
-              h('div',{style:{flex:1,background:'#181830',borderRadius:8,padding:'8px 12px',fontFamily:'monospace',fontSize:13,color:'#10B981'}},'🔒 ',masked),
-              h('button',{className:'btn br bsm',onClick:removeTok},'حذف')
-            ),
-            h('p',{style:{fontSize:11,color:'#7878A8'}},'✓ محفوظ في متصفحك فقط')
-          )
-        :h('div',null,
-            h('div',{className:'wbox'},'💡 أنشئ Fine-grained token على GitHub بصلاحية Contents: Read & Write على مستودع craftcost-notification فقط'),
-            h('div',{style:{display:'flex',gap:8,marginBottom:6}},
-              h('input',{type:showTok?'text':'password',value:tokInput,
-                onChange:function(e){setTI(e.target.value);},
-                onKeyDown:function(e){if(e.key==='Enter')saveTok();},
-                placeholder:'github_pat_...',style:{flex:1,fontFamily:'monospace'}}),
-              h('button',{onClick:function(){setST(!showTok);},className:'btn bo bsm'},showTok?'🙈':'👁'),
-              h('button',{onClick:saveTok,className:'btn bp bsm',disabled:!tokInput.trim()},'حفظ')
-            ),
-            h('p',{style:{fontSize:11,color:'#4C4C7A'}},'يُحفظ في متصفحك فقط — لا يُرسل لأي خادم')
-          )
-    ),
-    h('div',{className:'sec'},
-      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:8}},'📢 إرسال إشعار للعملاء'),
-      h('div',{className:'ibox'},'📡 ','يُكتب الإشعار على GitHub ← يصل للعملاء تلقائياً خلال ساعة — مجاني'),
-      h('div',{style:{marginBottom:10}},
-        h('label',{className:'lbl'},'العنوان *'),
-        h('input',{value:title,onChange:function(e){setTitle(e.target.value);},placeholder:'مثال: تحديث جديد ✨',maxLength:100})
-      ),
-      h('div',{style:{marginBottom:14}},
-        h('label',{className:'lbl'},'التفاصيل (اختياري)'),
-        h('textarea',{value:body,onChange:function(e){setBody(e.target.value);},rows:3,placeholder:'تفاصيل إضافية...',maxLength:300})
-      ),
-      title&&h('div',{style:{background:'rgba(124,58,237,.12)',border:'1.5px solid rgba(124,58,237,.28)',borderRadius:12,padding:'12px 14px',marginBottom:14}},
-        h('div',{style:{fontSize:11,color:'#7878A8',marginBottom:6,fontWeight:700}},'معاينة:'),
-        h('div',{style:{display:'flex',gap:8}},
-          h('span',{style:{fontSize:20}},'📢'),
-          h('div',null,
-            h('div',{style:{fontSize:14,fontWeight:800,color:'#fff',marginBottom:2}},title),
-            body&&h('div',{style:{fontSize:12,color:'rgba(255,255,255,.8)'}},body)
-          )
-        )
-      ),
-      h('button',{className:'btn bp',style:{width:'100%',justifyContent:'center',padding:'12px'},
-        onClick:send,disabled:!title.trim()||!ghTok||sending},
-        sending?'جاري الإرسال..':'📨 إرسال لجميع العملاء')
-    ),
-    log.length>0&&h('div',{className:'sec'},
-      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}},
-        h('h3',{style:{fontSize:15,fontWeight:800}},'📋 الإشعارات المُرسلة (',log.length,')'),
-        h('button',{className:'btn br bsm',onClick:function(){if(window.confirm('مسح؟'))setLog([]);}},'مسح')
-      ),
-      h('div',{className:'tw'},h('table',null,
-        h('thead',null,h('tr',null,h('th',null,'العنوان'),h('th',null,'التفاصيل'),h('th',null,'وقت الإرسال'))),
-        h('tbody',null,log.map(function(n){
-          return h('tr',{key:n.id},
-            h('td',null,h('b',null,n.title)),
-            h('td',null,h('span',{style:{fontSize:12,color:'#7878A8'}},n.body||'—')),
-            h('td',null,h('span',{style:{fontSize:12}},fmtD(n.sentAt||n.loggedAt)))
-          );
-        }))
-      ))
+  return h('div', null,
+    h('div', { className: 'card' },
+      h('div', { className: 'card-h' }, '👥 المستخدمون النشطون (', active.length, ')'),
+      loading
+        ? h('div', { style: { color: '#4A4870', padding: '20px 0', textAlign: 'center' } }, '⏳ جاري التحميل...')
+        : active.length === 0
+          ? h('div', { style: { textAlign: 'center', padding: '24px 0', color: '#2A2550', fontSize: 13 } }, 'لا يوجد مستخدمون نشطون بعد — تأكد من أن الأكواد مُستخدمة')
+          : h('div', { className: 'tw' },
+              h('table', null,
+                h('thead', null, h('tr', null,
+                  h('th', null, 'الكود'), h('th', null, 'العميل'), h('th', null, 'آخر دخول'),
+                  h('th', null, 'عدد الدخول'), h('th', null, 'الجهاز'), h('th', null, 'ينتهي بعد')
+                )),
+                h('tbody', null,
+                  active.slice().sort(function(a, b) { return new Date(b.last_used_at) - new Date(a.last_used_at); }).map(function(c) {
+                    var dl = dLeft(c.expires_at);
+                    return h('tr', { key: c.id },
+                      h('td', null, h('b', { style: { fontFamily: 'monospace', letterSpacing: 1, color: '#A78BFA', fontSize: 13 } }, c.code)),
+                      h('td', null, c.label || h('span', { style: { color: '#2A2550' } }, '—')),
+                      h('td', null, h('span', { style: { fontSize: 11, color: '#5A5880' } }, dFmt(c.last_used_at))),
+                      h('td', null, h('b', { style: { color: '#10B981' } }, c.use_count || 0, ' مرة')),
+                      h('td', null, c.device_id ? h('span', { className: 'bg bg-g', style: { fontSize: 10 } }, '📱 مُقيَّد') : h('span', { className: 'bg bg-d', style: { fontSize: 10 } }, 'مفتوح')),
+                      h('td', null, h('span', { style: { color: dl < 30 ? '#F59E0B' : '#10B981', fontWeight: 700 } }, dl, ' يوم'))
+                    );
+                  })
+                )
+              )
+            )
     )
   );
 }
 
-/* ════════ Settings ════════ */
-function Settings(props){
-  var token=props.token,showToast=props.showToast,userEmail=props.userEmail;
-  var tcs=_useState('');var testCode=tcs[0],setTC=tcs[1];
-  var trs=_useState(null);var testRes=trs[0],setTR=trs[1];
-  var tgs=_useState(false);var testing=tgs[0],setTG=tgs[1];
-
-  function runTest(){
-    if(!testCode.trim())return;
-    setTG(true);setTR(null);
-    dbGet(token,'subscription_codes','code=eq.'+encodeURIComponent(testCode.toUpperCase())+'&select=*')
-      .then(function(d){
-        setTG(false);
-        if(!d||!d.length)setTR({err:true,msg:'الكود غير موجود في قاعدة البيانات'});
-        else{
-          var r=d[0];
-          setTR({err:false,code:r.code,expires:r.expires_at,active:r.is_active,plan:r.plan,uses:r.use_count,device:r.device_id?'مُقيَّد':'مفتوح'});
-        }
-      });
-  }
-
-  return h('div',null,
-    h('div',{className:'sec',style:{background:'rgba(16,185,129,.07)',borderColor:'rgba(16,185,129,.25)'}},
-      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:10}},'👤 حسابك'),
-      h('div',{style:{display:'flex',alignItems:'center',gap:12}},
-        h('div',{style:{width:44,height:44,borderRadius:12,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20}},'👤'),
-        h('div',null,
-          h('div',{style:{fontWeight:700,fontSize:14}},userEmail||'مدير AdVax'),
-          h('div',{style:{fontSize:12,color:'#10B981'}},'✅ تسجيل دخول عبر Supabase Auth')
-        )
-      )
-    ),
-    h('div',{className:'sec'},
-      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'🔌 حالة الاتصال'),
-      h('div',{className:'g2'},
-        h('div',{style:{background:'rgba(16,185,129,.1)',border:'1px solid rgba(16,185,129,.25)',borderRadius:10,padding:'12px 14px'}},
-          h('div',{style:{fontWeight:700,marginBottom:3,color:'#10B981'}},'✅ Supabase متصل'),
-          h('div',{style:{fontSize:11,color:'#7878A8'}},'مُوثَّق بـ Auth — صلاحيات كاملة')
-        ),
-        h('div',{style:{background:'rgba(16,185,129,.1)',border:'1px solid rgba(16,185,129,.25)',borderRadius:10,padding:'12px 14px'}},
-          h('div',{style:{fontWeight:700,marginBottom:3,color:'#10B981'}},'✅ GitHub Notifications'),
-          h('div',{style:{fontSize:11,color:'#7878A8'}},'نظام الإشعارات عبر GitHub')
-        )
-      )
-    ),
-    h('div',{className:'sec'},
-      h('h3',{style:{fontSize:15,fontWeight:800,marginBottom:12}},'🧪 اختبار كود'),
-      h('div',{style:{display:'flex',gap:9,marginBottom:10}},
-        h('input',{value:testCode,onChange:function(e){setTC(e.target.value.toUpperCase());},
-          placeholder:'أدخل كود للاختبار...',style:{flex:1,letterSpacing:2,fontWeight:700}}),
-        h('button',{className:'btn bp',onClick:runTest,disabled:testing||!testCode.trim(),style:{flexShrink:0}},testing?'..':'اختبار')
-      ),
-      testRes&&h('div',{style:{
-        background:testRes.err?'rgba(239,68,68,.1)':'rgba(16,185,129,.1)',
-        border:'1px solid '+(testRes.err?'rgba(239,68,68,.25)':'rgba(16,185,129,.25)'),
-        borderRadius:9,padding:'10px 14px',fontSize:13,color:testRes.err?'#EF4444':'#10B981'
-      }},
-        testRes.err?('❌ '+testRes.msg):h('div',null,
-          h('b',null,'✅ الكود صحيح'),
-          h('div',{style:{marginTop:5,fontSize:12,color:'#7878A8'}},
-            'الخطة: ',testRes.plan,' · ينتهي: ',fmtD(testRes.expires),
-            ' · الاستخدام: ',testRes.uses||0,' مرة',
-            ' · الجهاز: ',testRes.device,
-            ' · الحالة: ',h('b',{style:{color:testRes.active?'#10B981':'#EF4444'}},testRes.active?'نشط':'موقوف')
-          )
-        )
-      )
-    )
-  );
-}
-
-/* ════════ App Root ════════ */
-function AdminApp(){
-  /* auth state */
-  var as=_useState(function(){
-    try{var s=sessionStorage.getItem('cc-auth');return s?JSON.parse(s):null;}catch(e){return null;}
+/* ══════════════════════════════════════
+   NOTIFICATIONS PAGE
+══════════════════════════════════════ */
+function NotifsPage(p) {
+  var show = p.show;
+  var ts = St(''); var title = ts[0]; var setTitle = ts[1];
+  var bs = St(''); var body = bs[0]; var setBody = bs[1];
+  var gts = St(function() { return localStorage.getItem('cc-ghtok') || ''; });
+  var ghTok = gts[0]; var setGhTok = gts[1];
+  var tis = St(''); var tokIn = tis[0]; var setTokIn = tis[1];
+  var ss = St(false); var showTok = ss[0]; var setShowTok = ss[1];
+  var sns = St(false); var sending = sns[0]; var setSending = sns[1];
+  var ls = St(function() {
+    try { return JSON.parse(localStorage.getItem('cc-notif-log') || '[]'); } catch(e) { return []; }
   });
-  var auth=as[0],setAuth=as[1];
+  var log = ls[0]; var setLog = ls[1];
 
-  var ts=_useState('codes');var tab=ts[0],setTab=ts[1];
-  var cs=_useState([]);var codes=cs[0],setCodes=cs[1];
-  var ls=_useState(false);var loading=ls[0],setL=ls[1];
-  var toast=useToast();
-
-  function onLogin(res){
-    var sess={token:res.token,email:res.email};
-    sessionStorage.setItem('cc-auth',JSON.stringify(sess));
-    setAuth(sess);
+  function saveLog(newLog) {
+    setLog(newLog);
+    localStorage.setItem('cc-notif-log', JSON.stringify(newLog.slice(0, 50)));
   }
 
-  function logout(){
-    sessionStorage.removeItem('cc-auth');
-    setAuth(null);
+  function saveTok() {
+    var t = tokIn.trim(); if (!t) return;
+    localStorage.setItem('cc-ghtok', t); setGhTok(t); setTokIn(''); setShowTok(false);
+    show('✅ تم حفظ الـ Token');
   }
+  function removeTok() { localStorage.removeItem('cc-ghtok'); setGhTok(''); show('تم حذف الـ Token', 'warn'); }
 
-  function refresh(showMsg){
-    if(!auth)return;
-    setL(true);
-    dbGet(auth.token,'subscription_codes','select=*&order=created_at.desc').then(function(data){
-      setL(false);
-      if(data){
-        setCodes(data);
-        if(showMsg)toast.show('✅ تم التحديث — '+data.length+' كود');
-      }else{
-        if(showMsg)toast.show('❌ خطأ في التحميل','err');
+  function sendNotif() {
+    if (!title.trim()) { show('أدخل العنوان', 'warn'); return; }
+    if (!ghTok) { show('أدخل GitHub Token أولاً', 'err'); return; }
+    setSending(true);
+    ghSend(ghTok, title, body).then(function(res) {
+      setSending(false);
+      if (res.ok) {
+        saveLog([Object.assign({}, res.notif, { at: new Date().toISOString() })].concat(log));
+        show('✅ تم الإرسال — يصل للعملاء خلال ساعة');
+        setTitle(''); setBody('');
+      } else {
+        show('❌ ' + res.msg, 'err');
       }
     });
   }
-  
-  // Silent background sync — no toast
-  function syncCodes(){refresh(false);}
 
-  _useEffect(function(){if(auth)refresh();},[auth&&auth.token]);
+  var masked = ghTok ? ghTok.slice(0, 8) + '•••••••••••' + ghTok.slice(-4) : '';
 
-  if(!auth)return React.createElement(React.Fragment,null,
-    React.createElement(Login,{onLogin:onLogin}),
-    React.createElement(Toast,{t:toast.t})
-  );
-
-  var active=codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date();}).length;
-  var tabs=[
-    {id:'codes',ic:'🔑',l:'الأكواد'},
-    {id:'users',ic:'👥',l:'المستخدمون'},
-    {id:'notifs',ic:'📢',l:'الإشعارات'},
-    {id:'settings',ic:'⚙️',l:'إعدادات'},
-  ];
-
-  return React.createElement(React.Fragment,null,
-    h('div',{className:'top'},
-      h('div',{style:{width:38,height:38,borderRadius:10,background:'linear-gradient(135deg,#7C3AED,#9D60FF)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0}},'🔐'),
-      h('div',{style:{flex:1}},
-        h('div',{style:{fontWeight:900,fontSize:15,color:'#9D60FF'}},'لوحة إدارة AdVax — CraftCost Pro'),
-        h('div',{style:{fontSize:12,color:'#7878A8'}},
-          auth.email,' · ',active,' اشتراك نشط'
+  return h('div', null,
+    /* Token */
+    h('div', { className: 'card', style: {
+      borderColor: ghTok ? 'rgba(16,185,129,.25)' : 'rgba(245,158,11,.25)',
+      background: ghTok ? 'rgba(16,185,129,.04)' : 'rgba(245,158,11,.04)'
+    } },
+      h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 } },
+        h('div', { className: 'card-h', style: { margin: 0 } }, '🔑 GitHub Token'),
+        ghTok ? h('span', { className: 'bg bg-g' }, '✓ مُعيَّن') : h('span', { className: 'bg bg-y' }, '⚠️ مطلوب')
+      ),
+      ghTok
+        ? h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 } },
+            h('div', { style: { flex: 1, background: '#0C0B1C', borderRadius: 8, padding: '8px 12px', fontFamily: 'monospace', fontSize: 12, color: '#10B981' } }, '🔒 ', masked),
+            h('button', { className: 'btn b-r', onClick: removeTok }, 'حذف')
+          )
+        : h('div', null,
+            h('div', { style: { background: 'rgba(245,158,11,.08)', border: '1px solid rgba(245,158,11,.2)', borderRadius: 8, padding: '8px 12px', fontSize: 11, color: '#F59E0B', marginBottom: 10 } },
+              '💡 أنشئ Fine-grained token على GitHub — صلاحية Contents: Read & Write — على مستودع craftcost-notification فقط'
+            ),
+            h('div', { style: { display: 'flex', gap: 7 } },
+              h('input', {
+                type: showTok ? 'text' : 'password', value: tokIn,
+                onChange: function(e) { setTokIn(e.target.value); },
+                onKeyDown: function(e) { if (e.key === 'Enter') saveTok(); },
+                placeholder: 'github_pat_...', style: { flex: 1, fontFamily: 'monospace' }
+              }),
+              h('button', { className: 'btn b-o', style: { flexShrink: 0 }, onClick: function() { setShowTok(!showTok); } }, showTok ? '🙈' : '👁'),
+              h('button', { className: 'btn b-p', style: { flexShrink: 0 }, disabled: !tokIn.trim(), onClick: saveTok }, 'حفظ')
+            )
+          )
+    ),
+    /* Send */
+    h('div', { className: 'card' },
+      h('div', { className: 'card-h' }, '📢 إرسال إشعار للعملاء'),
+      h('div', { style: { background: 'rgba(99,102,241,.07)', border: '1px solid rgba(99,102,241,.18)', borderRadius: 8, padding: '7px 12px', fontSize: 11, color: '#818CF8', marginBottom: 13 } },
+        '📡 يُكتب الإشعار على GitHub ويصل للعملاء تلقائياً خلال ساعة — مجاني'
+      ),
+      h('div', { style: { marginBottom: 10 } },
+        h('label', { className: 'lbl' }, 'العنوان *'),
+        h('input', { value: title, onChange: function(e) { setTitle(e.target.value); }, placeholder: 'مثال: تحديث جديد ✨', maxLength: 100 })
+      ),
+      h('div', { style: { marginBottom: 13 } },
+        h('label', { className: 'lbl' }, 'التفاصيل (اختياري)'),
+        h('textarea', { value: body, onChange: function(e) { setBody(e.target.value); }, rows: 3, placeholder: '...', maxLength: 300 })
+      ),
+      title && h('div', { style: {
+        background: 'rgba(124,58,237,.1)', border: '1px solid rgba(124,58,237,.22)',
+        borderRadius: 10, padding: '10px 14px', marginBottom: 13
+      } },
+        h('div', { style: { fontSize: 10, color: '#4A4870', marginBottom: 5 } }, 'معاينة:'),
+        h('div', { style: { display: 'flex', gap: 8, alignItems: 'flex-start' } },
+          h('span', { style: { fontSize: 18 } }, '📢'),
+          h('div', null,
+            h('b', null, title),
+            body && h('div', { style: { fontSize: 12, color: '#7070A0', marginTop: 2 } }, body)
+          )
         )
       ),
-      APP_URL&&h('a',{href:APP_URL,target:'_blank',className:'btn bo bsm',style:{textDecoration:'none',marginLeft:6}},'التطبيق ↗'),
-      h('button',{className:'btn br bsm',onClick:logout},'تسجيل خروج')
+      h('button', {
+        className: 'btn b-p b-lg', style: { width: '100%', justifyContent: 'center' },
+        onClick: sendNotif, disabled: !title.trim() || !ghTok || sending
+      }, sending ? '⏳ جاري الإرسال...' : '📨 إرسال لجميع العملاء')
     ),
-    h('div',{className:'wrap fu'},
-      h(StatsBar,{codes:codes,onRefresh:function(){refresh(true);},loading:loading}),
-      h('div',{className:'tabs'},
-        tabs.map(function(tb){
-          return h('button',{key:tb.id,onClick:function(){setTab(tb.id);},
-            className:'tab'+(tab===tb.id?' on':'')},tb.ic,' ',tb.l);
-        })
+    /* Log */
+    log.length > 0 && h('div', { className: 'card' },
+      h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 } },
+        h('div', { className: 'card-h', style: { margin: 0 } }, '📋 الإشعارات المُرسلة (', log.length, ')'),
+        h('button', { className: 'btn b-r', onClick: function() { if (window.confirm('مسح؟')) saveLog([]); } }, 'مسح')
       ),
-      tab==='codes'   &&h(CodeMgr,  {token:auth.token,codes:codes,setCodes:setCodes,onRefresh:syncCodes,showToast:toast.show}),
-      tab==='users'   &&h(Users,    {codes:codes}),
-      tab==='notifs'  &&h(Notifs,   {showToast:toast.show}),
-      tab==='settings'&&h(Settings, {token:auth.token,showToast:toast.show,userEmail:auth.email})
-    ),
-    h(Toast,{t:toast.t})
+      h('div', { className: 'tw' },
+        h('table', null,
+          h('thead', null, h('tr', null, h('th', null, 'العنوان'), h('th', null, 'التفاصيل'), h('th', null, 'وقت الإرسال'))),
+          h('tbody', null,
+            log.map(function(n) {
+              return h('tr', { key: n.id },
+                h('td', null, h('b', null, n.title)),
+                h('td', null, h('span', { style: { color: '#5A5880' } }, n.body || '—')),
+                h('td', null, h('span', { style: { fontSize: 11, color: '#4A4870' } }, dFmt(n.sentAt || n.at)))
+              );
+            })
+          )
+        )
+      )
+    )
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  React.createElement(AdminApp,null)
-);
+/* ══════════════════════════════════════
+   SETTINGS PAGE
+══════════════════════════════════════ */
+function SettingsPage(p) {
+  var token = p.token; var show = p.show; var email = p.email;
+  var tcs = St(''); var tc = tcs[0]; var setTC = tcs[1];
+  var trs = St(null); var tr = trs[0]; var setTR = trs[1];
+  var tgs = St(false); var tg = tgs[0]; var setTG = tgs[1];
+
+  function runTest() {
+    if (!tc.trim()) return;
+    setTG(true); setTR(null);
+    fetch(SUPA + '/rest/v1/subscription_codes?code=eq.' + encodeURIComponent(tc.toUpperCase()) + '&select=*', {
+      headers: hdrs(token)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      setTG(false);
+      if (!d || !d.length) setTR({ err: true, msg: 'الكود غير موجود في قاعدة البيانات' });
+      else setTR({ err: false, c: d[0] });
+    })
+    .catch(function() { setTG(false); setTR({ err: true, msg: 'خطأ في الاتصال' }); });
+  }
+
+  return h('div', null,
+    h('div', { className: 'card', style: { borderColor: 'rgba(16,185,129,.2)', background: 'rgba(16,185,129,.04)' } },
+      h('div', { className: 'card-h' }, '👤 حسابك'),
+      h('div', { style: { display: 'flex', alignItems: 'center', gap: 12 } },
+        h('div', { style: { width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg,#7C3AED,#A78BFA)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 } }, '👤'),
+        h('div', null,
+          h('div', { style: { fontWeight: 700, fontSize: 14 } }, email),
+          h('div', { style: { fontSize: 11, color: '#10B981', marginTop: 2 } }, '✅ مُوثَّق عبر Supabase Auth')
+        )
+      )
+    ),
+    h('div', { className: 'card' },
+      h('div', { className: 'card-h' }, '🧪 اختبار كود'),
+      h('div', { style: { display: 'flex', gap: 8, marginBottom: 10 } },
+        h('input', {
+          value: tc,
+          onChange: function(e) { setTC(e.target.value.toUpperCase()); },
+          onKeyDown: function(e) { if (e.key === 'Enter') runTest(); },
+          placeholder: 'أدخل كود للاختبار...',
+          style: { flex: 1, letterSpacing: 2, fontWeight: 700 }
+        }),
+        h('button', {
+          className: 'btn b-p', style: { flexShrink: 0 },
+          disabled: tg || !tc.trim(), onClick: runTest
+        }, tg ? '⏳' : 'اختبار')
+      ),
+      tr && h('div', { style: {
+        background: tr.err ? 'rgba(239,68,68,.08)' : 'rgba(16,185,129,.08)',
+        border: '1px solid ' + (tr.err ? 'rgba(239,68,68,.22)' : 'rgba(16,185,129,.22)'),
+        borderRadius: 9, padding: '10px 14px', fontSize: 12
+      } },
+        tr.err
+          ? h('span', { style: { color: '#EF4444' } }, '❌ ', tr.msg)
+          : h('div', null,
+              h('div', { style: { color: '#10B981', fontWeight: 700, marginBottom: 5 } }, '✅ الكود موجود وصحيح'),
+              h('div', { style: { color: '#5A5880', lineHeight: 1.9 } },
+                'الكود: ', h('b', { style: { color: '#A78BFA' } }, tr.c.code), ' · ',
+                'الخطة: ', tr.c.plan, ' · ',
+                'الحالة: ', h('b', { style: { color: tr.c.is_active ? '#10B981' : '#EF4444' } }, tr.c.is_active ? 'نشط ✅' : 'موقوف ⛔'), ' · ',
+                'الاستخدام: ', tr.c.use_count || 0, ' مرة · ',
+                'الجهاز: ', h('b', null, tr.c.device_id ? 'مُقيَّد' : 'مفتوح'), ' · ',
+                'ينتهي: ', dFmt(tr.c.expires_at)
+              )
+            )
+      )
+    ),
+    h('div', { className: 'card' },
+      h('div', { className: 'card-h' }, 'ℹ️ معلومات'),
+      [
+        ['رابط التطبيق', APP],
+        ['الإصدار', 'CraftCost Pro v3.1'],
+        ['الشركة', 'AdVax']
+      ].map(function(item, i) {
+        return h('div', { key: i, style: { display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '7px 10px', background: '#0C0B1C', borderRadius: 8, marginBottom: 6 } },
+          h('span', { style: { color: '#4A4870' } }, item[0]),
+          h('span', { style: { fontWeight: 600 } }, item[1])
+        );
+      })
+    )
+  );
+}
+
+/* ══════════════════════════════════════
+   ROOT APP
+══════════════════════════════════════ */
+function App() {
+  var as = St(function() {
+    try { var s = sessionStorage.getItem('cc-adm-s'); return s ? JSON.parse(s) : null; }
+    catch(e) { return null; }
+  });
+  var auth = as[0]; var setAuth = as[1];
+  var ts = St('codes'); var tab = ts[0]; var setTab = ts[1];
+  var tv = useToast();
+
+  function onLogin(res) {
+    var sess = { token: res.token, email: res.email };
+    sessionStorage.setItem('cc-adm-s', JSON.stringify(sess));
+    setAuth(sess);
+  }
+  function logout() { sessionStorage.removeItem('cc-adm-s'); setAuth(null); }
+
+  if (!auth) return h(Fr, null, h(Login, { onLogin: onLogin }), h(Toast, { t: tv.toast }));
+
+  var TABS = [
+    { id: 'codes',    icon: '🔑', label: 'الأكواد'     },
+    { id: 'users',    icon: '👥', label: 'المستخدمون'  },
+    { id: 'notifs',   icon: '📢', label: 'الإشعارات'   },
+    { id: 'settings', icon: '⚙️', label: 'الإعدادات'   }
+  ];
+
+  return h(Fr, null,
+    /* Top bar */
+    h('div', { id: 'bar' },
+      h('div', { className: 'logo' }, '🔐'),
+      h('div', { style: { flex: 1 } },
+        h('div', { className: 'title' }, 'لوحة إدارة AdVax — CraftCost Pro'),
+        h('div', { className: 'sub' }, auth.email)
+      ),
+      APP && h('a', { href: APP, target: '_blank', className: 'btn b-o', style: { textDecoration: 'none', padding: '6px 12px', fontSize: 12, marginLeft: 6 } }, 'التطبيق ↗'),
+      h('button', { className: 'btn b-r', style: { padding: '6px 12px', fontSize: 12 }, onClick: logout }, 'خروج')
+    ),
+    /* Page */
+    h('div', { id: 'wrap' },
+      h('div', { className: 'tabs' },
+        TABS.map(function(t) {
+          return h('button', {
+            key: t.id,
+            className: 'tab' + (tab === t.id ? ' on' : ''),
+            onClick: function() { setTab(t.id); }
+          }, t.icon, ' ', t.label);
+        })
+      ),
+      tab === 'codes'    && h(CodesPage,    { key: 'codes',    token: auth.token, show: tv.show }),
+      tab === 'users'    && h(UsersPage,    { key: 'users',    token: auth.token, show: tv.show }),
+      tab === 'notifs'   && h(NotifsPage,   { key: 'notifs',   show: tv.show }),
+      tab === 'settings' && h(SettingsPage, { key: 'settings', token: auth.token, show: tv.show, email: auth.email })
+    ),
+    h(Toast, { t: tv.toast })
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App, null));
 </script>
 </body>
 </html>
