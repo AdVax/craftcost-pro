@@ -355,12 +355,17 @@ function CodeMgr(props){
   // ── Toggle active/inactive ────────────────────
   function toggle(id,currentActive){
     var newVal=!currentActive;
+    // Optimistic update — show change immediately
+    setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{is_active:newVal}):c;});});
+    showToast(newVal?'✅ تم التفعيل':'⛔ تم الإيقاف', newVal?'ok':'warn');
+    // Then sync with Supabase in background
     dbPatch(token,'subscription_codes','id=eq.'+id,{is_active:newVal}).then(function(ok){
-      if(ok){
-        showToast(newVal?'✅ تم التفعيل':'⛔ تم الإيقاف', newVal?'ok':'warn');
-        onRefresh();
+      if(!ok){
+        // Revert if failed
+        setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{is_active:currentActive}):c;});});
+        showToast('❌ فشل — تأكد من تشغيل SQL الأمان','err');
       }else{
-        showToast('❌ فشل — تأكد من صلاحيات Supabase (SQL)','err');
+        onRefresh(); // silent sync
       }
     });
   }
@@ -368,9 +373,11 @@ function CodeMgr(props){
   // ── Reset device binding ──────────────────────
   function resetDev(id,codeName){
     if(!window.confirm('Reset device for code: '+codeName))return;
+    // Optimistic
+    setCodes(function(p){return p.map(function(c){return c.id===id?Object.assign({},c,{device_id:'',device_info:''}):c;});});
+    showToast('✅ تم إعادة تعيين الجهاز');
     dbPatch(token,'subscription_codes','id=eq.'+id,{device_id:'',device_info:''}).then(function(ok){
-      if(ok){showToast('✅ تم إعادة تعيين الجهاز');onRefresh();}
-      else showToast('❌ فشل التحديث','err');
+      if(!ok){showToast('❌ فشل التحديث','err');onRefresh();}
     });
   }
 
@@ -381,18 +388,25 @@ function CodeMgr(props){
     var base=new Date(c.expires_at)>new Date()?new Date(c.expires_at):new Date();
     base.setMonth(base.getMonth()+months);
     var iso=base.toISOString();
+    // Optimistic
+    setCodes(function(p){return p.map(function(x){return x.id===id?Object.assign({},x,{expires_at:iso,is_active:true}):x;});});
+    showToast('✅ تم تمديد '+codeName+' '+months+' شهر');
     dbPatch(token,'subscription_codes','id=eq.'+id,{expires_at:iso,is_active:true}).then(function(ok){
-      if(ok){showToast('✅ تم تمديد '+codeName+' '+months+' شهر');onRefresh();}
-      else showToast('❌ فشل التمديد','err');
+      if(!ok){showToast('❌ فشل التمديد','err');onRefresh();}
     });
   }
 
   // ── Delete code ───────────────────────────────
   function delCode(id,codeName){
     if(!window.confirm('Delete: '+codeName+'? Cannot undo.'))return;
+    // Optimistic remove
+    setCodes(function(p){return p.filter(function(c){return c.id!==id;});});
+    showToast('🗑 تم حذف '+codeName,'err');
     dbDel(token,'subscription_codes','id=eq.'+id).then(function(ok){
-      if(ok){showToast('تم حذف '+codeName,'err');onRefresh();}
-      else showToast('❌ فشل الحذف — تأكد من صلاحيات Supabase (SQL)','err');
+      if(!ok){
+        showToast('❌ فشل الحذف — سيُعاد تحميل البيانات','err');
+        onRefresh(); // reload to restore
+      }
     });
   }
 
@@ -856,15 +870,22 @@ function AdminApp(){
     setAuth(null);
   }
 
-  function refresh(){
+  function refresh(showMsg){
     if(!auth)return;
     setL(true);
     dbGet(auth.token,'subscription_codes','select=*&order=created_at.desc').then(function(data){
-      if(data){setCodes(data);toast.show('✅ تم تحميل '+data.length+' كود');}
-      else{toast.show('❌ خطأ في التحميل — قد تنتهي الجلسة، أعد تسجيل الدخول','err');}
       setL(false);
+      if(data){
+        setCodes(data);
+        if(showMsg)toast.show('✅ تم التحديث — '+data.length+' كود');
+      }else{
+        if(showMsg)toast.show('❌ خطأ في التحميل','err');
+      }
     });
   }
+  
+  // Silent background sync — no toast
+  function syncCodes(){refresh(false);}
 
   _useEffect(function(){if(auth)refresh();},[auth&&auth.token]);
 
@@ -894,14 +915,14 @@ function AdminApp(){
       h('button',{className:'btn br bsm',onClick:logout},'تسجيل خروج')
     ),
     h('div',{className:'wrap fu'},
-      h(StatsBar,{codes:codes,onRefresh:refresh,loading:loading}),
+      h(StatsBar,{codes:codes,onRefresh:function(){refresh(true);},loading:loading}),
       h('div',{className:'tabs'},
         tabs.map(function(tb){
           return h('button',{key:tb.id,onClick:function(){setTab(tb.id);},
             className:'tab'+(tab===tb.id?' on':'')},tb.ic,' ',tb.l);
         })
       ),
-      tab==='codes'   &&h(CodeMgr,  {token:auth.token,codes:codes,onRefresh:refresh,showToast:toast.show}),
+      tab==='codes'   &&h(CodeMgr,  {token:auth.token,codes:codes,setCodes:setCodes,onRefresh:syncCodes,showToast:toast.show}),
       tab==='users'   &&h(Users,    {codes:codes}),
       tab==='notifs'  &&h(Notifs,   {showToast:toast.show}),
       tab==='settings'&&h(Settings, {token:auth.token,showToast:toast.show,userEmail:auth.email})
