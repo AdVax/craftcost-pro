@@ -4,49 +4,55 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"/>
-<title>لوحة إدارة AdVax</title>
+<title>لوحة إدارة AdVax — CraftCost Pro</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Cairo',sans-serif;direction:rtl;background:#07060F;color:#E0DEF0;min-height:100vh}
-input,select,textarea,button{font-family:'Cairo',sans-serif}
-input,select,textarea{background:#100F1E;border:1.5px solid #21203A;color:#E0DEF0;padding:9px 12px;border-radius:8px;width:100%;outline:none;transition:border-color .15s;direction:rtl;font-size:14px}
+html,body{height:100%;font-family:'Cairo',sans-serif;direction:rtl;background:#07060F;color:#E0DEF0}
+input,select,textarea,button{font-family:'Cairo',sans-serif;font-size:14px}
+input,select,textarea{background:#100F1E;border:1.5px solid #21203A;color:#E0DEF0;padding:9px 12px;border-radius:8px;width:100%;outline:none;transition:border-color .15s;direction:rtl}
 input:focus,select:focus,textarea:focus{border-color:#7C3AED}
 select option{background:#161528}
-button{cursor:pointer;border:none;font-family:'Cairo',sans-serif;transition:all .15s}
-button:active{transform:scale(.96)}
-button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+button{cursor:pointer;border:none;font-family:'Cairo',sans-serif;transition:opacity .15s}
+button:active{opacity:.7}
+button:disabled{opacity:.4;cursor:not-allowed}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#21203A;border-radius:3px}
 
-#bar{background:#090817;border-bottom:1px solid #161528;padding:12px 18px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:99}
-.blogo{width:34px;height:34px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:17px}
-#wrap{max-width:980px;margin:0 auto;padding:18px 14px 60px}
+/* Layout */
+#topbar{background:#090817;border-bottom:1px solid #161528;padding:12px 20px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:99}
+.tlogo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+#main{max-width:980px;margin:0 auto;padding:18px 14px 60px}
 
+/* Tabs */
 .tabs{display:flex;gap:5px;margin-bottom:16px;flex-wrap:wrap}
 .tab{padding:7px 14px;border-radius:7px;font-size:13px;font-weight:700;color:#3E3C6A;background:#100F1E;border:1px solid #161528;cursor:pointer}
-.tab.on{background:rgba(124,58,237,.18);color:#A78BFA;border-color:rgba(124,58,237,.4)}
+.tab.active{background:rgba(124,58,237,.18);color:#A78BFA;border-color:rgba(124,58,237,.4)}
+.page{display:none}.page.active{display:block}
 
+/* Cards */
 .card{background:#100F1E;border:1px solid #161528;border-radius:11px;padding:16px;margin-bottom:12px}
-.ch{font-size:14px;font-weight:800;color:#C4B5FD;margin-bottom:13px}
+.card-title{font-size:14px;font-weight:800;color:#C4B5FD;margin-bottom:13px}
 
-.b{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
-.b:disabled{opacity:.4;cursor:not-allowed}
-.bp{background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff}
-.bo{background:transparent;border:1px solid #21203A;color:#C0BDDF}
-.bo:hover:not(:disabled){border-color:#7C3AED;color:#A78BFA}
-.br{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.28);color:#EF4444}
-.bg2{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.28);color:#10B981}
-.by{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.28);color:#F59E0B}
-.blg{padding:10px 22px;font-size:14px;border-radius:9px}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn-p{background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff}
+.btn-o{background:transparent;border:1px solid #21203A;color:#C0BDDF}
+.btn-r{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.28);color:#EF4444}
+.btn-g{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.28);color:#10B981}
+.btn-y{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.28);color:#F59E0B}
+.btn-lg{padding:10px 22px;font-size:14px;border-radius:9px}
 
+/* Grid */
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
 @media(max-width:600px){.g3,.g4{grid-template-columns:1fr}}
 
-.sv{background:#100F1E;border:1px solid #161528;border-radius:10px;padding:12px}
-.sn{font-size:24px;font-weight:900;line-height:1}
-.sl{font-size:11px;color:#3E3C6A;margin-top:4px}
+/* Stats */
+.stat{background:#100F1E;border:1px solid #161528;border-radius:10px;padding:12px}
+.stat-n{font-size:24px;font-weight:900;line-height:1}
+.stat-l{font-size:11px;color:#3E3C6A;margin-top:4px}
 
-.tw{overflow-x:auto;border-radius:9px;border:1px solid #161528}
+/* Table */
+.tbl-wrap{overflow-x:auto;border-radius:9px;border:1px solid #161528}
 table{width:100%;border-collapse:collapse;font-size:12px;min-width:640px}
 th{padding:8px 11px;text-align:right;color:#3E3C6A;font-weight:700;background:#090817;border-bottom:1px solid #161528;white-space:nowrap}
 td{padding:9px 11px;border-bottom:1px solid #0F0E1C;vertical-align:middle}
@@ -54,648 +60,795 @@ tr:last-child td{border:none}
 tr:hover td{background:rgba(124,58,237,.03)}
 tr.dim td{opacity:.38}
 
-.bg{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
-.bgg{background:rgba(16,185,129,.12);color:#10B981;border:1px solid rgba(16,185,129,.2)}
-.bgr{background:rgba(239,68,68,.12);color:#EF4444;border:1px solid rgba(239,68,68,.2)}
-.bgy{background:rgba(245,158,11,.12);color:#F59E0B;border:1px solid rgba(245,158,11,.2)}
-.bgp{background:rgba(124,58,237,.12);color:#A78BFA;border:1px solid rgba(124,58,237,.2)}
-.bgd{background:rgba(255,255,255,.05);color:#3E3C6A;border:1px solid rgba(255,255,255,.07)}
+/* Badge */
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.badge-g{background:rgba(16,185,129,.12);color:#10B981;border:1px solid rgba(16,185,129,.2)}
+.badge-r{background:rgba(239,68,68,.12);color:#EF4444;border:1px solid rgba(239,68,68,.2)}
+.badge-y{background:rgba(245,158,11,.12);color:#F59E0B;border:1px solid rgba(245,158,11,.2)}
+.badge-p{background:rgba(124,58,237,.12);color:#A78BFA;border:1px solid rgba(124,58,237,.2)}
+.badge-d{background:rgba(255,255,255,.05);color:#3E3C6A;border:1px solid rgba(255,255,255,.07)}
 
-.lb{display:block;margin-bottom:4px;font-size:11px;font-weight:700;color:#3E3C6A}
+/* Form */
+.label{display:block;margin-bottom:4px;font-size:11px;font-weight:700;color:#3E3C6A}
+.plan-btn{padding:6px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid #21203A;background:transparent;color:#C0BDDF}
+.plan-btn.selected{background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff;border-color:transparent}
 
-.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);padding:9px 20px;border-radius:9px;font-weight:700;font-size:13px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.7);white-space:nowrap;color:#fff;pointer-events:none;animation:tin .2s ease-out}
-@keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(7px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+/* Toast */
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);padding:9px 20px;border-radius:9px;font-weight:700;font-size:13px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.7);white-space:nowrap;color:#fff;display:none;pointer-events:none}
 
-.lp{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(124,58,237,.1),transparent)}
-.lc{background:#100F1E;border:1px solid #21203A;border-radius:18px;padding:30px 24px;width:100%;max-width:360px;text-align:center}
-.ll{width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+/* Login */
+#login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(124,58,237,.1),transparent)}
+.login-card{background:#100F1E;border:1px solid #21203A;border-radius:18px;padding:30px 24px;width:100%;max-width:360px;text-align:center}
+.login-logo{width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+
+/* Filter buttons */
+.filter-bar{display:flex;gap:4px;flex-wrap:wrap}
+.filter-btn{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #21203A;background:transparent;color:#3E3C6A}
+.filter-btn.active{background:rgba(124,58,237,.18);color:#A78BFA;border-color:rgba(124,58,237,.4)}
+
+/* Empty state */
+.empty{text-align:center;padding:32px;color:#21203A}
+.empty-icon{font-size:36px;margin-bottom:8px}
 </style>
 </head>
 <body>
-<div id="root"></div>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+
+<!-- ══ LOGIN PAGE ══ -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">🔐</div>
+    <div style="font-size:19px;font-weight:900;margin-bottom:4px">لوحة إدارة AdVax</div>
+    <div style="font-size:12px;color:#3E3C6A;margin-bottom:8px">CraftCost Pro</div>
+    <div style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);border-radius:7px;padding:5px 10px;font-size:11px;color:#10B981;margin-bottom:22px">🔒 Supabase Authentication</div>
+    <div style="text-align:right;margin-bottom:10px">
+      <label class="label">البريد الإلكتروني</label>
+      <input type="email" id="inp-email" placeholder="admin@advax.com" style="direction:ltr;text-align:right"/>
+    </div>
+    <div style="text-align:right;margin-bottom:14px">
+      <label class="label">كلمة المرور</label>
+      <div style="position:relative">
+        <input type="password" id="inp-pass" placeholder="••••••••" style="padding-left:38px"/>
+        <button onclick="togglePass()" id="eye-btn" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:none;color:#3E3C6A;padding:2px 4px;font-size:15px">👁</button>
+      </div>
+    </div>
+    <div id="login-err" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:7px;padding:7px 11px;font-size:12px;color:#EF4444;margin-bottom:10px;display:none"></div>
+    <button class="btn btn-p btn-lg" onclick="doLogin()" id="login-btn" style="width:100%;justify-content:center">دخول ←</button>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app" style="display:none">
+  <div id="topbar">
+    <div class="tlogo">🔐</div>
+    <div style="flex:1">
+      <div style="font-weight:900;font-size:14px;color:#A78BFA">لوحة إدارة AdVax — CraftCost Pro</div>
+      <div id="user-email" style="font-size:11px;color:#3E3C6A;margin-top:1px"></div>
+    </div>
+    <a id="app-link" href="https://craftcost-pro.advax.workers.dev" target="_blank" class="btn btn-o" style="text-decoration:none;padding:5px 11px;font-size:12px;margin-left:5px">التطبيق ↗</a>
+    <button class="btn btn-r" onclick="doLogout()" style="padding:5px 11px;font-size:12px">خروج</button>
+  </div>
+
+  <div id="main">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('codes',this)">🔑 الأكواد</button>
+      <button class="tab" onclick="showTab('users',this)">👥 المستخدمون</button>
+      <button class="tab" onclick="showTab('notifs',this)">📢 الإشعارات</button>
+      <button class="tab" onclick="showTab('settings',this)">⚙️ الإعدادات</button>
+    </div>
+
+    <!-- ══ CODES PAGE ══ -->
+    <div id="page-codes" class="page active">
+
+      <!-- Stats -->
+      <div class="g4" style="margin-bottom:13px" id="stats-row">
+        <div class="stat"><div class="stat-n" style="color:#A78BFA" id="stat-all">0</div><div class="stat-l">إجمالي</div></div>
+        <div class="stat"><div class="stat-n" style="color:#10B981" id="stat-active">0</div><div class="stat-l">نشط</div></div>
+        <div class="stat"><div class="stat-n" style="color:#F59E0B" id="stat-soon">0</div><div class="stat-l">ينتهي قريباً</div></div>
+        <div class="stat"><div class="stat-n" style="color:#EF4444" id="stat-off">0</div><div class="stat-l">موقوف/منتهي</div></div>
+      </div>
+
+      <!-- Create form -->
+      <div class="card">
+        <div class="card-title">➕ إنشاء كود اشتراك</div>
+        <div class="g3" style="margin-bottom:11px">
+          <div>
+            <label class="label">الكود *</label>
+            <div style="display:flex;gap:6px">
+              <input id="f-code" placeholder="CRAFT2025" maxlength="12" style="letter-spacing:2px;font-weight:700;font-size:15px" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"/>
+              <button class="btn btn-o" onclick="document.getElementById('f-code').value=genCode()" style="flex-shrink:0;padding:9px 10px" title="توليد عشوائي">🔀</button>
+            </div>
+          </div>
+          <div>
+            <label class="label">اسم العميل</label>
+            <input id="f-label" placeholder="محمد أحمد"/>
+          </div>
+          <div>
+            <label class="label">ملاحظة داخلية</label>
+            <input id="f-note" placeholder="خاصة بك..."/>
+          </div>
+        </div>
+        <div style="margin-bottom:11px">
+          <label class="label">مدة الاشتراك</label>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:2px" id="plan-btns">
+            <button class="plan-btn selected" data-plan="monthly" data-months="1" onclick="selectPlan(this)">شهري (1)</button>
+            <button class="plan-btn" data-plan="quarterly" data-months="3" onclick="selectPlan(this)">ربع سنوي (3)</button>
+            <button class="plan-btn" data-plan="biannual" data-months="6" onclick="selectPlan(this)">نصف سنوي (6)</button>
+            <button class="plan-btn" data-plan="yearly" data-months="12" onclick="selectPlan(this)">سنوي (12)</button>
+          </div>
+        </div>
+        <div id="exp-preview" style="display:none;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:7px;padding:6px 11px;margin-bottom:11px;font-size:12px;color:#A78BFA"></div>
+        <button class="btn btn-p btn-lg" onclick="doAdd()" id="add-btn">✅ إنشاء الكود</button>
+      </div>
+
+      <!-- Table -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:12px 15px;border-bottom:1px solid #161528;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:7px">
+          <div style="font-weight:800;color:#C4B5FD;font-size:14px">🔑 الأكواد (<span id="codes-count">0</span>)</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+            <div class="filter-bar">
+              <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">الكل</button>
+              <button class="filter-btn" data-filter="active" onclick="setFilter('active',this)">نشط</button>
+              <button class="filter-btn" data-filter="stopped" onclick="setFilter('stopped',this)">موقوف</button>
+              <button class="filter-btn" data-filter="expired" onclick="setFilter('expired',this)">منتهي</button>
+              <button class="filter-btn" data-filter="soon" onclick="setFilter('soon',this)">ينتهي قريباً</button>
+            </div>
+            <button class="btn btn-o" onclick="loadCodes()" style="padding:4px 9px;font-size:11px" id="refresh-btn">🔄 تحديث</button>
+          </div>
+        </div>
+        <div id="codes-body"></div>
+      </div>
+    </div>
+
+    <!-- ══ USERS PAGE ══ -->
+    <div id="page-users" class="page">
+      <div class="card">
+        <div class="card-title">👥 المستخدمون النشطون</div>
+        <div id="users-body"><div style="color:#3E3C6A;text-align:center;padding:20px">⏳ جاري التحميل...</div></div>
+      </div>
+    </div>
+
+    <!-- ══ NOTIFS PAGE ══ -->
+    <div id="page-notifs" class="page">
+      <!-- GitHub Token -->
+      <div class="card" id="token-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div class="card-title" style="margin:0">🔑 GitHub Token</div>
+          <span id="token-badge" class="badge badge-y">⚠️ مطلوب</span>
+        </div>
+        <div id="token-set-section" style="display:none">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="flex:1;background:#090817;border-radius:7px;padding:7px 11px;font-family:monospace;font-size:12px;color:#10B981" id="token-masked"></div>
+            <button class="btn btn-r" onclick="removeToken()">حذف</button>
+          </div>
+          <p style="font-size:11px;color:#3E3C6A;margin-top:5px">✓ محفوظ في متصفحك فقط</p>
+        </div>
+        <div id="token-input-section">
+          <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.18);border-radius:7px;padding:7px 11px;font-size:11px;color:#F59E0B;margin-bottom:9px">
+            💡 Fine-grained token — Contents: Read & Write — مستودع craftcost-notification فقط
+          </div>
+          <div style="display:flex;gap:6px">
+            <input type="password" id="token-inp" placeholder="github_pat_..." style="flex:1;font-family:monospace" onkeydown="if(event.key==='Enter')saveToken()"/>
+            <button class="btn btn-o" onclick="toggleTokenVis()" style="flex-shrink:0" id="tok-eye">👁</button>
+            <button class="btn btn-p" onclick="saveToken()" style="flex-shrink:0">حفظ</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Send notification -->
+      <div class="card">
+        <div class="card-title">📢 إرسال إشعار للعملاء</div>
+        <div style="background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.18);border-radius:7px;padding:6px 11px;font-size:11px;color:#818CF8;margin-bottom:12px">
+          📡 يُكتب على GitHub ويصل للعملاء خلال ساعة — مجاني
+        </div>
+        <div style="margin-bottom:10px">
+          <label class="label">العنوان *</label>
+          <input id="notif-title" placeholder="مثال: تحديث جديد ✨" maxlength="100"/>
+        </div>
+        <div style="margin-bottom:12px">
+          <label class="label">التفاصيل (اختياري)</label>
+          <textarea id="notif-body" rows="3" placeholder="..." maxlength="300"></textarea>
+        </div>
+        <div id="notif-preview" style="display:none;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:9px;padding:9px 13px;margin-bottom:12px"></div>
+        <button class="btn btn-p btn-lg" onclick="sendNotif()" style="width:100%;justify-content:center" id="send-btn">📨 إرسال لجميع العملاء</button>
+      </div>
+
+      <!-- Log -->
+      <div class="card" id="notif-log-card" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+          <div class="card-title" style="margin:0">📋 الإشعارات المُرسلة (<span id="log-count">0</span>)</div>
+          <button class="btn btn-r" onclick="clearLog()">مسح</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>العنوان</th><th>التفاصيل</th><th>وقت الإرسال</th></tr></thead>
+            <tbody id="log-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SETTINGS PAGE ══ -->
+    <div id="page-settings" class="page">
+      <div class="card" style="border-color:rgba(16,185,129,.2);background:rgba(16,185,129,.03)">
+        <div class="card-title">👤 حسابك</div>
+        <div style="display:flex;align-items:center;gap:11px">
+          <div style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:19px">👤</div>
+          <div>
+            <div style="font-weight:700;font-size:14px" id="settings-email">—</div>
+            <div style="font-size:11px;color:#10B981;margin-top:2px">✅ Supabase Auth</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🧪 اختبار كود</div>
+        <div style="display:flex;gap:7px;margin-bottom:10px">
+          <input id="test-code" placeholder="أدخل كود للاختبار..." style="flex:1;letter-spacing:2px;font-weight:700" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')testCode()"/>
+          <button class="btn btn-p" onclick="testCode()" style="flex-shrink:0">اختبار</button>
+        </div>
+        <div id="test-result" style="display:none"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ℹ️ معلومات</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 10px;background:#090817;border-radius:7px"><span style="color:#3E3C6A">رابط التطبيق</span><span style="font-weight:600">craftcost-pro.advax.workers.dev</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 10px;background:#090817;border-radius:7px"><span style="color:#3E3C6A">الإصدار</span><span style="font-weight:600">CraftCost Pro v3.1</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 10px;background:#090817;border-radius:7px"><span style="color:#3E3C6A">الشركة</span><span style="font-weight:600">AdVax</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<div id="toast"></div>
+
 <script>
-'use strict';
+/* ══════════════════════════════════════════════
+   CONFIG — ضع بياناتك بعد إنشاء مشروع Supabase
+══════════════════════════════════════════════ */
+var SUPA_URL = 'PASTE_SUPABASE_URL';   // مثال: https://abcxyz.supabase.co
+var SUPA_KEY = 'PASTE_SUPABASE_KEY';   // anon public key
+var GH_API   = 'https://api.github.com/repos/Advax/craftcost-notification/contents/latest.json';
 
-/* ══════════════════ CONFIG ══════════════════ */
-var SUPA  = 'https://jqkmtqbhxsuvvumudgrj.supabase.co';
-var AKEY  = 'sb_publishable_0KbQ1aL7rWoJCkk84OUVKQ_Krc4nvwS';
-var APP   = 'https://craftcost-pro.advax.workers.dev';
-var GHAPI = 'https://api.github.com/repos/Advax/craftcost-notification/contents/latest.json';
+/* ══════════════════════════════════════════════
+   STATE — بسيط وواضح
+══════════════════════════════════════════════ */
+var STATE = {
+  token:   null,   // Supabase auth token
+  email:   null,
+  codes:   [],     // all codes from DB
+  filter:  'all',  // current filter
+  selPlan: 'monthly',
+  selMonths: 1
+};
 
-/* ══════════════════ REACT ══════════════════ */
-var h  = React.createElement;
-var Fr = React.Fragment;
-var St = React.useState;
-var Ef = React.useEffect;
-var Cb = React.useCallback;
-
-/* ══════════════════ AUTH ══════════════════ */
-function login(email, pass) {
-  return fetch(SUPA+'/auth/v1/token?grant_type=password', {
-    method:'POST',
-    headers:{'apikey':AKEY,'Content-Type':'application/json'},
-    body:JSON.stringify({email:email.trim(), password:pass})
-  }).then(function(r){return r.json();}).then(function(d){
-    if(d.access_token) return {ok:true, token:d.access_token, email:d.user.email};
-    return {ok:false, err:d.error_description||'بريد أو كلمة مرور خاطئة'};
-  }).catch(function(){return {ok:false, err:'خطأ في الاتصال'};});
-}
-
-/* ══════════════════ DB HELPERS ══════════════════
-   Simple pattern: do the operation, then call load()
-   load() always fetches fresh data from Supabase
-   This guarantees UI is always in sync with DB
-══════════════════════════════════════════════════ */
-function apiH(token) {
-  return {'apikey':AKEY,'Authorization':'Bearer '+token,'Content-Type':'application/json'};
-}
-
-/* Fetch ALL codes — used after every operation */
-function apiAll(token) {
-  return fetch(SUPA+'/rest/v1/subscription_codes?select=*&order=created_at.desc', {
-    headers: apiH(token)
-  }).then(function(r){
-    if(!r.ok){console.error('GET failed:',r.status);return null;}
-    return r.json();
-  }).catch(function(e){console.error('GET error:',e);return null;});
-}
-
-/* Insert */
-function apiInsert(token, data) {
-  return fetch(SUPA+'/rest/v1/subscription_codes', {
-    method:'POST',
-    headers:Object.assign({},apiH(token),{'Prefer':'return=representation'}),
-    body:JSON.stringify(data)
-  }).then(function(r){
-    if(!r.ok) return r.text().then(function(t){return {ok:false,err:'Error '+r.status+': '+t};});
-    return r.json().then(function(d){
-      return (d&&d.length) ? {ok:true} : {ok:false,err:'لم يُعاد الكود — تحقق من الـ policies'};
-    });
-  }).catch(function(e){return {ok:false,err:e.message};});
-}
-
-/* Patch */
-function apiPatch(token, id, fields) {
-  return fetch(SUPA+'/rest/v1/subscription_codes?id=eq.'+id, {
-    method:'PATCH',
-    headers:Object.assign({},apiH(token),{'Prefer':'return=minimal'}),
-    body:JSON.stringify(fields)
-  }).then(function(r){
-    if(!r.ok) return r.text().then(function(t){return {ok:false,err:'Error '+r.status+': '+t};});
-    return {ok:true};
-  }).catch(function(e){return {ok:false,err:e.message};});
-}
-
-/* Delete */
-function apiDelete(token, id) {
-  return fetch(SUPA+'/rest/v1/subscription_codes?id=eq.'+id, {
-    method:'DELETE',
-    headers:apiH(token)
-  }).then(function(r){
-    if(!r.ok) return r.text().then(function(t){return {ok:false,err:'Error '+r.status+': '+t};});
-    return {ok:true};
-  }).catch(function(e){return {ok:false,err:e.message};});
-}
-
-/* ══════════════════ GITHUB ══════════════════ */
-function ghSha(tok) {
-  return fetch(GHAPI,{headers:{'Authorization':'token '+tok,'Accept':'application/vnd.github.v3+json'}})
-    .then(function(r){return r.status===404?null:r.ok?r.json().then(function(d){return d.sha;}):Promise.resolve('ERR');})
-    .catch(function(){return 'ERR';});
-}
-function ghSend(tok, title, body) {
-  var n={id:'n_'+Date.now(),title:title.trim(),body:body.trim(),sentAt:new Date().toISOString()};
-  var c=btoa(unescape(encodeURIComponent(JSON.stringify(n,null,2))));
-  return ghSha(tok).then(function(sha){
-    if(sha==='ERR') return {ok:false,msg:'خطأ في GitHub Token'};
-    var p={message:'إشعار: '+title,content:c};if(sha)p.sha=sha;
-    return fetch(GHAPI,{method:'PUT',headers:{'Authorization':'token '+tok,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(p)})
-      .then(function(r){return r.ok?{ok:true,n:n}:r.json().then(function(e){return {ok:false,msg:e.message||'Error '+r.status};});})
-      .catch(function(){return {ok:false,msg:'خطأ في الشبكة'};});
-  });
-}
-
-/* ══════════════════ UTILS ══════════════════ */
+/* ══════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════ */
 function dFmt(d){return d?new Date(d).toLocaleDateString('ar-SA'):'—';}
 function dLeft(d){return Math.ceil((new Date(d)-new Date())/864e5);}
-function expD(m){var d=new Date();d.setMonth(d.getMonth()+m);return d.toISOString();}
-function expL(m){var d=new Date();d.setMonth(d.getMonth()+m);return d.toLocaleDateString('ar-SA');}
+function expDate(m){var d=new Date();d.setMonth(d.getMonth()+m);return d.toISOString();}
+function expLabel(m){var d=new Date();d.setMonth(d.getMonth()+m);return d.toLocaleDateString('ar-SA');}
 function genCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',o='';for(var i=0;i<8;i++)o+=c[Math.floor(Math.random()*c.length)];return o;}
 
-/* ══════════════════ TOAST ══════════════════ */
-var _tt=null;
-function useToast(){
-  var s=St(null);var t=s[0];var set=s[1];
-  var show=Cb(function(msg,type){
-    if(_tt)clearTimeout(_tt);
-    set({msg:msg,type:type||'ok',k:Date.now()});
-    _tt=setTimeout(function(){set(null);},3500);
-  },[]);
-  return {t:t,show:show};
-}
-function Toast(p){
-  if(!p.t)return null;
-  var C={ok:'#10B981',err:'#EF4444',warn:'#F59E0B',info:'#6366F1'};
-  return h('div',{className:'toast',style:{background:C[p.t.type]||C.ok},key:p.t.k},p.t.msg);
-}
-
-/* ══════════════════ LOGIN ══════════════════ */
-function Login(p){
-  var es=St('');var em=es[0];var sEm=es[1];
-  var ps=St('');var pw=ps[0];var sPw=ps[1];
-  var ls=St(false);var ld=ls[0];var sLd=ls[1];
-  var ms=St('');var msg=ms[0];var sMsg=ms[1];
-  var vs=St(false);var vis=vs[0];var sVis=vs[1];
-  function go(){
-    if(!em.trim()||!pw){sMsg('أدخل البريد وكلمة المرور');return;}
-    sLd(true);sMsg('');
-    login(em,pw).then(function(r){sLd(false);if(r.ok)p.onLogin(r);else sMsg(r.err);});
-  }
-  return h('div',{className:'lp'},
-    h('div',{className:'lc'},
-      h('div',{className:'ll'},'🔐'),
-      h('div',{style:{fontSize:19,fontWeight:900,marginBottom:4}},'لوحة إدارة AdVax'),
-      h('div',{style:{fontSize:12,color:'#3E3C6A',marginBottom:8}},'CraftCost Pro'),
-      h('div',{style:{background:'rgba(16,185,129,.07)',border:'1px solid rgba(16,185,129,.18)',borderRadius:7,padding:'5px 10px',fontSize:11,color:'#10B981',marginBottom:22}},'🔒 Supabase Authentication'),
-      h('div',{style:{textAlign:'right',marginBottom:10}},
-        h('label',{className:'lb'},'البريد الإلكتروني'),
-        h('input',{type:'email',value:em,placeholder:'admin@advax.com',onChange:function(e){sEm(e.target.value);},onKeyDown:function(e){if(e.key==='Enter')go();}})
-      ),
-      h('div',{style:{textAlign:'right',marginBottom:14}},
-        h('label',{className:'lb'},'كلمة المرور'),
-        h('div',{style:{position:'relative'}},
-          h('input',{type:vis?'text':'password',value:pw,placeholder:'••••••••',style:{paddingLeft:38},onChange:function(e){sPw(e.target.value);},onKeyDown:function(e){if(e.key==='Enter')go();}}),
-          h('button',{onClick:function(){sVis(!vis);},style:{position:'absolute',left:8,top:'50%',transform:'translateY(-50%)',background:'none',color:'#3E3C6A',padding:'2px 4px',fontSize:15}},vis?'🙈':'👁')
-        )
-      ),
-      msg&&h('div',{style:{background:'rgba(239,68,68,.08)',border:'1px solid rgba(239,68,68,.2)',borderRadius:7,padding:'7px 11px',fontSize:12,color:'#EF4444',marginBottom:10}},msg),
-      h('button',{className:'b bp blg',style:{width:'100%',justifyContent:'center'},onClick:go,disabled:ld||!em.trim()||!pw},ld?'⏳ جاري التحقق...':'دخول ←')
-    )
-  );
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+var _toastTimer=null;
+function toast(msg,type){
+  var el=document.getElementById('toast');
+  var colors={ok:'#10B981',err:'#EF4444',warn:'#F59E0B',info:'#6366F1'};
+  el.style.background=colors[type||'ok']||colors.ok;
+  el.textContent=msg;
+  el.style.display='block';
+  if(_toastTimer)clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(function(){el.style.display='none';},3500);
 }
 
 /* ══════════════════════════════════════════════
-   CODES PAGE
-   
-   THE FIX: Every operation does:
-   1. Call Supabase (patch/delete/insert)
-   2. If success → call load() to fetch fresh data
-   3. load() calls setCodes(freshData) → React re-renders
-   
-   This is the ONLY reliable way with React 18 UMD + Supabase REST.
+   API CALLS — direct fetch to Supabase REST
 ══════════════════════════════════════════════ */
-var PLANS=[{v:'monthly',l:'شهري',m:1},{v:'quarterly',l:'ربع سنوي',m:3},{v:'biannual',l:'نصف سنوي',m:6},{v:'yearly',l:'سنوي',m:12}];
+function apiHeaders(){
+  return {'apikey':SUPA_KEY,'Authorization':'Bearer '+STATE.token,'Content-Type':'application/json'};
+}
 
-function CodesPage(p) {
-  var tok=p.tok; var show=p.show;
+/* Fetch all codes */
+function apiGetAll(){
+  return fetch(SUPA_URL+'/rest/v1/subscription_codes?select=*&order=created_at.desc',{headers:apiHeaders()})
+    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});
+}
 
-  var cs=St([]); var codes=cs[0]; var setCodes=cs[1];
-  var ls=St(true); var loading=ls[0]; var setLoading=ls[1];
-  var fs=St('all'); var filter=fs[0]; var setFilter=fs[1];
-  var ws=St(null); var busyId=ws[0]; var setBusy=ws[1];
-  var as=St(false); var adding=as[0]; var setAdding=as[1];
-  var ns=St({code:'',label:'',note:'',plan:'monthly',months:1});
-  var nc=ns[0]; var setNc=ns[1];
+/* Insert new code */
+function apiInsert(data){
+  return fetch(SUPA_URL+'/rest/v1/subscription_codes',{
+    method:'POST',
+    headers:Object.assign({},apiHeaders(),{'Prefer':'return=representation'}),
+    body:JSON.stringify(data)
+  }).then(function(r){
+    if(!r.ok)return r.text().then(function(t){throw new Error(t);});
+    return r.json();
+  });
+}
 
-  /* ── THE KEY FUNCTION ──
-     Always fetches fresh data from Supabase.
-     Called after every successful operation.
-     Guarantees UI matches DB. */
-  function load() {
-    setLoading(true);
-    apiAll(tok).then(function(data) {
-      setLoading(false);
-      if (data !== null) {
-        setCodes(data);  /* This WILL trigger re-render */
-      } else {
-        show('❌ فشل تحميل الأكواد', 'err');
-      }
-    });
-  }
-
-  Ef(function(){load();},[]);
-
-  /* ── Add ── */
-  function doAdd() {
-    var code=nc.code.trim().toUpperCase();
-    if(!code){show('أدخل الكود','warn');return;}
-    if(codes.find(function(c){return c.code===code;})){show('❌ الكود موجود مسبقاً','err');return;}
-    setAdding(true);
-    apiInsert(tok,{code:code,label:nc.label.trim(),note:nc.note.trim(),plan:nc.plan,expires_at:expD(nc.months),is_active:true,device_id:'',device_info:'',use_count:0})
-    .then(function(r){
-      setAdding(false);
-      if(r.ok){
-        show('✅ تم إنشاء الكود: '+code);
-        setNc({code:'',label:'',note:'',plan:'monthly',months:1});
-        load(); /* RELOAD → UI updates */
-      }else{
-        show('❌ '+r.err,'err');
-      }
-    });
-  }
-
-  /* ── Toggle ── */
-  function doToggle(id, current) {
-    setBusy(id);
-    apiPatch(tok, id, {is_active:!current}).then(function(r){
-      setBusy(null);
-      if(r.ok){
-        show(!current?'✅ تم تفعيل الكود':'⛔ تم إيقاف الكود', !current?'ok':'warn');
-        setFilter('all'); /* Show all codes so user sees the change */
-        load();
-      }else{
-        show('❌ '+r.err,'err');
-        setFilter('all');
-        load();
-      }
-    });
-  }
-
-  /* ── Delete ── */
-  function doDelete(id, code) {
-    if(!window.confirm('حذف الكود '+code+'؟\nلا يمكن التراجع.'))return;
-    setBusy(id);
-    apiDelete(tok, id).then(function(r){
-      setBusy(null);
-      if(r.ok){
-        show('🗑 تم حذف '+code,'err');
-        setFilter('all');
-        load();
-      }else{
-        show('❌ '+r.err,'err');
-        setFilter('all');
-        load();
-      }
-    });
-  }
-
-  /* ── Reset device ── */
-  function doResetDev(id, code) {
-    if(!window.confirm('إعادة تعيين الجهاز للكود '+code+'؟'))return;
-    setBusy(id);
-    apiPatch(tok, id, {device_id:'',device_info:''}).then(function(r){
-      setBusy(null);
-      if(r.ok){show('✅ تم إعادة تعيين الجهاز');load();}
-      else{show('❌ '+r.err,'err');}
-    });
-  }
-
-  /* ── Extend ── */
-  function doExtend(id, code, months) {
-    var c=codes.find(function(x){return x.id===id;});if(!c)return;
-    var base=new Date(c.expires_at)>new Date()?new Date(c.expires_at):new Date();
-    base.setMonth(base.getMonth()+months);
-    setBusy(id);
-    apiPatch(tok, id, {expires_at:base.toISOString(),is_active:true}).then(function(r){
-      setBusy(null);
-      if(r.ok){show('✅ تم تمديد '+code+' '+months+' شهر');load();}
-      else{show('❌ '+r.err,'err');}
-    });
-  }
-
-  /* ── Copy ── */
-  function doCopy(code){
-    if(navigator.clipboard)navigator.clipboard.writeText(code).then(function(){show('📋 تم نسخ: '+code);});
-  }
-
-  /* Filter */
-  var list=codes.filter(function(c){
-    var exp=new Date(c.expires_at)<new Date();
-    var dl=dLeft(c.expires_at);
-    if(filter==='active')  return c.is_active&&!exp;
-    if(filter==='stopped') return !c.is_active;
-    if(filter==='expired') return exp;
-    if(filter==='soon')    return c.is_active&&!exp&&dl<=7&&dl>0;
+/* Patch one row */
+function apiPatch(id,fields){
+  return fetch(SUPA_URL+'/rest/v1/subscription_codes?id=eq.'+id,{
+    method:'PATCH',
+    headers:Object.assign({},apiHeaders(),{'Prefer':'return=minimal'}),
+    body:JSON.stringify(fields)
+  }).then(function(r){
+    if(!r.ok)return r.text().then(function(t){throw new Error(t);});
     return true;
   });
-
-  var cnt={
-    all:codes.length,
-    active:codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date();}).length,
-    stopped:codes.filter(function(c){return !c.is_active;}).length,
-    expired:codes.filter(function(c){return new Date(c.expires_at)<new Date();}).length,
-    soon:codes.filter(function(c){var d=dLeft(c.expires_at);return c.is_active&&d>0&&d<=7;}).length
-  };
-
-  return h('div',null,
-
-    /* Stats */
-    h('div',{className:'g4',style:{marginBottom:13}},
-      [{n:cnt.all,l:'إجمالي',c:'#A78BFA'},{n:cnt.active,l:'نشط',c:'#10B981'},{n:cnt.soon,l:'ينتهي قريباً',c:'#F59E0B'},{n:cnt.stopped+cnt.expired,l:'موقوف/منتهي',c:'#EF4444'}]
-      .map(function(s,i){
-        return h('div',{key:i,className:'sv'},h('div',{className:'sn',style:{color:s.c}},s.n),h('div',{className:'sl'},s.l));
-      })
-    ),
-
-    /* Create form */
-    h('div',{className:'card'},
-      h('div',{className:'ch'},'➕ إنشاء كود اشتراك'),
-      h('div',{className:'g3',style:{marginBottom:11}},
-        h('div',null,
-          h('label',{className:'lb'},'الكود *'),
-          h('div',{style:{display:'flex',gap:6}},
-            h('input',{value:nc.code,placeholder:'CRAFT2025',maxLength:12,style:{letterSpacing:2,fontWeight:700,fontSize:15},
-              onChange:function(e){setNc(function(p){return Object.assign({},p,{code:e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'')});});}}),
-            h('button',{className:'b bo',style:{flexShrink:0,padding:'9px 10px'},title:'توليد عشوائي',
-              onClick:function(){setNc(function(p){return Object.assign({},p,{code:genCode()});});}
-            },'🔀')
-          )
-        ),
-        h('div',null,
-          h('label',{className:'lb'},'اسم العميل'),
-          h('input',{value:nc.label,placeholder:'محمد أحمد',onChange:function(e){setNc(function(p){return Object.assign({},p,{label:e.target.value});});}})
-        ),
-        h('div',null,
-          h('label',{className:'lb'},'ملاحظة'),
-          h('input',{value:nc.note,placeholder:'خاصة بك...',onChange:function(e){setNc(function(p){return Object.assign({},p,{note:e.target.value});});}})
-        )
-      ),
-      h('div',{style:{marginBottom:11}},
-        h('label',{className:'lb'},'مدة الاشتراك'),
-        h('div',{style:{display:'flex',gap:5,flexWrap:'wrap'}},
-          PLANS.map(function(pl){
-            return h('button',{key:pl.v,className:'b '+(nc.plan===pl.v?'bp':'bo'),
-              onClick:function(){setNc(function(p){return Object.assign({},p,{plan:pl.v,months:pl.m});});}
-            },pl.l,' (',pl.m,')');
-          })
-        )
-      ),
-      nc.code.trim()&&h('div',{style:{background:'rgba(124,58,237,.08)',border:'1px solid rgba(124,58,237,.2)',borderRadius:7,padding:'6px 11px',marginBottom:11,fontSize:12,color:'#A78BFA'}},
-        '📅 ينتهي في: ',h('b',null,expL(nc.months))
-      ),
-      h('button',{className:'b bp blg',disabled:!nc.code.trim()||adding,onClick:doAdd},adding?'⏳ جاري الحفظ...':'✅ إنشاء الكود')
-    ),
-
-    /* Table */
-    h('div',{className:'card',style:{padding:0,overflow:'hidden'}},
-      h('div',{style:{padding:'12px 15px',borderBottom:'1px solid #161528',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:7}},
-        h('div',{style:{fontWeight:800,color:'#C4B5FD',fontSize:14}},'🔑 الأكواد (',codes.length,')'),
-        h('div',{style:{display:'flex',gap:4,flexWrap:'wrap',alignItems:'center'}},
-          [['all','الكل'],['active','نشط'],['stopped','موقوف'],['expired','منتهي'],['soon','ينتهي قريباً']].map(function(item){
-            return h('button',{key:item[0],className:'b '+(filter===item[0]?'bp':'bo'),style:{padding:'4px 8px',fontSize:11},onClick:function(){setFilter(item[0]);}},item[1],' (',cnt[item[0]],')');
-          }),
-          h('button',{className:'b bo',style:{padding:'4px 9px',fontSize:11},onClick:function(){load();}},loading?'⏳':'🔄 تحديث')
-        )
-      ),
-
-      loading
-        ?h('div',{style:{textAlign:'center',padding:'28px',color:'#3E3C6A'}},'⏳ جاري التحميل...')
-        :list.length===0
-          ?h('div',{style:{textAlign:'center',padding:'28px',color:'#21203A'}},h('div',{style:{fontSize:32,marginBottom:7}},'🔍'),h('div',{style:{fontSize:13}},'لا توجد أكواد في هذه الفئة'))
-          :h('div',{className:'tw'},h('table',null,
-              h('thead',null,h('tr',null,
-                h('th',null,'الكود'),h('th',null,'العميل'),h('th',null,'الخطة'),
-                h('th',null,'ينتهي'),h('th',null,'الجهاز'),h('th',null,'الاستخدام'),
-                h('th',null,'الحالة'),h('th',null,'الإجراءات')
-              )),
-              h('tbody',null,list.map(function(c){
-                var exp=new Date(c.expires_at)<new Date();
-                var dl=dLeft(c.expires_at);
-                var busy=busyId===c.id;
-
-                var badge,rc='';
-                if(!c.is_active)     {badge=h('span',{className:'bg bgy'},'⛔ موقوف');rc='dim';}
-                else if(exp)          {badge=h('span',{className:'bg bgr'},'⌛ منتهي');rc='dim';}
-                else if(dl<=7)        {badge=h('span',{className:'bg bgy'},'⚠️ ينتهي قريباً');}
-                else                  {badge=h('span',{className:'bg bgg'},'✅ نشط');}
-
-                return h('tr',{key:c.id,className:rc},
-                  h('td',null,h('div',{style:{display:'flex',alignItems:'center',gap:5}},
-                    h('b',{style:{fontFamily:'monospace',fontSize:13,letterSpacing:2,color:(!c.is_active||exp)?'#21203A':'#A78BFA'}},c.code),
-                    h('button',{style:{background:'none',color:'#21203A',fontSize:10,padding:'2px 5px',borderRadius:3,border:'1px solid #161528'},onClick:function(){doCopy(c.code);}},'📋')
-                  )),
-                  h('td',null,h('div',null,
-                    h('div',{style:{fontWeight:600,fontSize:12}},c.label||h('span',{style:{color:'#21203A'}},'—')),
-                    c.note&&h('div',{style:{fontSize:10,color:'#21203A',marginTop:1}},c.note)
-                  )),
-                  h('td',null,h('span',{className:'bg bgp',style:{fontSize:10}},c.plan||'monthly')),
-                  h('td',null,h('div',null,
-                    h('div',{style:{fontSize:11,fontWeight:600,color:exp?'#EF4444':dl<=7?'#F59E0B':'#4A4870'}},dFmt(c.expires_at)),
-                    !exp&&h('div',{style:{fontSize:10,color:'#21203A'}},dl,' يوم')
-                  )),
-                  h('td',null,
-                    (c.device_id&&c.device_id.length>3)
-                      ?h('div',null,
-                          h('span',{className:'bg bgg',style:{fontSize:10,display:'block',marginBottom:3}},'📱 مُسجَّل'),
-                          !busy&&h('button',{className:'b by',style:{padding:'3px 7px',fontSize:10},onClick:function(){doResetDev(c.id,c.code);}},'🔄 جهاز جديد')
-                        )
-                      :h('span',{className:'bg bgd',style:{fontSize:10}},'لم يُستخدم')
-                  ),
-                  h('td',null,h('div',null,
-                    h('div',{style:{fontWeight:700,color:c.use_count>0?'#10B981':'#21203A',fontSize:13}},c.use_count||0,' مرة'),
-                    c.last_used_at&&h('div',{style:{fontSize:10,color:'#21203A'}},dFmt(c.last_used_at))
-                  )),
-                  h('td',null, busy?h('span',{style:{fontSize:11,color:'#3E3C6A'}},'⏳...'):badge),
-                  h('td',null,
-                    busy
-                      ?h('span',{style:{fontSize:11,color:'#3E3C6A'}},'جاري...')
-                      :h('div',{style:{display:'flex',gap:3,flexWrap:'wrap'}},
-                          h('button',{className:'b '+(c.is_active?'br':'bg2'),style:{padding:'5px 9px',fontSize:11},onClick:function(){doToggle(c.id,c.is_active);}},c.is_active?'⛔ إيقاف':'✅ تفعيل'),
-                          h('button',{className:'b bo',style:{padding:'5px 7px',fontSize:10},onClick:function(){doExtend(c.id,c.code,1);}},'＋شهر'),
-                          h('button',{className:'b bo',style:{padding:'5px 7px',fontSize:10},onClick:function(){doExtend(c.id,c.code,3);}},'＋٣'),
-                          h('button',{className:'b br',style:{padding:'5px 7px',fontSize:10},onClick:function(){doDelete(c.id,c.code);}},'🗑')
-                        )
-                  )
-                );
-              }))
-            ))
-    )
-  );
 }
 
-/* ══════════════════ USERS ══════════════════ */
-function UsersPage(p){
-  var tok=p.tok;
-  var cs=St([]);var codes=cs[0];var setCodes=cs[1];
-  var ls=St(true);var loading=ls[0];var setLoading=ls[1];
-  Ef(function(){setLoading(true);apiAll(tok).then(function(d){setLoading(false);if(d)setCodes(d);});},[]);
-  var active=codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date()&&c.last_used_at;});
-  return h('div',null,
-    h('div',{className:'card'},
-      h('div',{className:'ch'},'👥 المستخدمون النشطون (',active.length,')'),
-      loading?h('div',{style:{color:'#3E3C6A',textAlign:'center',padding:'20px'}},'⏳ جاري التحميل...')
-      :active.length===0?h('div',{style:{textAlign:'center',padding:'20px',color:'#21203A',fontSize:13}},'لا يوجد مستخدمون نشطون بعد')
-      :h('div',{className:'tw'},h('table',null,
-          h('thead',null,h('tr',null,h('th',null,'الكود'),h('th',null,'العميل'),h('th',null,'آخر دخول'),h('th',null,'الدخول'),h('th',null,'الجهاز'),h('th',null,'ينتهي بعد'))),
-          h('tbody',null,active.slice().sort(function(a,b){return new Date(b.last_used_at)-new Date(a.last_used_at);}).map(function(c){
-            var dl=dLeft(c.expires_at);
-            return h('tr',{key:c.id},
-              h('td',null,h('b',{style:{fontFamily:'monospace',letterSpacing:1,color:'#A78BFA',fontSize:13}},c.code)),
-              h('td',null,c.label||h('span',{style:{color:'#21203A'}},'—')),
-              h('td',null,h('span',{style:{fontSize:11,color:'#4A4870'}},dFmt(c.last_used_at))),
-              h('td',null,h('b',{style:{color:'#10B981'}},c.use_count||0,' مرة')),
-              h('td',null,c.device_id?h('span',{className:'bg bgg',style:{fontSize:10}},'📱 مُقيَّد'):h('span',{className:'bg bgd',style:{fontSize:10}},'مفتوح')),
-              h('td',null,h('span',{style:{color:dl<30?'#F59E0B':'#10B981',fontWeight:700}},dl,' يوم'))
-            );
-          }))
-        ))
-    )
-  );
+/* Delete one row */
+function apiDelete(id){
+  return fetch(SUPA_URL+'/rest/v1/subscription_codes?id=eq.'+id,{
+    method:'DELETE',
+    headers:apiHeaders()
+  }).then(function(r){
+    if(!r.ok)return r.text().then(function(t){throw new Error(t);});
+    return true;
+  });
 }
 
-/* ══════════════════ NOTIFICATIONS ══════════════════ */
-function NotifsPage(p){
-  var show=p.show;
-  var ts=St('');var title=ts[0];var sT=ts[1];
-  var bs=St('');var body=bs[0];var sB=bs[1];
-  var gts=St(function(){return localStorage.getItem('cc-ghtok')||'';});var gt=gts[0];var sGT=gts[1];
-  var tis=St('');var ti=tis[0];var sTI=tis[1];
-  var svs=St(false);var sv=svs[0];var sSV=svs[1];
-  var sns=St(false);var snd=sns[0];var sSnd=sns[1];
-  var lg=St(function(){try{return JSON.parse(localStorage.getItem('cc-nlog')||'[]');}catch(e){return [];}});
-  var log=lg[0];var sLog=lg[1];
-  function saveLog(l){sLog(l);localStorage.setItem('cc-nlog',JSON.stringify(l.slice(0,50)));}
-  function saveTok(){var t=ti.trim();if(!t)return;localStorage.setItem('cc-ghtok',t);sGT(t);sTI('');sSV(false);show('✅ تم حفظ الـ Token');}
-  function rmTok(){localStorage.removeItem('cc-ghtok');sGT('');show('تم الحذف','warn');}
-  function send(){
-    if(!title.trim()){show('أدخل العنوان','warn');return;}
-    if(!gt){show('أدخل GitHub Token','err');return;}
-    sSnd(true);
-    ghSend(gt,title,body).then(function(r){
-      sSnd(false);
-      if(r.ok){saveLog([Object.assign({},r.n,{at:new Date().toISOString()})].concat(log));show('✅ تم الإرسال — يصل للعملاء خلال ساعة');sT('');sB('');}
-      else show('❌ '+r.msg,'err');
+/* ══════════════════════════════════════════════
+   AUTH
+══════════════════════════════════════════════ */
+function doLogin(){
+  var email=document.getElementById('inp-email').value.trim();
+  var pass=document.getElementById('inp-pass').value;
+  var errEl=document.getElementById('login-err');
+  var btn=document.getElementById('login-btn');
+  if(!email||!pass){errEl.textContent='أدخل البريد وكلمة المرور';errEl.style.display='block';return;}
+  btn.textContent='⏳ جاري التحقق...';btn.disabled=true;errEl.style.display='none';
+  fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{
+    method:'POST',
+    headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({email:email,password:pass})
+  }).then(function(r){return r.json();}).then(function(d){
+    btn.textContent='دخول ←';btn.disabled=false;
+    if(d.access_token){
+      STATE.token=d.access_token;
+      STATE.email=d.user.email;
+      sessionStorage.setItem('cc-sess',JSON.stringify({token:d.access_token,email:d.user.email}));
+      showApp();
+    }else{
+      errEl.textContent=d.error_description||'بريد أو كلمة مرور خاطئة';
+      errEl.style.display='block';
+    }
+  }).catch(function(){
+    btn.textContent='دخول ←';btn.disabled=false;
+    errEl.textContent='خطأ في الاتصال بالإنترنت';
+    errEl.style.display='block';
+  });
+}
+
+function doLogout(){
+  sessionStorage.removeItem('cc-sess');
+  STATE.token=null;STATE.email=null;STATE.codes=[];
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-page').style.display='flex';
+  document.getElementById('inp-email').value='';
+  document.getElementById('inp-pass').value='';
+}
+
+function togglePass(){
+  var inp=document.getElementById('inp-pass');
+  var btn=document.getElementById('eye-btn');
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
+  else{inp.type='password';btn.textContent='👁';}
+}
+
+document.getElementById('inp-pass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+document.getElementById('inp-email').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+
+/* ══════════════════════════════════════════════
+   SHOW APP
+══════════════════════════════════════════════ */
+function showApp(){
+  document.getElementById('login-page').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('user-email').textContent=STATE.email;
+  document.getElementById('settings-email').textContent=STATE.email;
+  loadCodes();
+  loadTokenUI();
+  renderNotifLog();
+}
+
+/* ══════════════════════════════════════════════
+   TABS
+══════════════════════════════════════════════ */
+function showTab(id,btn){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='users')loadUsers();
+}
+
+/* ══════════════════════════════════════════════
+   CODES — LOAD & RENDER
+══════════════════════════════════════════════ */
+function loadCodes(){
+  var btn=document.getElementById('refresh-btn');
+  btn.textContent='⏳';btn.disabled=true;
+  document.getElementById('codes-body').innerHTML='<div style="text-align:center;padding:28px;color:#3E3C6A">⏳ جاري التحميل...</div>';
+  apiGetAll().then(function(data){
+    btn.textContent='🔄 تحديث';btn.disabled=false;
+    STATE.codes=data;
+    renderCodes();
+    updateStats();
+  }).catch(function(e){
+    btn.textContent='🔄 تحديث';btn.disabled=false;
+    document.getElementById('codes-body').innerHTML='<div style="text-align:center;padding:28px;color:#EF4444">❌ فشل التحميل: '+e.message+'</div>';
+  });
+}
+
+function getFilteredCodes(){
+  return STATE.codes.filter(function(c){
+    var exp=new Date(c.expires_at)<new Date();
+    var dl=dLeft(c.expires_at);
+    if(STATE.filter==='active')  return c.is_active&&!exp;
+    if(STATE.filter==='stopped') return !c.is_active;
+    if(STATE.filter==='expired') return exp;
+    if(STATE.filter==='soon')    return c.is_active&&!exp&&dl<=7&&dl>0;
+    return true;
+  });
+}
+
+function updateStats(){
+  var codes=STATE.codes;
+  document.getElementById('stat-all').textContent=codes.length;
+  document.getElementById('stat-active').textContent=codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date();}).length;
+  document.getElementById('stat-soon').textContent=codes.filter(function(c){var d=dLeft(c.expires_at);return c.is_active&&d>0&&d<=7;}).length;
+  document.getElementById('stat-off').textContent=codes.filter(function(c){return !c.is_active||new Date(c.expires_at)<new Date();}).length;
+}
+
+function setFilter(f,btn){
+  STATE.filter=f;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderCodes();
+}
+
+function renderCodes(){
+  var list=getFilteredCodes();
+  document.getElementById('codes-count').textContent=STATE.codes.length;
+  var body=document.getElementById('codes-body');
+  if(list.length===0){
+    body.innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div>لا توجد أكواد في هذه الفئة</div></div>';
+    return;
+  }
+  var rows=list.map(function(c){
+    var exp=new Date(c.expires_at)<new Date();
+    var dl=dLeft(c.expires_at);
+    var hasDev=!!(c.device_id&&c.device_id.length>3);
+    var dimClass=(!c.is_active||exp)?'dim':'';
+
+    var badge='';
+    if(!c.is_active)     badge='<span class="badge badge-y">⛔ موقوف</span>';
+    else if(exp)          badge='<span class="badge badge-r">⌛ منتهي</span>';
+    else if(dl<=7)        badge='<span class="badge badge-y">⚠️ ينتهي قريباً</span>';
+    else                  badge='<span class="badge badge-g">✅ نشط</span>';
+
+    var codeColor=(!c.is_active||exp)?'#21203A':'#A78BFA';
+    var dlText=exp?('<div style="font-size:10px;color:#EF4444">منتهي منذ '+Math.abs(dl)+' يوم</div>'):('<div style="font-size:10px;color:#21203A">'+dl+' يوم</div>');
+
+    var devHtml=hasDev
+      ?'<span class="badge badge-g" style="font-size:10px;display:block;margin-bottom:3px">📱 مُسجَّل</span><button class="btn btn-y" style="padding:3px 7px;font-size:10px" onclick="doResetDev(\''+c.id+'\',\''+c.code+'\')">🔄 جهاز جديد</button>'
+      :'<span class="badge badge-d" style="font-size:10px">لم يُستخدم</span>';
+
+    var toggleBtn=c.is_active
+      ?'<button class="btn btn-r" style="padding:5px 9px;font-size:11px" onclick="doToggle(\''+c.id+'\',true)">⛔ إيقاف</button>'
+      :'<button class="btn btn-g" style="padding:5px 9px;font-size:11px" onclick="doToggle(\''+c.id+'\',false)">✅ تفعيل</button>';
+
+    return '<tr class="'+dimClass+'">'
+      +'<td><div style="display:flex;align-items:center;gap:5px"><b style="font-family:monospace;font-size:13px;letter-spacing:2px;color:'+codeColor+'">'+c.code+'</b><button style="background:none;color:#21203A;font-size:10px;padding:2px 5px;border-radius:3px;border:1px solid #161528;cursor:pointer" onclick="copyCode(\''+c.code+'\')">📋</button></div></td>'
+      +'<td><div style="font-weight:600;font-size:12px">'+(c.label||'<span style="color:#21203A">—</span>')+'</div>'+(c.note?'<div style="font-size:10px;color:#21203A;margin-top:1px">'+c.note+'</div>':'')+'</td>'
+      +'<td><span class="badge badge-p" style="font-size:10px">'+(c.plan||'monthly')+'</span></td>'
+      +'<td><div style="font-size:11px;font-weight:600;color:'+(exp?'#EF4444':dl<=7?'#F59E0B':'#4A4870')+'">'+dFmt(c.expires_at)+'</div>'+dlText+'</td>'
+      +'<td>'+devHtml+'</td>'
+      +'<td><div style="font-weight:700;color:'+(c.use_count>0?'#10B981':'#21203A')+';font-size:13px">'+(c.use_count||0)+' مرة</div>'+(c.last_used_at?'<div style="font-size:10px;color:#21203A">'+dFmt(c.last_used_at)+'</div>':'')+'</td>'
+      +'<td>'+badge+'</td>'
+      +'<td><div style="display:flex;gap:3px;flex-wrap:wrap">'
+        +toggleBtn
+        +'<button class="btn btn-o" style="padding:5px 7px;font-size:10px" onclick="doExtend(\''+c.id+'\',\''+c.code+'\',1)">＋شهر</button>'
+        +'<button class="btn btn-o" style="padding:5px 7px;font-size:10px" onclick="doExtend(\''+c.id+'\',\''+c.code+'\',3)">＋٣</button>'
+        +'<button class="btn btn-r" style="padding:5px 7px;font-size:10px" onclick="doDelete(\''+c.id+'\',\''+c.code+'\')">🗑</button>'
+      +'</div></td>'
+    +'</tr>';
+  });
+
+  body.innerHTML='<div class="tbl-wrap"><table>'
+    +'<thead><tr><th>الكود</th><th>العميل</th><th>الخطة</th><th>ينتهي</th><th>الجهاز</th><th>الاستخدام</th><th>الحالة</th><th>الإجراءات</th></tr></thead>'
+    +'<tbody>'+rows.join('')+'</tbody>'
+    +'</table></div>';
+}
+
+/* ══════════════════════════════════════════════
+   OPERATIONS — each reloads after success
+══════════════════════════════════════════════ */
+function doAdd(){
+  var code=document.getElementById('f-code').value.trim().toUpperCase();
+  if(!code){toast('أدخل الكود','warn');return;}
+  if(STATE.codes.find(function(c){return c.code===code;})){toast('❌ الكود موجود مسبقاً','err');return;}
+  var btn=document.getElementById('add-btn');
+  btn.textContent='⏳ جاري الحفظ...';btn.disabled=true;
+  apiInsert({
+    code:code,
+    label:document.getElementById('f-label').value.trim(),
+    note:document.getElementById('f-note').value.trim(),
+    plan:STATE.selPlan,
+    expires_at:expDate(STATE.selMonths),
+    is_active:true,device_id:'',device_info:'',use_count:0
+  }).then(function(){
+    btn.textContent='✅ إنشاء الكود';btn.disabled=false;
+    document.getElementById('f-code').value='';
+    document.getElementById('f-label').value='';
+    document.getElementById('f-note').value='';
+    document.getElementById('exp-preview').style.display='none';
+    toast('✅ تم إنشاء الكود: '+code);
+    STATE.filter='all'; /* show all after add */
+    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+    document.querySelector('[data-filter="all"]').classList.add('active');
+    loadCodes();
+  }).catch(function(e){
+    btn.textContent='✅ إنشاء الكود';btn.disabled=false;
+    toast('❌ فشل: '+e.message,'err');
+  });
+}
+
+function doToggle(id, currentActive){
+  var newVal=!currentActive;
+  apiPatch(id,{is_active:newVal}).then(function(){
+    toast(newVal?'✅ تم تفعيل الكود':'⛔ تم إيقاف الكود', newVal?'ok':'warn');
+    STATE.filter='all'; /* always show all after toggle */
+    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+    document.querySelector('[data-filter="all"]').classList.add('active');
+    loadCodes();
+  }).catch(function(e){
+    toast('❌ فشل: '+e.message,'err');
+    loadCodes();
+  });
+}
+
+function doDelete(id,code){
+  if(!confirm('حذف الكود '+code+'؟\nلا يمكن التراجع.'))return;
+  apiDelete(id).then(function(){
+    toast('🗑 تم حذف '+code,'err');
+    STATE.filter='all';
+    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+    document.querySelector('[data-filter="all"]').classList.add('active');
+    loadCodes();
+  }).catch(function(e){toast('❌ فشل: '+e.message,'err');loadCodes();});
+}
+
+function doResetDev(id,code){
+  if(!confirm('إعادة تعيين الجهاز للكود '+code+'؟'))return;
+  apiPatch(id,{device_id:'',device_info:''}).then(function(){
+    toast('✅ تم إعادة تعيين الجهاز');
+    loadCodes();
+  }).catch(function(e){toast('❌ فشل: '+e.message,'err');});
+}
+
+function doExtend(id,code,months){
+  var c=STATE.codes.find(function(x){return x.id===id;});if(!c)return;
+  var base=new Date(c.expires_at)>new Date()?new Date(c.expires_at):new Date();
+  base.setMonth(base.getMonth()+months);
+  apiPatch(id,{expires_at:base.toISOString(),is_active:true}).then(function(){
+    toast('✅ تم تمديد '+code+' '+months+' شهر');
+    loadCodes();
+  }).catch(function(e){toast('❌ فشل: '+e.message,'err');});
+}
+
+function copyCode(code){
+  if(navigator.clipboard)navigator.clipboard.writeText(code).then(function(){toast('📋 تم نسخ: '+code);});
+}
+
+/* ══════════════════════════════════════════════
+   FORM — plan selection & preview
+══════════════════════════════════════════════ */
+function selectPlan(btn){
+  document.querySelectorAll('.plan-btn').forEach(function(b){b.classList.remove('selected');});
+  btn.classList.add('selected');
+  STATE.selPlan=btn.dataset.plan;
+  STATE.selMonths=parseInt(btn.dataset.months);
+  updatePreview();
+}
+
+document.getElementById('f-code').addEventListener('input',updatePreview);
+function updatePreview(){
+  var code=document.getElementById('f-code').value.trim();
+  var prev=document.getElementById('exp-preview');
+  if(code){prev.style.display='block';prev.textContent='📅 ينتهي في: '+expLabel(STATE.selMonths);}
+  else{prev.style.display='none';}
+}
+
+/* ══════════════════════════════════════════════
+   USERS PAGE
+══════════════════════════════════════════════ */
+function loadUsers(){
+  var body=document.getElementById('users-body');
+  body.innerHTML='<div style="color:#3E3C6A;text-align:center;padding:20px">⏳ جاري التحميل...</div>';
+  apiGetAll().then(function(data){
+    var active=data.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date()&&c.last_used_at;});
+    if(active.length===0){body.innerHTML='<div style="text-align:center;padding:20px;color:#21203A;font-size:13px">لا يوجد مستخدمون نشطون بعد</div>';return;}
+    active.sort(function(a,b){return new Date(b.last_used_at)-new Date(a.last_used_at);});
+    var rows=active.map(function(c){
+      var dl=dLeft(c.expires_at);
+      return '<tr>'
+        +'<td><b style="font-family:monospace;letter-spacing:1px;color:#A78BFA;font-size:13px">'+c.code+'</b></td>'
+        +'<td>'+(c.label||'<span style="color:#21203A">—</span>')+'</td>'
+        +'<td><span style="font-size:11px;color:#4A4870">'+dFmt(c.last_used_at)+'</span></td>'
+        +'<td><b style="color:#10B981">'+(c.use_count||0)+' مرة</b></td>'
+        +'<td>'+(c.device_id?'<span class="badge badge-g" style="font-size:10px">📱 مُقيَّد</span>':'<span class="badge badge-d" style="font-size:10px">مفتوح</span>')+'</td>'
+        +'<td><span style="color:'+(dl<30?'#F59E0B':'#10B981')+';font-weight:700">'+dl+' يوم</span></td>'
+      +'</tr>';
     });
+    body.innerHTML='<div class="tbl-wrap"><table>'
+      +'<thead><tr><th>الكود</th><th>العميل</th><th>آخر دخول</th><th>الدخول</th><th>الجهاز</th><th>ينتهي بعد</th></tr></thead>'
+      +'<tbody>'+rows.join('')+'</tbody></table></div>';
+  }).catch(function(){body.innerHTML='<div style="color:#EF4444;text-align:center;padding:20px">❌ فشل التحميل</div>';});
+}
+
+/* ══════════════════════════════════════════════
+   NOTIFICATIONS
+══════════════════════════════════════════════ */
+function loadTokenUI(){
+  var tok=localStorage.getItem('cc-ghtok');
+  if(tok){
+    document.getElementById('token-badge').className='badge badge-g';
+    document.getElementById('token-badge').textContent='✓ مُعيَّن';
+    document.getElementById('token-set-section').style.display='block';
+    document.getElementById('token-input-section').style.display='none';
+    document.getElementById('token-masked').textContent='🔒 '+tok.slice(0,8)+'•••••••••••'+tok.slice(-4);
+  }else{
+    document.getElementById('token-badge').className='badge badge-y';
+    document.getElementById('token-badge').textContent='⚠️ مطلوب';
+    document.getElementById('token-set-section').style.display='none';
+    document.getElementById('token-input-section').style.display='block';
   }
-  var masked=gt?gt.slice(0,8)+'•••••••••••'+gt.slice(-4):'';
-  return h('div',null,
-    h('div',{className:'card',style:{borderColor:gt?'rgba(16,185,129,.25)':'rgba(245,158,11,.25)',background:gt?'rgba(16,185,129,.04)':'rgba(245,158,11,.04)'}},
-      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}},
-        h('div',{className:'ch',style:{margin:0}},'🔑 GitHub Token'),
-        gt?h('span',{className:'bg bgg'},'✓ مُعيَّن'):h('span',{className:'bg bgy'},'⚠️ مطلوب')
-      ),
-      gt?h('div',{style:{display:'flex',gap:8,alignItems:'center'}},
-          h('div',{style:{flex:1,background:'#090817',borderRadius:7,padding:'7px 11px',fontFamily:'monospace',fontSize:12,color:'#10B981'}},'🔒 ',masked),
-          h('button',{className:'b br',onClick:rmTok},'حذف')
-        )
-       :h('div',null,
-          h('div',{style:{background:'rgba(245,158,11,.07)',border:'1px solid rgba(245,158,11,.18)',borderRadius:7,padding:'7px 11px',fontSize:11,color:'#F59E0B',marginBottom:9}},'💡 Fine-grained token — Contents: Read & Write — مستودع craftcost-notification فقط'),
-          h('div',{style:{display:'flex',gap:6}},
-            h('input',{type:sv?'text':'password',value:ti,onChange:function(e){sTI(e.target.value);},onKeyDown:function(e){if(e.key==='Enter')saveTok();},placeholder:'github_pat_...',style:{flex:1,fontFamily:'monospace'}}),
-            h('button',{className:'b bo',style:{flexShrink:0},onClick:function(){sSV(!sv);}},sv?'🙈':'👁'),
-            h('button',{className:'b bp',style:{flexShrink:0},disabled:!ti.trim(),onClick:saveTok},'حفظ')
-          )
-        )
-    ),
-    h('div',{className:'card'},
-      h('div',{className:'ch'},'📢 إرسال إشعار للعملاء'),
-      h('div',{style:{background:'rgba(99,102,241,.07)',border:'1px solid rgba(99,102,241,.18)',borderRadius:7,padding:'6px 11px',fontSize:11,color:'#818CF8',marginBottom:12}},'📡 يُكتب على GitHub ويصل للعملاء خلال ساعة — مجاني'),
-      h('div',{style:{marginBottom:10}},h('label',{className:'lb'},'العنوان *'),h('input',{value:title,onChange:function(e){sT(e.target.value);},placeholder:'مثال: تحديث جديد ✨',maxLength:100})),
-      h('div',{style:{marginBottom:12}},h('label',{className:'lb'},'التفاصيل (اختياري)'),h('textarea',{value:body,onChange:function(e){sB(e.target.value);},rows:3,placeholder:'...',maxLength:300})),
-      title&&h('div',{style:{background:'rgba(124,58,237,.08)',border:'1px solid rgba(124,58,237,.2)',borderRadius:9,padding:'9px 13px',marginBottom:12}},
-        h('div',{style:{fontSize:10,color:'#3E3C6A',marginBottom:4}},'معاينة:'),
-        h('div',{style:{display:'flex',gap:8}},h('span',{style:{fontSize:18}},'📢'),h('div',null,h('b',null,title),body&&h('div',{style:{fontSize:12,color:'#5A5880',marginTop:2}},body)))
-      ),
-      h('button',{className:'b bp blg',style:{width:'100%',justifyContent:'center'},onClick:send,disabled:!title.trim()||!gt||snd},snd?'⏳ جاري الإرسال...':'📨 إرسال لجميع العملاء')
-    ),
-    log.length>0&&h('div',{className:'card'},
-      h('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:11}},
-        h('div',{className:'ch',style:{margin:0}},'📋 الإشعارات المُرسلة (',log.length,')'),
-        h('button',{className:'b br',onClick:function(){if(window.confirm('مسح؟'))saveLog([]);}},'مسح')
-      ),
-      h('div',{className:'tw'},h('table',null,
-        h('thead',null,h('tr',null,h('th',null,'العنوان'),h('th',null,'التفاصيل'),h('th',null,'وقت الإرسال'))),
-        h('tbody',null,log.map(function(n){
-          return h('tr',{key:n.id},h('td',null,h('b',null,n.title)),h('td',null,h('span',{style:{color:'#4A4870'}},n.body||'—')),h('td',null,h('span',{style:{fontSize:11,color:'#3E3C6A'}},dFmt(n.sentAt||n.at))));
-        }))
-      ))
-    )
-  );
 }
 
-/* ══════════════════ SETTINGS ══════════════════ */
-function SettingsPage(p){
-  var tok=p.tok;var email=p.email;var show=p.show;
-  var ts=St('');var tc=ts[0];var sTC=ts[1];
-  var rs=St(null);var res=rs[0];var sRes=rs[1];
-  var qs=St(false);var q=qs[0];var sQ=qs[1];
-  function test(){
-    if(!tc.trim())return;sQ(true);sRes(null);
-    fetch(SUPA+'/rest/v1/subscription_codes?code=eq.'+encodeURIComponent(tc.toUpperCase())+'&select=*',{headers:apiH(tok)})
-      .then(function(r){return r.json();}).then(function(d){sQ(false);if(!d||!d.length)sRes({err:true,msg:'الكود غير موجود'});else sRes({err:false,c:d[0]});})
-      .catch(function(){sQ(false);sRes({err:true,msg:'خطأ في الاتصال'});});
+function saveToken(){
+  var t=document.getElementById('token-inp').value.trim();
+  if(!t)return;
+  localStorage.setItem('cc-ghtok',t);
+  document.getElementById('token-inp').value='';
+  loadTokenUI();
+  toast('✅ تم حفظ الـ Token');
+}
+
+function removeToken(){
+  localStorage.removeItem('cc-ghtok');
+  loadTokenUI();
+  toast('تم حذف الـ Token','warn');
+}
+
+function toggleTokenVis(){
+  var inp=document.getElementById('token-inp');
+  var btn=document.getElementById('tok-eye');
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
+  else{inp.type='password';btn.textContent='👁';}
+}
+
+document.getElementById('notif-title').addEventListener('input',function(){
+  var t=this.value.trim();
+  var prev=document.getElementById('notif-preview');
+  if(t){
+    prev.style.display='block';
+    prev.innerHTML='<div style="font-size:10px;color:#3E3C6A;margin-bottom:4px">معاينة:</div>'
+      +'<div style="display:flex;gap:8px"><span style="font-size:18px">📢</span><div><b>'+t+'</b>'
+      +(document.getElementById('notif-body').value?'<div style="font-size:12px;color:#5A5880;margin-top:2px">'+document.getElementById('notif-body').value+'</div>':'')
+      +'</div></div>';
+  }else{prev.style.display='none';}
+});
+
+function sendNotif(){
+  var title=document.getElementById('notif-title').value.trim();
+  var body=document.getElementById('notif-body').value.trim();
+  var tok=localStorage.getItem('cc-ghtok');
+  if(!title){toast('أدخل العنوان','warn');return;}
+  if(!tok){toast('أدخل GitHub Token أولاً','err');return;}
+  var btn=document.getElementById('send-btn');
+  btn.textContent='⏳ جاري الإرسال...';btn.disabled=true;
+  var n={id:'n_'+Date.now(),title:title,body:body,sentAt:new Date().toISOString()};
+  var content=btoa(unescape(encodeURIComponent(JSON.stringify(n,null,2))));
+  /* Get SHA first */
+  fetch(GH_API,{headers:{'Authorization':'token '+tok,'Accept':'application/vnd.github.v3+json'}})
+  .then(function(r){return r.status===404?null:r.ok?r.json().then(function(d){return d.sha;}):Promise.reject('ERR');})
+  .then(function(sha){
+    var payload={message:'إشعار: '+title,content:content};
+    if(sha)payload.sha=sha;
+    return fetch(GH_API,{method:'PUT',headers:{'Authorization':'token '+tok,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(payload)});
+  }).then(function(r){
+    btn.textContent='📨 إرسال لجميع العملاء';btn.disabled=false;
+    if(r.ok){
+      var log=JSON.parse(localStorage.getItem('cc-nlog')||'[]');
+      log.unshift(Object.assign({},n,{at:new Date().toISOString()}));
+      localStorage.setItem('cc-nlog',JSON.stringify(log.slice(0,50)));
+      document.getElementById('notif-title').value='';
+      document.getElementById('notif-body').value='';
+      document.getElementById('notif-preview').style.display='none';
+      toast('✅ تم الإرسال — يصل للعملاء خلال ساعة');
+      renderNotifLog();
+    }else{r.json().then(function(e){toast('❌ '+(e.message||'خطأ'),'err');});}
+  }).catch(function(e){
+    btn.textContent='📨 إرسال لجميع العملاء';btn.disabled=false;
+    toast('❌ خطأ في GitHub Token','err');
+  });
+}
+
+function renderNotifLog(){
+  var log=JSON.parse(localStorage.getItem('cc-nlog')||'[]');
+  var card=document.getElementById('notif-log-card');
+  if(!log.length){card.style.display='none';return;}
+  card.style.display='block';
+  document.getElementById('log-count').textContent=log.length;
+  document.getElementById('log-body').innerHTML=log.map(function(n){
+    return '<tr><td><b>'+n.title+'</b></td><td><span style="color:#4A4870">'+(n.body||'—')+'</span></td><td><span style="font-size:11px;color:#3E3C6A">'+dFmt(n.sentAt||n.at)+'</span></td></tr>';
+  }).join('');
+}
+
+function clearLog(){
+  if(!confirm('مسح سجل الإشعارات؟'))return;
+  localStorage.removeItem('cc-nlog');
+  renderNotifLog();
+  toast('تم المسح','warn');
+}
+
+/* ══════════════════════════════════════════════
+   SETTINGS — test code
+══════════════════════════════════════════════ */
+function testCode(){
+  var code=document.getElementById('test-code').value.trim().toUpperCase();
+  if(!code)return;
+  var res=document.getElementById('test-result');
+  res.style.display='block';
+  res.innerHTML='<div style="color:#3E3C6A">⏳ جاري التحقق...</div>';
+  fetch(SUPA_URL+'/rest/v1/subscription_codes?code=eq.'+encodeURIComponent(code)+'&select=*',{headers:apiHeaders()})
+  .then(function(r){return r.json();}).then(function(d){
+    if(!d||!d.length){
+      res.innerHTML='<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:9px 13px;font-size:12px;color:#EF4444">❌ الكود غير موجود</div>';
+    }else{
+      var c=d[0];
+      res.innerHTML='<div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:9px 13px;font-size:12px">'
+        +'<div style="color:#10B981;font-weight:700;margin-bottom:4px">✅ الكود صحيح</div>'
+        +'<div style="color:#4A4870;line-height:2">'
+        +'الكود: <b style="color:#A78BFA">'+c.code+'</b> · '
+        +'الحالة: <b style="color:'+(c.is_active?'#10B981':'#EF4444')+'">'+(c.is_active?'نشط ✅':'موقوف ⛔')+'</b> · '
+        +'الخطة: '+c.plan+' · '
+        +'الاستخدام: '+(c.use_count||0)+' مرة · '
+        +'الجهاز: '+(c.device_id?'مُقيَّد':'مفتوح')+' · '
+        +'ينتهي: '+dFmt(c.expires_at)
+        +'</div></div>';
+    }
+  }).catch(function(){res.innerHTML='<div style="color:#EF4444">❌ خطأ في الاتصال</div>';});
+}
+
+/* ══════════════════════════════════════════════
+   AUTO LOGIN from session
+══════════════════════════════════════════════ */
+(function(){
+  var s=sessionStorage.getItem('cc-sess');
+  if(s){
+    try{
+      var sess=JSON.parse(s);
+      STATE.token=sess.token;
+      STATE.email=sess.email;
+      showApp();
+    }catch(e){
+      document.getElementById('login-page').style.display='flex';
+    }
+  }else{
+    document.getElementById('login-page').style.display='flex';
   }
-  return h('div',null,
-    h('div',{className:'card',style:{borderColor:'rgba(16,185,129,.2)',background:'rgba(16,185,129,.03)'}},
-      h('div',{className:'ch'},'👤 حسابك'),
-      h('div',{style:{display:'flex',alignItems:'center',gap:11}},
-        h('div',{style:{width:42,height:42,borderRadius:11,background:'linear-gradient(135deg,#7C3AED,#A78BFA)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:19}},'👤'),
-        h('div',null,h('div',{style:{fontWeight:700,fontSize:14}},email),h('div',{style:{fontSize:11,color:'#10B981',marginTop:2}},'✅ Supabase Auth'))
-      )
-    ),
-    h('div',{className:'card'},
-      h('div',{className:'ch'},'🧪 اختبار كود'),
-      h('div',{style:{display:'flex',gap:7,marginBottom:10}},
-        h('input',{value:tc,onChange:function(e){sTC(e.target.value.toUpperCase());},onKeyDown:function(e){if(e.key==='Enter')test();},placeholder:'أدخل كود...',style:{flex:1,letterSpacing:2,fontWeight:700}}),
-        h('button',{className:'b bp',style:{flexShrink:0},disabled:q||!tc.trim(),onClick:test},q?'⏳':'اختبار')
-      ),
-      res&&h('div',{style:{background:res.err?'rgba(239,68,68,.07)':'rgba(16,185,129,.07)',border:'1px solid '+(res.err?'rgba(239,68,68,.2)':'rgba(16,185,129,.2)'),borderRadius:8,padding:'9px 13px',fontSize:12}},
-        res.err?h('span',{style:{color:'#EF4444'}},'❌ ',res.msg)
-        :h('div',null,
-            h('div',{style:{color:'#10B981',fontWeight:700,marginBottom:4}},'✅ الكود صحيح'),
-            h('div',{style:{color:'#4A4870',lineHeight:2}},
-              'الكود: ',h('b',{style:{color:'#A78BFA'}},res.c.code),' · ',
-              'الحالة: ',h('b',{style:{color:res.c.is_active?'#10B981':'#EF4444'}},res.c.is_active?'نشط ✅':'موقوف ⛔'),' · ',
-              'الخطة: ',res.c.plan,' · ',
-              'الاستخدام: ',res.c.use_count||0,' مرة · ',
-              'الجهاز: ',res.c.device_id?'مُقيَّد':'مفتوح',' · ',
-              'ينتهي: ',dFmt(res.c.expires_at)
-            )
-          )
-      )
-    ),
-    h('div',{className:'card'},
-      h('div',{className:'ch'},'ℹ️ معلومات'),
-      [['رابط التطبيق',APP],['الإصدار','CraftCost Pro v3.1'],['الشركة','AdVax']].map(function(item,i){
-        return h('div',{key:i,style:{display:'flex',justifyContent:'space-between',fontSize:12,padding:'6px 10px',background:'#090817',borderRadius:7,marginBottom:5}},
-          h('span',{style:{color:'#3E3C6A'}},item[0]),h('span',{style:{fontWeight:600}},item[1]));
-      })
-    )
-  );
-}
-
-/* ══════════════════ ROOT ══════════════════ */
-function App(){
-  var as=St(function(){try{var s=sessionStorage.getItem('cc-adm');return s?JSON.parse(s):null;}catch(e){return null;}});
-  var auth=as[0];var sAuth=as[1];
-  var ts=St('codes');var tab=ts[0];var sTab=ts[1];
-  var tv=useToast();
-
-  function onLogin(r){var s={token:r.token,email:r.email};sessionStorage.setItem('cc-adm',JSON.stringify(s));sAuth(s);}
-  function logout(){sessionStorage.removeItem('cc-adm');sAuth(null);}
-
-  if(!auth)return h(Fr,null,h(Login,{onLogin:onLogin}),h(Toast,{t:tv.t}));
-
-  var TABS=[{id:'codes',i:'🔑',l:'الأكواد'},{id:'users',i:'👥',l:'المستخدمون'},{id:'notifs',i:'📢',l:'الإشعارات'},{id:'settings',i:'⚙️',l:'الإعدادات'}];
-
-  return h(Fr,null,
-    h('div',{id:'bar'},
-      h('div',{className:'blogo'},'🔐'),
-      h('div',{style:{flex:1}},
-        h('div',{style:{fontWeight:900,fontSize:14,color:'#A78BFA'}},'لوحة إدارة AdVax — CraftCost Pro'),
-        h('div',{style:{fontSize:11,color:'#3E3C6A',marginTop:1}},auth.email)
-      ),
-      APP&&h('a',{href:APP,target:'_blank',className:'b bo',style:{textDecoration:'none',padding:'5px 11px',fontSize:12,marginLeft:5}},'التطبيق ↗'),
-      h('button',{className:'b br',style:{padding:'5px 11px',fontSize:12},onClick:logout},'خروج')
-    ),
-    h('div',{id:'wrap'},
-      h('div',{className:'tabs'},
-        TABS.map(function(t){
-          return h('button',{key:t.id,className:'tab'+(tab===t.id?' on':''),onClick:function(){sTab(t.id);}},t.i,' ',t.l);
-        })
-      ),
-      tab==='codes'    && h(CodesPage,    {key:'codes',    tok:auth.token, show:tv.show}),
-      tab==='users'    && h(UsersPage,    {key:'users',    tok:auth.token, show:tv.show}),
-      tab==='notifs'   && h(NotifsPage,   {key:'notifs',   show:tv.show}),
-      tab==='settings' && h(SettingsPage, {key:'settings', tok:auth.token, show:tv.show, email:auth.email})
-    ),
-    h(Toast,{t:tv.t})
-  );
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(h(App,null));
+})();
 </script>
 </body>
 </html>
