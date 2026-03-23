@@ -7,13 +7,12 @@
 <title>لوحة إدارة AdVax — CraftCost Pro</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:'Cairo',sans-serif;direction:rtl;background:#07060F;color:#E0DEF0}
+body{font-family:'Cairo',sans-serif;direction:rtl;background:#07060F;color:#E0DEF0;min-height:100vh}
 input,select,textarea,button{font-family:'Cairo',sans-serif;font-size:14px}
 input,select,textarea{background:#100F1E;border:1.5px solid #21203A;color:#E0DEF0;padding:9px 12px;border-radius:8px;width:100%;outline:none;transition:border-color .15s;direction:rtl}
 input:focus,select:focus,textarea:focus{border-color:#7C3AED}
 select option{background:#161528}
-button{cursor:pointer;border:none;font-family:'Cairo',sans-serif;transition:opacity .15s}
-button:active{opacity:.7}
+button{cursor:pointer;border:none;font-family:'Cairo',sans-serif}
 button:disabled{opacity:.4;cursor:not-allowed}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#21203A;border-radius:3px}
 
@@ -24,22 +23,27 @@ button:disabled{opacity:.4;cursor:not-allowed}
 
 /* Tabs */
 .tabs{display:flex;gap:5px;margin-bottom:16px;flex-wrap:wrap}
-.tab{padding:7px 14px;border-radius:7px;font-size:13px;font-weight:700;color:#3E3C6A;background:#100F1E;border:1px solid #161528;cursor:pointer}
-.tab.active{background:rgba(124,58,237,.18);color:#A78BFA;border-color:rgba(124,58,237,.4)}
-.page{display:none}.page.active{display:block}
+.tab{padding:7px 14px;border-radius:7px;font-size:13px;font-weight:700;color:#3E3C6A;background:#100F1E;border:1px solid #161528;cursor:pointer;transition:all .15s}
+.tab.on{background:rgba(124,58,237,.18);color:#A78BFA;border-color:rgba(124,58,237,.4)}
+.page{display:none}.page.on{display:block}
 
 /* Cards */
 .card{background:#100F1E;border:1px solid #161528;border-radius:11px;padding:16px;margin-bottom:12px}
-.card-title{font-size:14px;font-weight:800;color:#C4B5FD;margin-bottom:13px}
+.card-h{font-size:14px;font-weight:800;color:#C4B5FD;margin-bottom:13px}
 
 /* Buttons */
-.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
-.btn-p{background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff}
-.btn-o{background:transparent;border:1px solid #21203A;color:#C0BDDF}
-.btn-r{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.28);color:#EF4444}
-.btn-g{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.28);color:#10B981}
-.btn-y{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.28);color:#F59E0B}
-.btn-lg{padding:10px 22px;font-size:14px;border-radius:9px}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .15s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:active:not(:disabled){opacity:.7}
+.b-p{background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff}
+.b-o{background:transparent;border:1px solid #21203A;color:#C0BDDF}
+.b-o:hover:not(:disabled){border-color:#7C3AED;color:#A78BFA}
+.b-r{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.28);color:#EF4444}
+.b-r:hover:not(:disabled){background:rgba(239,68,68,.2)}
+.b-g{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.28);color:#10B981}
+.b-g:hover:not(:disabled){background:rgba(16,185,129,.2)}
+.b-y{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.28);color:#F59E0B}
+.b-lg{padding:10px 22px;font-size:14px;border-radius:9px}
 
 /* Grid */
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
@@ -52,7 +56,7 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .stat-l{font-size:11px;color:#3E3C6A;margin-top:4px}
 
 /* Table */
-.tbl-wrap{overflow-x:auto;border-radius:9px;border:1px solid #161528}
+.tw{overflow-x:auto;border-radius:9px;border:1px solid #161528}
 table{width:100%;border-collapse:collapse;font-size:12px;min-width:640px}
 th{padding:8px 11px;text-align:right;color:#3E3C6A;font-weight:700;background:#090817;border-bottom:1px solid #161528;white-space:nowrap}
 td{padding:9px 11px;border-bottom:1px solid #0F0E1C;vertical-align:middle}
@@ -60,238 +64,207 @@ tr:last-child td{border:none}
 tr:hover td{background:rgba(124,58,237,.03)}
 tr.dim td{opacity:.38}
 
-/* Badge */
-.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
-.badge-g{background:rgba(16,185,129,.12);color:#10B981;border:1px solid rgba(16,185,129,.2)}
-.badge-r{background:rgba(239,68,68,.12);color:#EF4444;border:1px solid rgba(239,68,68,.2)}
-.badge-y{background:rgba(245,158,11,.12);color:#F59E0B;border:1px solid rgba(245,158,11,.2)}
-.badge-p{background:rgba(124,58,237,.12);color:#A78BFA;border:1px solid rgba(124,58,237,.2)}
-.badge-d{background:rgba(255,255,255,.05);color:#3E3C6A;border:1px solid rgba(255,255,255,.07)}
+/* Badges */
+.bdg{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.bdg-g{background:rgba(16,185,129,.12);color:#10B981;border:1px solid rgba(16,185,129,.2)}
+.bdg-r{background:rgba(239,68,68,.12);color:#EF4444;border:1px solid rgba(239,68,68,.2)}
+.bdg-y{background:rgba(245,158,11,.12);color:#F59E0B;border:1px solid rgba(245,158,11,.2)}
+.bdg-p{background:rgba(124,58,237,.12);color:#A78BFA;border:1px solid rgba(124,58,237,.2)}
+.bdg-d{background:rgba(255,255,255,.05);color:#3E3C6A;border:1px solid rgba(255,255,255,.07)}
 
 /* Form */
-.label{display:block;margin-bottom:4px;font-size:11px;font-weight:700;color:#3E3C6A}
-.plan-btn{padding:6px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid #21203A;background:transparent;color:#C0BDDF}
-.plan-btn.selected{background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff;border-color:transparent}
+.lbl{display:block;margin-bottom:4px;font-size:11px;font-weight:700;color:#3E3C6A}
+.plan-btn{padding:6px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid #21203A;background:transparent;color:#C0BDDF;transition:all .15s}
+.plan-btn.on{background:linear-gradient(135deg,#7C3AED,#A78BFA);color:#fff;border-color:transparent}
 
 /* Toast */
-#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);padding:9px 20px;border-radius:9px;font-weight:700;font-size:13px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.7);white-space:nowrap;color:#fff;display:none;pointer-events:none}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);padding:9px 20px;border-radius:9px;font-weight:700;font-size:13px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.7);white-space:nowrap;color:#fff;display:none;pointer-events:none;animation:tin .2s}
+@keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(7px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
 /* Login */
-#login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(124,58,237,.1),transparent)}
-.login-card{background:#100F1E;border:1px solid #21203A;border-radius:18px;padding:30px 24px;width:100%;max-width:360px;text-align:center}
-.login-logo{width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+#login-pg{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(124,58,237,.1),transparent)}
+.lcard{background:#100F1E;border:1px solid #21203A;border-radius:18px;padding:30px 24px;width:100%;max-width:360px;text-align:center}
+.llogo{width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+.lerr{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:7px;padding:7px 11px;font-size:12px;color:#EF4444;margin-bottom:10px;display:none}
 
-/* Filter buttons */
-.filter-bar{display:flex;gap:4px;flex-wrap:wrap}
-.filter-btn{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #21203A;background:transparent;color:#3E3C6A}
-.filter-btn.active{background:rgba(124,58,237,.18);color:#A78BFA;border-color:rgba(124,58,237,.4)}
-
-/* Empty state */
-.empty{text-align:center;padding:32px;color:#21203A}
-.empty-icon{font-size:36px;margin-bottom:8px}
+/* Filter bar */
+.fbar{display:flex;gap:4px;flex-wrap:wrap}
+.fbtn{padding:4px 8px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid #21203A;background:transparent;color:#3E3C6A;transition:all .15s}
+.fbtn.on{background:rgba(124,58,237,.18);color:#A78BFA;border-color:rgba(124,58,237,.4)}
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN PAGE ══ -->
-<div id="login-page">
-  <div class="login-card">
-    <div class="login-logo">🔐</div>
+<!-- LOGIN -->
+<div id="login-pg">
+  <div class="lcard">
+    <div class="llogo">🔐</div>
     <div style="font-size:19px;font-weight:900;margin-bottom:4px">لوحة إدارة AdVax</div>
     <div style="font-size:12px;color:#3E3C6A;margin-bottom:8px">CraftCost Pro</div>
     <div style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);border-radius:7px;padding:5px 10px;font-size:11px;color:#10B981;margin-bottom:22px">🔒 Supabase Authentication</div>
     <div style="text-align:right;margin-bottom:10px">
-      <label class="label">البريد الإلكتروني</label>
-      <input type="email" id="inp-email" placeholder="admin@advax.com" style="direction:ltr;text-align:right"/>
+      <label class="lbl">البريد الإلكتروني</label>
+      <input type="email" id="l-email" placeholder="admin@advax.com" style="direction:ltr;text-align:right" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <div style="text-align:right;margin-bottom:14px">
-      <label class="label">كلمة المرور</label>
+      <label class="lbl">كلمة المرور</label>
       <div style="position:relative">
-        <input type="password" id="inp-pass" placeholder="••••••••" style="padding-left:38px"/>
-        <button onclick="togglePass()" id="eye-btn" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:none;color:#3E3C6A;padding:2px 4px;font-size:15px">👁</button>
+        <input type="password" id="l-pass" placeholder="••••••••" style="padding-left:38px" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <button onclick="togglePw()" id="pw-eye" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:none;color:#3E3C6A;padding:2px 4px;font-size:15px">👁</button>
       </div>
     </div>
-    <div id="login-err" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:7px;padding:7px 11px;font-size:12px;color:#EF4444;margin-bottom:10px;display:none"></div>
-    <button class="btn btn-p btn-lg" onclick="doLogin()" id="login-btn" style="width:100%;justify-content:center">دخول ←</button>
+    <div class="lerr" id="l-err"></div>
+    <button class="btn b-p b-lg" onclick="doLogin()" id="l-btn" style="width:100%;justify-content:center">دخول ←</button>
   </div>
 </div>
 
-<!-- ══ APP ══ -->
+<!-- APP -->
 <div id="app" style="display:none">
   <div id="topbar">
     <div class="tlogo">🔐</div>
     <div style="flex:1">
       <div style="font-weight:900;font-size:14px;color:#A78BFA">لوحة إدارة AdVax — CraftCost Pro</div>
-      <div id="user-email" style="font-size:11px;color:#3E3C6A;margin-top:1px"></div>
+      <div id="t-email" style="font-size:11px;color:#3E3C6A;margin-top:1px"></div>
     </div>
-    <a id="app-link" href="https://craftcost-pro.advax.workers.dev" target="_blank" class="btn btn-o" style="text-decoration:none;padding:5px 11px;font-size:12px;margin-left:5px">التطبيق ↗</a>
-    <button class="btn btn-r" onclick="doLogout()" style="padding:5px 11px;font-size:12px">خروج</button>
+    <a href="https://craftcost-pro.advax.workers.dev" target="_blank" class="btn b-o" style="text-decoration:none;padding:5px 11px;font-size:12px;margin-left:5px">التطبيق ↗</a>
+    <button class="btn b-r" onclick="doLogout()" style="padding:5px 11px;font-size:12px">خروج</button>
   </div>
 
   <div id="main">
-    <!-- Tabs -->
     <div class="tabs">
-      <button class="tab active" onclick="showTab('codes',this)">🔑 الأكواد</button>
-      <button class="tab" onclick="showTab('users',this)">👥 المستخدمون</button>
-      <button class="tab" onclick="showTab('notifs',this)">📢 الإشعارات</button>
-      <button class="tab" onclick="showTab('settings',this)">⚙️ الإعدادات</button>
+      <button class="tab on" onclick="goTab('codes',this)">🔑 الأكواد</button>
+      <button class="tab" onclick="goTab('users',this)">👥 المستخدمون</button>
+      <button class="tab" onclick="goTab('notifs',this)">📢 الإشعارات</button>
+      <button class="tab" onclick="goTab('settings',this)">⚙️ الإعدادات</button>
     </div>
 
-    <!-- ══ CODES PAGE ══ -->
-    <div id="page-codes" class="page active">
-
-      <!-- Stats -->
-      <div class="g4" style="margin-bottom:13px" id="stats-row">
-        <div class="stat"><div class="stat-n" style="color:#A78BFA" id="stat-all">0</div><div class="stat-l">إجمالي</div></div>
-        <div class="stat"><div class="stat-n" style="color:#10B981" id="stat-active">0</div><div class="stat-l">نشط</div></div>
-        <div class="stat"><div class="stat-n" style="color:#F59E0B" id="stat-soon">0</div><div class="stat-l">ينتهي قريباً</div></div>
-        <div class="stat"><div class="stat-n" style="color:#EF4444" id="stat-off">0</div><div class="stat-l">موقوف/منتهي</div></div>
+    <!-- CODES -->
+    <div id="pg-codes" class="page on">
+      <div class="g4" style="margin-bottom:13px">
+        <div class="stat"><div class="stat-n" style="color:#A78BFA" id="s-all">0</div><div class="stat-l">إجمالي</div></div>
+        <div class="stat"><div class="stat-n" style="color:#10B981" id="s-act">0</div><div class="stat-l">نشط</div></div>
+        <div class="stat"><div class="stat-n" style="color:#F59E0B" id="s-soon">0</div><div class="stat-l">ينتهي قريباً</div></div>
+        <div class="stat"><div class="stat-n" style="color:#EF4444" id="s-off">0</div><div class="stat-l">موقوف/منتهي</div></div>
       </div>
 
-      <!-- Create form -->
+      <!-- Create -->
       <div class="card">
-        <div class="card-title">➕ إنشاء كود اشتراك</div>
+        <div class="card-h">➕ إنشاء كود اشتراك</div>
         <div class="g3" style="margin-bottom:11px">
           <div>
-            <label class="label">الكود *</label>
+            <label class="lbl">الكود *</label>
             <div style="display:flex;gap:6px">
-              <input id="f-code" placeholder="CRAFT2025" maxlength="12" style="letter-spacing:2px;font-weight:700;font-size:15px" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"/>
-              <button class="btn btn-o" onclick="document.getElementById('f-code').value=genCode()" style="flex-shrink:0;padding:9px 10px" title="توليد عشوائي">🔀</button>
+              <input id="f-code" placeholder="CRAFT2025" maxlength="12" style="letter-spacing:2px;font-weight:700;font-size:15px" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');updatePreview()"/>
+              <button class="btn b-o" onclick="f_code.value=genCode();updatePreview()" style="flex-shrink:0;padding:9px 10px">🔀</button>
             </div>
           </div>
           <div>
-            <label class="label">اسم العميل</label>
+            <label class="lbl">اسم العميل</label>
             <input id="f-label" placeholder="محمد أحمد"/>
           </div>
           <div>
-            <label class="label">ملاحظة داخلية</label>
+            <label class="lbl">ملاحظة داخلية</label>
             <input id="f-note" placeholder="خاصة بك..."/>
           </div>
         </div>
         <div style="margin-bottom:11px">
-          <label class="label">مدة الاشتراك</label>
-          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:2px" id="plan-btns">
-            <button class="plan-btn selected" data-plan="monthly" data-months="1" onclick="selectPlan(this)">شهري (1)</button>
-            <button class="plan-btn" data-plan="quarterly" data-months="3" onclick="selectPlan(this)">ربع سنوي (3)</button>
-            <button class="plan-btn" data-plan="biannual" data-months="6" onclick="selectPlan(this)">نصف سنوي (6)</button>
-            <button class="plan-btn" data-plan="yearly" data-months="12" onclick="selectPlan(this)">سنوي (12)</button>
+          <label class="lbl">مدة الاشتراك</label>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:2px">
+            <button class="plan-btn on" data-months="1" data-plan="monthly" onclick="selectPlan(this)">شهري (1)</button>
+            <button class="plan-btn" data-months="3" data-plan="quarterly" onclick="selectPlan(this)">ربع سنوي (3)</button>
+            <button class="plan-btn" data-months="6" data-plan="biannual" onclick="selectPlan(this)">نصف سنوي (6)</button>
+            <button class="plan-btn" data-months="12" data-plan="yearly" onclick="selectPlan(this)">سنوي (12)</button>
           </div>
         </div>
-        <div id="exp-preview" style="display:none;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:7px;padding:6px 11px;margin-bottom:11px;font-size:12px;color:#A78BFA"></div>
-        <button class="btn btn-p btn-lg" onclick="doAdd()" id="add-btn">✅ إنشاء الكود</button>
+        <div id="f-prev" style="display:none;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:7px;padding:6px 11px;margin-bottom:11px;font-size:12px;color:#A78BFA"></div>
+        <button class="btn b-p b-lg" onclick="doAdd()" id="add-btn">✅ إنشاء الكود</button>
       </div>
 
       <!-- Table -->
       <div class="card" style="padding:0;overflow:hidden">
         <div style="padding:12px 15px;border-bottom:1px solid #161528;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:7px">
-          <div style="font-weight:800;color:#C4B5FD;font-size:14px">🔑 الأكواد (<span id="codes-count">0</span>)</div>
+          <div style="font-weight:800;color:#C4B5FD;font-size:14px">🔑 الأكواد (<span id="codes-cnt">0</span>)</div>
           <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
-            <div class="filter-bar">
-              <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">الكل</button>
-              <button class="filter-btn" data-filter="active" onclick="setFilter('active',this)">نشط</button>
-              <button class="filter-btn" data-filter="stopped" onclick="setFilter('stopped',this)">موقوف</button>
-              <button class="filter-btn" data-filter="expired" onclick="setFilter('expired',this)">منتهي</button>
-              <button class="filter-btn" data-filter="soon" onclick="setFilter('soon',this)">ينتهي قريباً</button>
+            <div class="fbar">
+              <button class="fbtn on" onclick="setFilter('all',this)">الكل</button>
+              <button class="fbtn" onclick="setFilter('active',this)">نشط</button>
+              <button class="fbtn" onclick="setFilter('stopped',this)">موقوف</button>
+              <button class="fbtn" onclick="setFilter('expired',this)">منتهي</button>
+              <button class="fbtn" onclick="setFilter('soon',this)">ينتهي قريباً</button>
             </div>
-            <button class="btn btn-o" onclick="loadCodes()" style="padding:4px 9px;font-size:11px" id="refresh-btn">🔄 تحديث</button>
+            <button class="btn b-o" onclick="loadCodes()" style="padding:4px 9px;font-size:11px" id="ref-btn">🔄 تحديث</button>
           </div>
         </div>
-        <div id="codes-body"></div>
+        <div id="codes-body"><div style="text-align:center;padding:28px;color:#3E3C6A">⏳ جاري التحميل...</div></div>
       </div>
     </div>
 
-    <!-- ══ USERS PAGE ══ -->
-    <div id="page-users" class="page">
+    <!-- USERS -->
+    <div id="pg-users" class="page">
       <div class="card">
-        <div class="card-title">👥 المستخدمون النشطون</div>
+        <div class="card-h">👥 المستخدمون النشطون</div>
         <div id="users-body"><div style="color:#3E3C6A;text-align:center;padding:20px">⏳ جاري التحميل...</div></div>
       </div>
     </div>
 
-    <!-- ══ NOTIFS PAGE ══ -->
-    <div id="page-notifs" class="page">
-      <!-- GitHub Token -->
-      <div class="card" id="token-card">
+    <!-- NOTIFS -->
+    <div id="pg-notifs" class="page">
+      <div class="card" id="tok-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <div class="card-title" style="margin:0">🔑 GitHub Token</div>
-          <span id="token-badge" class="badge badge-y">⚠️ مطلوب</span>
+          <div class="card-h" style="margin:0">🔑 GitHub Token</div>
+          <span id="tok-bdg" class="bdg bdg-y">⚠️ مطلوب</span>
         </div>
-        <div id="token-set-section" style="display:none">
+        <div id="tok-set" style="display:none">
           <div style="display:flex;align-items:center;gap:10px">
-            <div style="flex:1;background:#090817;border-radius:7px;padding:7px 11px;font-family:monospace;font-size:12px;color:#10B981" id="token-masked"></div>
-            <button class="btn btn-r" onclick="removeToken()">حذف</button>
+            <div style="flex:1;background:#090817;border-radius:7px;padding:7px 11px;font-family:monospace;font-size:12px;color:#10B981" id="tok-masked"></div>
+            <button class="btn b-r" onclick="removeToken()">حذف</button>
           </div>
-          <p style="font-size:11px;color:#3E3C6A;margin-top:5px">✓ محفوظ في متصفحك فقط</p>
         </div>
-        <div id="token-input-section">
-          <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.18);border-radius:7px;padding:7px 11px;font-size:11px;color:#F59E0B;margin-bottom:9px">
-            💡 Fine-grained token — Contents: Read & Write — مستودع craftcost-notification فقط
-          </div>
+        <div id="tok-inp">
+          <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.18);border-radius:7px;padding:7px 11px;font-size:11px;color:#F59E0B;margin-bottom:9px">💡 Fine-grained token — Contents: Read & Write — مستودع craftcost-notification فقط</div>
           <div style="display:flex;gap:6px">
-            <input type="password" id="token-inp" placeholder="github_pat_..." style="flex:1;font-family:monospace" onkeydown="if(event.key==='Enter')saveToken()"/>
-            <button class="btn btn-o" onclick="toggleTokenVis()" style="flex-shrink:0" id="tok-eye">👁</button>
-            <button class="btn btn-p" onclick="saveToken()" style="flex-shrink:0">حفظ</button>
+            <input type="password" id="tok-val" placeholder="github_pat_..." style="flex:1;font-family:monospace" onkeydown="if(event.key==='Enter')saveToken()"/>
+            <button class="btn b-o" onclick="toggleTokVis()" id="tok-eye" style="flex-shrink:0">👁</button>
+            <button class="btn b-p" onclick="saveToken()" style="flex-shrink:0">حفظ</button>
           </div>
         </div>
       </div>
-
-      <!-- Send notification -->
       <div class="card">
-        <div class="card-title">📢 إرسال إشعار للعملاء</div>
-        <div style="background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.18);border-radius:7px;padding:6px 11px;font-size:11px;color:#818CF8;margin-bottom:12px">
-          📡 يُكتب على GitHub ويصل للعملاء خلال ساعة — مجاني
-        </div>
-        <div style="margin-bottom:10px">
-          <label class="label">العنوان *</label>
-          <input id="notif-title" placeholder="مثال: تحديث جديد ✨" maxlength="100"/>
-        </div>
-        <div style="margin-bottom:12px">
-          <label class="label">التفاصيل (اختياري)</label>
-          <textarea id="notif-body" rows="3" placeholder="..." maxlength="300"></textarea>
-        </div>
-        <div id="notif-preview" style="display:none;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:9px;padding:9px 13px;margin-bottom:12px"></div>
-        <button class="btn btn-p btn-lg" onclick="sendNotif()" style="width:100%;justify-content:center" id="send-btn">📨 إرسال لجميع العملاء</button>
+        <div class="card-h">📢 إرسال إشعار للعملاء</div>
+        <div style="background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.18);border-radius:7px;padding:6px 11px;font-size:11px;color:#818CF8;margin-bottom:12px">📡 يُكتب على GitHub ويصل للعملاء خلال ساعة — مجاني</div>
+        <div style="margin-bottom:10px"><label class="lbl">العنوان *</label><input id="n-title" placeholder="مثال: تحديث جديد ✨" maxlength="100" oninput="updateNotifPreview()"/></div>
+        <div style="margin-bottom:12px"><label class="lbl">التفاصيل (اختياري)</label><textarea id="n-body" rows="3" placeholder="..." maxlength="300" oninput="updateNotifPreview()"></textarea></div>
+        <div id="n-prev" style="display:none;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:9px;padding:9px 13px;margin-bottom:12px"></div>
+        <button class="btn b-p b-lg" onclick="sendNotif()" style="width:100%;justify-content:center" id="n-send-btn">📨 إرسال لجميع العملاء</button>
       </div>
-
-      <!-- Log -->
-      <div class="card" id="notif-log-card" style="display:none">
+      <div class="card" id="n-log-card" style="display:none">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
-          <div class="card-title" style="margin:0">📋 الإشعارات المُرسلة (<span id="log-count">0</span>)</div>
-          <button class="btn btn-r" onclick="clearLog()">مسح</button>
+          <div class="card-h" style="margin:0">📋 الإشعارات المُرسلة (<span id="n-log-cnt">0</span>)</div>
+          <button class="btn b-r" onclick="clearLog()">مسح</button>
         </div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>العنوان</th><th>التفاصيل</th><th>وقت الإرسال</th></tr></thead>
-            <tbody id="log-body"></tbody>
-          </table>
-        </div>
+        <div class="tw"><table><thead><tr><th>العنوان</th><th>التفاصيل</th><th>وقت الإرسال</th></tr></thead><tbody id="n-log-body"></tbody></table></div>
       </div>
     </div>
 
-    <!-- ══ SETTINGS PAGE ══ -->
-    <div id="page-settings" class="page">
+    <!-- SETTINGS -->
+    <div id="pg-settings" class="page">
       <div class="card" style="border-color:rgba(16,185,129,.2);background:rgba(16,185,129,.03)">
-        <div class="card-title">👤 حسابك</div>
+        <div class="card-h">👤 حسابك</div>
         <div style="display:flex;align-items:center;gap:11px">
           <div style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:19px">👤</div>
-          <div>
-            <div style="font-weight:700;font-size:14px" id="settings-email">—</div>
-            <div style="font-size:11px;color:#10B981;margin-top:2px">✅ Supabase Auth</div>
-          </div>
+          <div><div style="font-weight:700;font-size:14px" id="s-email">—</div><div style="font-size:11px;color:#10B981;margin-top:2px">✅ Supabase Auth</div></div>
         </div>
       </div>
-
       <div class="card">
-        <div class="card-title">🧪 اختبار كود</div>
+        <div class="card-h">🧪 اختبار كود</div>
         <div style="display:flex;gap:7px;margin-bottom:10px">
-          <input id="test-code" placeholder="أدخل كود للاختبار..." style="flex:1;letter-spacing:2px;font-weight:700" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')testCode()"/>
-          <button class="btn btn-p" onclick="testCode()" style="flex-shrink:0">اختبار</button>
+          <input id="test-c" placeholder="أدخل كود..." style="flex:1;letter-spacing:2px;font-weight:700" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')testCode()"/>
+          <button class="btn b-p" onclick="testCode()" style="flex-shrink:0">اختبار</button>
         </div>
-        <div id="test-result" style="display:none"></div>
+        <div id="test-res" style="display:none"></div>
       </div>
-
       <div class="card">
-        <div class="card-title">ℹ️ معلومات</div>
+        <div class="card-h">ℹ️ معلومات</div>
         <div style="display:flex;flex-direction:column;gap:5px">
           <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 10px;background:#090817;border-radius:7px"><span style="color:#3E3C6A">رابط التطبيق</span><span style="font-weight:600">craftcost-pro.advax.workers.dev</span></div>
           <div style="display:flex;justify-content:space-between;font-size:12px;padding:6px 10px;background:#090817;border-radius:7px"><span style="color:#3E3C6A">الإصدار</span><span style="font-weight:600">CraftCost Pro v3.1</span></div>
@@ -300,554 +273,688 @@ tr.dim td{opacity:.38}
       </div>
     </div>
 
-  </div><!-- /main -->
-</div><!-- /app -->
+  </div>
+</div>
 
 <div id="toast"></div>
 
 <script>
-/* ══════════════════════════════════════════════
-   CONFIG — ضع بياناتك بعد إنشاء مشروع Supabase
-══════════════════════════════════════════════ */
-var SUPA_URL = 'PASTE_SUPABASE_URL';   // مثال: https://abcxyz.supabase.co
-var SUPA_KEY = 'PASTE_SUPABASE_KEY';   // anon public key
-var GH_API   = 'https://api.github.com/repos/Advax/craftcost-notification/contents/latest.json';
+/* ════════════════════════════════════════════════
+   CONFIG — ضع بيانات مشروع Supabase هنا
+════════════════════════════════════════════════ */
+const SB  = 'https://jqkmtqbhxsuvvumudgrj.supabase.co';
+const KEY = 'sb_publishable_0KbQ1aL7rWoJCkk84OUVKQ_Krc4nvwS';
+const GH  = 'https://api.github.com/repos/Advax/craftcost-notification/contents/latest.json';
 
-/* ══════════════════════════════════════════════
-   STATE — بسيط وواضح
-══════════════════════════════════════════════ */
-var STATE = {
-  token:   null,   // Supabase auth token
-  email:   null,
-  codes:   [],     // all codes from DB
-  filter:  'all',  // current filter
-  selPlan: 'monthly',
-  selMonths: 1
-};
+/* ════════════════════════════════════════════════
+   AUTH STATE — نفس نمط المشروع المرجعي
+════════════════════════════════════════════════ */
+let AUTH_TOKEN    = null;
+let REFRESH_TOKEN = null;
+let TOKEN_TIMER   = null;
 
-/* ══════════════════════════════════════════════
-   UTILS
-══════════════════════════════════════════════ */
-function dFmt(d){return d?new Date(d).toLocaleDateString('ar-SA'):'—';}
-function dLeft(d){return Math.ceil((new Date(d)-new Date())/864e5);}
-function expDate(m){var d=new Date();d.setMonth(d.getMonth()+m);return d.toISOString();}
-function expLabel(m){var d=new Date();d.setMonth(d.getMonth()+m);return d.toLocaleDateString('ar-SA');}
-function genCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',o='';for(var i=0;i<8;i++)o+=c[Math.floor(Math.random()*c.length)];return o;}
-
-/* ══════════════════════════════════════════════
-   TOAST
-══════════════════════════════════════════════ */
-var _toastTimer=null;
-function toast(msg,type){
-  var el=document.getElementById('toast');
-  var colors={ok:'#10B981',err:'#EF4444',warn:'#F59E0B',info:'#6366F1'};
-  el.style.background=colors[type||'ok']||colors.ok;
-  el.textContent=msg;
-  el.style.display='block';
-  if(_toastTimer)clearTimeout(_toastTimer);
-  _toastTimer=setTimeout(function(){el.style.display='none';},3500);
+/* Headers — يُستخدم في كل طلب */
+function getH() {
+  return {
+    'apikey':        KEY,
+    'Authorization': 'Bearer ' + (AUTH_TOKEN || KEY),
+    'Content-Type':  'application/json',
+    'Prefer':        'return=representation'   /* مهم جداً */
+  };
 }
 
-/* ══════════════════════════════════════════════
-   API CALLS — direct fetch to Supabase REST
-══════════════════════════════════════════════ */
-function apiHeaders(){
-  return {'apikey':SUPA_KEY,'Authorization':'Bearer '+STATE.token,'Content-Type':'application/json'};
-}
-
-/* Fetch all codes */
-function apiGetAll(){
-  return fetch(SUPA_URL+'/rest/v1/subscription_codes?select=*&order=created_at.desc',{headers:apiHeaders()})
-    .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});
-}
-
-/* Insert new code */
-function apiInsert(data){
-  return fetch(SUPA_URL+'/rest/v1/subscription_codes',{
-    method:'POST',
-    headers:Object.assign({},apiHeaders(),{'Prefer':'return=representation'}),
-    body:JSON.stringify(data)
-  }).then(function(r){
-    if(!r.ok)return r.text().then(function(t){throw new Error(t);});
-    return r.json();
-  });
-}
-
-/* Patch one row */
-function apiPatch(id,fields){
-  return fetch(SUPA_URL+'/rest/v1/subscription_codes?id=eq.'+id,{
-    method:'PATCH',
-    headers:Object.assign({},apiHeaders(),{'Prefer':'return=minimal'}),
-    body:JSON.stringify(fields)
-  }).then(function(r){
-    if(!r.ok)return r.text().then(function(t){throw new Error(t);});
-    return true;
-  });
-}
-
-/* Delete one row */
-function apiDelete(id){
-  return fetch(SUPA_URL+'/rest/v1/subscription_codes?id=eq.'+id,{
-    method:'DELETE',
-    headers:apiHeaders()
-  }).then(function(r){
-    if(!r.ok)return r.text().then(function(t){throw new Error(t);});
-    return true;
-  });
-}
-
-/* ══════════════════════════════════════════════
-   AUTH
-══════════════════════════════════════════════ */
-function doLogin(){
-  var email=document.getElementById('inp-email').value.trim();
-  var pass=document.getElementById('inp-pass').value;
-  var errEl=document.getElementById('login-err');
-  var btn=document.getElementById('login-btn');
-  if(!email||!pass){errEl.textContent='أدخل البريد وكلمة المرور';errEl.style.display='block';return;}
-  btn.textContent='⏳ جاري التحقق...';btn.disabled=true;errEl.style.display='none';
-  fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{
-    method:'POST',
-    headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
-    body:JSON.stringify({email:email,password:pass})
-  }).then(function(r){return r.json();}).then(function(d){
-    btn.textContent='دخول ←';btn.disabled=false;
-    if(d.access_token){
-      STATE.token=d.access_token;
-      STATE.email=d.user.email;
-      sessionStorage.setItem('cc-sess',JSON.stringify({token:d.access_token,email:d.user.email}));
-      showApp();
-    }else{
-      errEl.textContent=d.error_description||'بريد أو كلمة مرور خاطئة';
-      errEl.style.display='block';
+/* تجديد الـ token تلقائياً قبل انتهائه */
+async function refreshToken() {
+  if (!REFRESH_TOKEN) return false;
+  try {
+    const res  = await fetch(`${SB}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': KEY },
+      body: JSON.stringify({ refresh_token: REFRESH_TOKEN })
+    });
+    const data = await res.json();
+    if (data.access_token) {
+      AUTH_TOKEN    = data.access_token;
+      REFRESH_TOKEN = data.refresh_token || REFRESH_TOKEN;
+      clearTimeout(TOKEN_TIMER);
+      TOKEN_TIMER = setTimeout(refreshToken, 50 * 60 * 1000); /* كل 50 دقيقة */
+      return true;
     }
-  }).catch(function(){
-    btn.textContent='دخول ←';btn.disabled=false;
-    errEl.textContent='خطأ في الاتصال بالإنترنت';
-    errEl.style.display='block';
+  } catch(e) { console.warn('Token refresh failed', e); }
+  return false;
+}
+
+/* Fetch مع معالجة 401 تلقائياً — نفس نمط المشروع المرجعي */
+async function sbFetch(url, options = {}) {
+  let res = await fetch(url, { ...options, headers: getH() });
+  if (res.status === 401) {
+    const ok = await refreshToken();
+    if (ok) {
+      res = await fetch(url, { ...options, headers: getH() });
+    } else {
+      toast('⏰ انتهت الجلسة — يُعاد التحميل...', '#F59E0B');
+      setTimeout(() => location.reload(), 2500);
+      throw new Error('انتهت الجلسة');
+    }
+  }
+  return res;
+}
+
+/* ════════════════════════════════════════════════
+   SUPABASE REST — نفس نمط المشروع المرجعي
+════════════════════════════════════════════════ */
+async function sbGet(table, query = '') {
+  const r = await sbFetch(`${SB}/rest/v1/${table}?${query}`, { method: 'GET' });
+  if (!r.ok) { const e = await r.text(); throw new Error(e); }
+  return r.json();
+}
+
+async function sbInsert(table, data) {
+  const r = await sbFetch(`${SB}/rest/v1/${table}`, {
+    method: 'POST',
+    body: JSON.stringify(data)
   });
+  if (!r.ok) { const e = await r.text(); throw new Error(e); }
+  return r.json();
 }
 
-function doLogout(){
-  sessionStorage.removeItem('cc-sess');
-  STATE.token=null;STATE.email=null;STATE.codes=[];
-  document.getElementById('app').style.display='none';
-  document.getElementById('login-page').style.display='flex';
-  document.getElementById('inp-email').value='';
-  document.getElementById('inp-pass').value='';
+async function sbPatch(table, id, data) {
+  const r = await sbFetch(`${SB}/rest/v1/${table}?id=eq.${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data)
+  });
+  if (!r.ok) { const e = await r.text(); throw new Error(e); }
+  return r.json();
 }
 
-function togglePass(){
-  var inp=document.getElementById('inp-pass');
-  var btn=document.getElementById('eye-btn');
-  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
-  else{inp.type='password';btn.textContent='👁';}
+async function sbDel(table, id) {
+  const r = await sbFetch(`${SB}/rest/v1/${table}?id=eq.${id}`, {
+    method: 'DELETE'
+  });
+  if (!r.ok) { const e = await r.text(); throw new Error(e); }
 }
 
-document.getElementById('inp-pass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
-document.getElementById('inp-email').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+/* ════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════ */
+let ALL_CODES   = [];
+let CUR_FILTER  = 'all';
+let SEL_PLAN    = 'monthly';
+let SEL_MONTHS  = 1;
 
-/* ══════════════════════════════════════════════
-   SHOW APP
-══════════════════════════════════════════════ */
-function showApp(){
-  document.getElementById('login-page').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.getElementById('user-email').textContent=STATE.email;
-  document.getElementById('settings-email').textContent=STATE.email;
-  loadCodes();
-  loadTokenUI();
-  renderNotifLog();
+/* ════════════════════════════════════════════════
+   UTILS
+════════════════════════════════════════════════ */
+function dFmt(d) { return d ? new Date(d).toLocaleDateString('ar-SA') : '—'; }
+function dLeft(d) { return Math.ceil((new Date(d) - new Date()) / 864e5); }
+function expDate(m) { const d = new Date(); d.setMonth(d.getMonth() + m); return d.toISOString(); }
+function expLabel(m) { const d = new Date(); d.setMonth(d.getMonth() + m); return d.toLocaleDateString('ar-SA'); }
+function genCode() {
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:8}, () => c[Math.floor(Math.random() * c.length)]).join('');
 }
 
-/* ══════════════════════════════════════════════
+let _tt = null;
+function toast(msg, color = '#10B981') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = color;
+  el.style.display = 'block';
+  if (_tt) clearTimeout(_tt);
+  _tt = setTimeout(() => el.style.display = 'none', 3500);
+}
+function err(msg) { toast(msg, '#EF4444'); }
+
+/* ════════════════════════════════════════════════
+   AUTH
+════════════════════════════════════════════════ */
+async function doLogin() {
+  const email = document.getElementById('l-email').value.trim();
+  const pass  = document.getElementById('l-pass').value;
+  const errEl = document.getElementById('l-err');
+  const btn   = document.getElementById('l-btn');
+
+  if (!email || !pass) { errEl.textContent = 'أدخل البريد وكلمة المرور'; errEl.style.display = 'block'; return; }
+
+  btn.textContent = '⏳ جاري التحقق...'; btn.disabled = true; errEl.style.display = 'none';
+
+  try {
+    const res  = await fetch(`${SB}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'apikey': KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass })
+    });
+    const data = await res.json();
+
+    if (data.access_token) {
+      AUTH_TOKEN    = data.access_token;
+      REFRESH_TOKEN = data.refresh_token;
+      clearTimeout(TOKEN_TIMER);
+      TOKEN_TIMER = setTimeout(refreshToken, 50 * 60 * 1000);
+
+      const sess = { email: data.user.email, refresh: data.refresh_token };
+      sessionStorage.setItem('cc-adm', JSON.stringify(sess));
+
+      document.getElementById('t-email').textContent = data.user.email;
+      document.getElementById('s-email').textContent = data.user.email;
+
+      document.getElementById('login-pg').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+
+      await loadCodes();
+      loadTokenUI();
+      renderNotifLog();
+    } else {
+      errEl.textContent = data.error_description || 'بريد أو كلمة مرور خاطئة';
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    errEl.textContent = 'خطأ في الاتصال بالإنترنت';
+    errEl.style.display = 'block';
+  }
+
+  btn.textContent = 'دخول ←'; btn.disabled = false;
+}
+
+function doLogout() {
+  sessionStorage.removeItem('cc-adm');
+  AUTH_TOKEN = REFRESH_TOKEN = null;
+  clearTimeout(TOKEN_TIMER);
+  ALL_CODES = [];
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-pg').style.display = 'flex';
+  document.getElementById('l-email').value = '';
+  document.getElementById('l-pass').value = '';
+}
+
+function togglePw() {
+  const i = document.getElementById('l-pass');
+  const b = document.getElementById('pw-eye');
+  i.type = i.type === 'password' ? 'text' : 'password';
+  b.textContent = i.type === 'password' ? '👁' : '🙈';
+}
+
+/* ════════════════════════════════════════════════
    TABS
-══════════════════════════════════════════════ */
-function showTab(id,btn){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-  document.getElementById('page-'+id).classList.add('active');
-  btn.classList.add('active');
-  if(id==='users')loadUsers();
+════════════════════════════════════════════════ */
+function goTab(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.getElementById('pg-' + id).classList.add('on');
+  btn.classList.add('on');
+  if (id === 'users') loadUsers();
 }
 
-/* ══════════════════════════════════════════════
-   CODES — LOAD & RENDER
-══════════════════════════════════════════════ */
-function loadCodes(){
-  var btn=document.getElementById('refresh-btn');
-  btn.textContent='⏳';btn.disabled=true;
-  document.getElementById('codes-body').innerHTML='<div style="text-align:center;padding:28px;color:#3E3C6A">⏳ جاري التحميل...</div>';
-  apiGetAll().then(function(data){
-    btn.textContent='🔄 تحديث';btn.disabled=false;
-    STATE.codes=data;
+/* ════════════════════════════════════════════════
+   CODES — LOAD + RENDER
+   نفس النمط تماماً كالمشروع المرجعي:
+   loadCodes() → sbGet() → renderCodes()
+════════════════════════════════════════════════ */
+async function loadCodes() {
+  const btn = document.getElementById('ref-btn');
+  btn.textContent = '⏳'; btn.disabled = true;
+  document.getElementById('codes-body').innerHTML =
+    '<div style="text-align:center;padding:28px;color:#3E3C6A">⏳ جاري التحميل...</div>';
+
+  try {
+    /* جلب كل الأكواد — مرتبة من الأحدث */
+    ALL_CODES = await sbGet('subscription_codes', 'select=*&order=created_at.desc');
     renderCodes();
     updateStats();
-  }).catch(function(e){
-    btn.textContent='🔄 تحديث';btn.disabled=false;
-    document.getElementById('codes-body').innerHTML='<div style="text-align:center;padding:28px;color:#EF4444">❌ فشل التحميل: '+e.message+'</div>';
-  });
+  } catch(e) {
+    document.getElementById('codes-body').innerHTML =
+      '<div style="text-align:center;padding:28px;color:#EF4444">❌ فشل التحميل: ' + e.message + '</div>';
+    err('❌ فشل تحميل الأكواد: ' + e.message);
+  } finally {
+    btn.textContent = '🔄 تحديث'; btn.disabled = false;
+  }
 }
 
-function getFilteredCodes(){
-  return STATE.codes.filter(function(c){
-    var exp=new Date(c.expires_at)<new Date();
-    var dl=dLeft(c.expires_at);
-    if(STATE.filter==='active')  return c.is_active&&!exp;
-    if(STATE.filter==='stopped') return !c.is_active;
-    if(STATE.filter==='expired') return exp;
-    if(STATE.filter==='soon')    return c.is_active&&!exp&&dl<=7&&dl>0;
+function getFiltered() {
+  return ALL_CODES.filter(c => {
+    const exp = new Date(c.expires_at) < new Date();
+    const dl  = dLeft(c.expires_at);
+    if (CUR_FILTER === 'active')  return c.is_active && !exp;
+    if (CUR_FILTER === 'stopped') return !c.is_active;
+    if (CUR_FILTER === 'expired') return exp;
+    if (CUR_FILTER === 'soon')    return c.is_active && !exp && dl <= 7 && dl > 0;
     return true;
   });
 }
 
-function updateStats(){
-  var codes=STATE.codes;
-  document.getElementById('stat-all').textContent=codes.length;
-  document.getElementById('stat-active').textContent=codes.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date();}).length;
-  document.getElementById('stat-soon').textContent=codes.filter(function(c){var d=dLeft(c.expires_at);return c.is_active&&d>0&&d<=7;}).length;
-  document.getElementById('stat-off').textContent=codes.filter(function(c){return !c.is_active||new Date(c.expires_at)<new Date();}).length;
+function updateStats() {
+  const codes = ALL_CODES;
+  document.getElementById('s-all').textContent  = codes.length;
+  document.getElementById('s-act').textContent  = codes.filter(c => c.is_active && new Date(c.expires_at) > new Date()).length;
+  document.getElementById('s-soon').textContent = codes.filter(c => { const d = dLeft(c.expires_at); return c.is_active && d > 0 && d <= 7; }).length;
+  document.getElementById('s-off').textContent  = codes.filter(c => !c.is_active || new Date(c.expires_at) < new Date()).length;
 }
 
-function setFilter(f,btn){
-  STATE.filter=f;
-  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
+function setFilter(f, btn) {
+  CUR_FILTER = f;
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
   renderCodes();
 }
 
-function renderCodes(){
-  var list=getFilteredCodes();
-  document.getElementById('codes-count').textContent=STATE.codes.length;
-  var body=document.getElementById('codes-body');
-  if(list.length===0){
-    body.innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div>لا توجد أكواد في هذه الفئة</div></div>';
+function renderCodes() {
+  const list = getFiltered();
+  document.getElementById('codes-cnt').textContent = ALL_CODES.length;
+  const body = document.getElementById('codes-body');
+
+  if (!list.length) {
+    body.innerHTML = '<div style="text-align:center;padding:32px;color:#21203A"><div style="font-size:36px;margin-bottom:8px">🔍</div><div>لا توجد أكواد في هذه الفئة</div></div>';
     return;
   }
-  var rows=list.map(function(c){
-    var exp=new Date(c.expires_at)<new Date();
-    var dl=dLeft(c.expires_at);
-    var hasDev=!!(c.device_id&&c.device_id.length>3);
-    var dimClass=(!c.is_active||exp)?'dim':'';
 
-    var badge='';
-    if(!c.is_active)     badge='<span class="badge badge-y">⛔ موقوف</span>';
-    else if(exp)          badge='<span class="badge badge-r">⌛ منتهي</span>';
-    else if(dl<=7)        badge='<span class="badge badge-y">⚠️ ينتهي قريباً</span>';
-    else                  badge='<span class="badge badge-g">✅ نشط</span>';
+  const rows = list.map(c => {
+    const exp     = new Date(c.expires_at) < new Date();
+    const dl      = dLeft(c.expires_at);
+    const hasDev  = !!(c.device_id && c.device_id.length > 3);
+    const dimCls  = (!c.is_active || exp) ? 'dim' : '';
+    const codeClr = (!c.is_active || exp) ? '#21203A' : '#A78BFA';
 
-    var codeColor=(!c.is_active||exp)?'#21203A':'#A78BFA';
-    var dlText=exp?('<div style="font-size:10px;color:#EF4444">منتهي منذ '+Math.abs(dl)+' يوم</div>'):('<div style="font-size:10px;color:#21203A">'+dl+' يوم</div>');
+    /* Status badge */
+    let badge = '';
+    if      (!c.is_active) badge = '<span class="bdg bdg-y">⛔ موقوف</span>';
+    else if (exp)           badge = '<span class="bdg bdg-r">⌛ منتهي</span>';
+    else if (dl <= 7)       badge = '<span class="bdg bdg-y">⚠️ ينتهي قريباً</span>';
+    else                    badge = '<span class="bdg bdg-g">✅ نشط</span>';
 
-    var devHtml=hasDev
-      ?'<span class="badge badge-g" style="font-size:10px;display:block;margin-bottom:3px">📱 مُسجَّل</span><button class="btn btn-y" style="padding:3px 7px;font-size:10px" onclick="doResetDev(\''+c.id+'\',\''+c.code+'\')">🔄 جهاز جديد</button>'
-      :'<span class="badge badge-d" style="font-size:10px">لم يُستخدم</span>';
+    /* Toggle button — يُبدّل الحالة */
+    const toggleBtn = c.is_active
+      ? `<button class="btn b-r" style="padding:5px 9px;font-size:11px" onclick="doToggle('${c.id}',true)">⛔ إيقاف</button>`
+      : `<button class="btn b-g" style="padding:5px 9px;font-size:11px" onclick="doToggle('${c.id}',false)">✅ تفعيل</button>`;
 
-    var toggleBtn=c.is_active
-      ?'<button class="btn btn-r" style="padding:5px 9px;font-size:11px" onclick="doToggle(\''+c.id+'\',true)">⛔ إيقاف</button>'
-      :'<button class="btn btn-g" style="padding:5px 9px;font-size:11px" onclick="doToggle(\''+c.id+'\',false)">✅ تفعيل</button>';
+    /* Device */
+    const devHtml = hasDev
+      ? `<span class="bdg bdg-g" style="font-size:10px;display:block;margin-bottom:3px">📱 مُسجَّل</span>
+         <button class="btn b-y" style="padding:3px 7px;font-size:10px" onclick="doResetDev('${c.id}','${c.code}')">🔄 جهاز جديد</button>`
+      : '<span class="bdg bdg-d" style="font-size:10px">لم يُستخدم</span>';
 
-    return '<tr class="'+dimClass+'">'
-      +'<td><div style="display:flex;align-items:center;gap:5px"><b style="font-family:monospace;font-size:13px;letter-spacing:2px;color:'+codeColor+'">'+c.code+'</b><button style="background:none;color:#21203A;font-size:10px;padding:2px 5px;border-radius:3px;border:1px solid #161528;cursor:pointer" onclick="copyCode(\''+c.code+'\')">📋</button></div></td>'
-      +'<td><div style="font-weight:600;font-size:12px">'+(c.label||'<span style="color:#21203A">—</span>')+'</div>'+(c.note?'<div style="font-size:10px;color:#21203A;margin-top:1px">'+c.note+'</div>':'')+'</td>'
-      +'<td><span class="badge badge-p" style="font-size:10px">'+(c.plan||'monthly')+'</span></td>'
-      +'<td><div style="font-size:11px;font-weight:600;color:'+(exp?'#EF4444':dl<=7?'#F59E0B':'#4A4870')+'">'+dFmt(c.expires_at)+'</div>'+dlText+'</td>'
-      +'<td>'+devHtml+'</td>'
-      +'<td><div style="font-weight:700;color:'+(c.use_count>0?'#10B981':'#21203A')+';font-size:13px">'+(c.use_count||0)+' مرة</div>'+(c.last_used_at?'<div style="font-size:10px;color:#21203A">'+dFmt(c.last_used_at)+'</div>':'')+'</td>'
-      +'<td>'+badge+'</td>'
-      +'<td><div style="display:flex;gap:3px;flex-wrap:wrap">'
-        +toggleBtn
-        +'<button class="btn btn-o" style="padding:5px 7px;font-size:10px" onclick="doExtend(\''+c.id+'\',\''+c.code+'\',1)">＋شهر</button>'
-        +'<button class="btn btn-o" style="padding:5px 7px;font-size:10px" onclick="doExtend(\''+c.id+'\',\''+c.code+'\',3)">＋٣</button>'
-        +'<button class="btn btn-r" style="padding:5px 7px;font-size:10px" onclick="doDelete(\''+c.id+'\',\''+c.code+'\')">🗑</button>'
-      +'</div></td>'
-    +'</tr>';
+    /* Expiry */
+    const dlHtml = exp
+      ? `<div style="font-size:10px;color:#EF4444">منتهي منذ ${Math.abs(dl)} يوم</div>`
+      : `<div style="font-size:10px;color:#21203A">${dl} يوم</div>`;
+
+    return `<tr class="${dimCls}">
+      <td>
+        <div style="display:flex;align-items:center;gap:5px">
+          <b style="font-family:monospace;font-size:13px;letter-spacing:2px;color:${codeClr}">${c.code}</b>
+          <button style="background:none;color:#21203A;font-size:10px;padding:2px 5px;border-radius:3px;border:1px solid #161528;cursor:pointer" onclick="doCopy('${c.code}')">📋</button>
+        </div>
+      </td>
+      <td>
+        <div style="font-weight:600;font-size:12px">${c.label || '<span style="color:#21203A">—</span>'}</div>
+        ${c.note ? `<div style="font-size:10px;color:#21203A;margin-top:1px">${c.note}</div>` : ''}
+      </td>
+      <td><span class="bdg bdg-p" style="font-size:10px">${c.plan || 'monthly'}</span></td>
+      <td>
+        <div style="font-size:11px;font-weight:600;color:${exp ? '#EF4444' : dl <= 7 ? '#F59E0B' : '#4A4870'}">${dFmt(c.expires_at)}</div>
+        ${dlHtml}
+      </td>
+      <td>${devHtml}</td>
+      <td>
+        <div style="font-weight:700;color:${c.use_count > 0 ? '#10B981' : '#21203A'};font-size:13px">${c.use_count || 0} مرة</div>
+        ${c.last_used_at ? `<div style="font-size:10px;color:#21203A">${dFmt(c.last_used_at)}</div>` : ''}
+      </td>
+      <td>${badge}</td>
+      <td>
+        <div style="display:flex;gap:3px;flex-wrap:wrap">
+          ${toggleBtn}
+          <button class="btn b-o" style="padding:5px 7px;font-size:10px" onclick="doExtend('${c.id}','${c.code}',1)">＋شهر</button>
+          <button class="btn b-o" style="padding:5px 7px;font-size:10px" onclick="doExtend('${c.id}','${c.code}',3)">＋٣</button>
+          <button class="btn b-r" style="padding:5px 7px;font-size:10px" onclick="doDelete('${c.id}','${c.code}')">🗑</button>
+        </div>
+      </td>
+    </tr>`;
   });
 
-  body.innerHTML='<div class="tbl-wrap"><table>'
-    +'<thead><tr><th>الكود</th><th>العميل</th><th>الخطة</th><th>ينتهي</th><th>الجهاز</th><th>الاستخدام</th><th>الحالة</th><th>الإجراءات</th></tr></thead>'
-    +'<tbody>'+rows.join('')+'</tbody>'
-    +'</table></div>';
+  body.innerHTML = `
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>الكود</th><th>العميل</th><th>الخطة</th>
+          <th>ينتهي</th><th>الجهاز</th><th>الاستخدام</th>
+          <th>الحالة</th><th>الإجراءات</th>
+        </tr></thead>
+        <tbody>${rows.join('')}</tbody>
+      </table>
+    </div>`;
 }
 
-/* ══════════════════════════════════════════════
-   OPERATIONS — each reloads after success
-══════════════════════════════════════════════ */
-function doAdd(){
-  var code=document.getElementById('f-code').value.trim().toUpperCase();
-  if(!code){toast('أدخل الكود','warn');return;}
-  if(STATE.codes.find(function(c){return c.code===code;})){toast('❌ الكود موجود مسبقاً','err');return;}
-  var btn=document.getElementById('add-btn');
-  btn.textContent='⏳ جاري الحفظ...';btn.disabled=true;
-  apiInsert({
-    code:code,
-    label:document.getElementById('f-label').value.trim(),
-    note:document.getElementById('f-note').value.trim(),
-    plan:STATE.selPlan,
-    expires_at:expDate(STATE.selMonths),
-    is_active:true,device_id:'',device_info:'',use_count:0
-  }).then(function(){
-    btn.textContent='✅ إنشاء الكود';btn.disabled=false;
-    document.getElementById('f-code').value='';
-    document.getElementById('f-label').value='';
-    document.getElementById('f-note').value='';
-    document.getElementById('exp-preview').style.display='none';
-    toast('✅ تم إنشاء الكود: '+code);
-    STATE.filter='all'; /* show all after add */
-    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
-    document.querySelector('[data-filter="all"]').classList.add('active');
-    loadCodes();
-  }).catch(function(e){
-    btn.textContent='✅ إنشاء الكود';btn.disabled=false;
-    toast('❌ فشل: '+e.message,'err');
-  });
+/* ════════════════════════════════════════════════
+   OPERATIONS — نفس النمط: sbPatch/sbDel → loadCodes() → toast()
+════════════════════════════════════════════════ */
+
+/* إضافة كود جديد */
+async function doAdd() {
+  const code = document.getElementById('f-code').value.trim().toUpperCase();
+  if (!code) { err('أدخل الكود'); return; }
+  if (ALL_CODES.find(c => c.code === code)) { err('❌ الكود موجود مسبقاً'); return; }
+
+  const btn = document.getElementById('add-btn');
+  btn.textContent = '⏳ جاري الحفظ...'; btn.disabled = true;
+
+  try {
+    await sbInsert('subscription_codes', {
+      code,
+      label:      document.getElementById('f-label').value.trim(),
+      note:       document.getElementById('f-note').value.trim(),
+      plan:       SEL_PLAN,
+      expires_at: expDate(SEL_MONTHS),
+      is_active:  true,
+      device_id:  '',
+      device_info:'',
+      use_count:  0
+    });
+
+    /* أعد الفلتر للكل حتى يظهر الكود الجديد */
+    CUR_FILTER = 'all';
+    document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
+    document.querySelector('.fbtn').classList.add('on');
+
+    document.getElementById('f-code').value  = '';
+    document.getElementById('f-label').value = '';
+    document.getElementById('f-note').value  = '';
+    document.getElementById('f-prev').style.display = 'none';
+
+    await loadCodes();            /* ← يجلب من Supabase ويرسم */
+    toast(`✅ تم إنشاء الكود: ${code}`);
+  } catch(e) {
+    err('❌ فشل: ' + e.message);
+  } finally {
+    btn.textContent = '✅ إنشاء الكود'; btn.disabled = false;
+  }
 }
 
-function doToggle(id, currentActive){
-  var newVal=!currentActive;
-  apiPatch(id,{is_active:newVal}).then(function(){
-    toast(newVal?'✅ تم تفعيل الكود':'⛔ تم إيقاف الكود', newVal?'ok':'warn');
-    STATE.filter='all'; /* always show all after toggle */
-    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
-    document.querySelector('[data-filter="all"]').classList.add('active');
-    loadCodes();
-  }).catch(function(e){
-    toast('❌ فشل: '+e.message,'err');
-    loadCodes();
-  });
+/* إيقاف / تفعيل */
+async function doToggle(id, currentActive) {
+  try {
+    await sbPatch('subscription_codes', id, { is_active: !currentActive });
+    /* أعد الفلتر للكل دائماً بعد التبديل */
+    CUR_FILTER = 'all';
+    document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
+    document.querySelector('.fbtn').classList.add('on');
+    await loadCodes();            /* ← يجلب من Supabase ويرسم */
+    toast(currentActive ? '⛔ تم إيقاف الكود' : '✅ تم تفعيل الكود', currentActive ? '#F59E0B' : '#10B981');
+  } catch(e) {
+    err('❌ فشل: ' + e.message);
+    await loadCodes();
+  }
 }
 
-function doDelete(id,code){
-  if(!confirm('حذف الكود '+code+'؟\nلا يمكن التراجع.'))return;
-  apiDelete(id).then(function(){
-    toast('🗑 تم حذف '+code,'err');
-    STATE.filter='all';
-    document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
-    document.querySelector('[data-filter="all"]').classList.add('active');
-    loadCodes();
-  }).catch(function(e){toast('❌ فشل: '+e.message,'err');loadCodes();});
+/* حذف */
+async function doDelete(id, code) {
+  if (!confirm(`حذف الكود ${code}؟\nلا يمكن التراجع.`)) return;
+  try {
+    await sbDel('subscription_codes', id);
+    CUR_FILTER = 'all';
+    document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
+    document.querySelector('.fbtn').classList.add('on');
+    await loadCodes();
+    toast(`🗑 تم حذف ${code}`, '#EF4444');
+  } catch(e) {
+    err('❌ فشل: ' + e.message);
+    await loadCodes();
+  }
 }
 
-function doResetDev(id,code){
-  if(!confirm('إعادة تعيين الجهاز للكود '+code+'؟'))return;
-  apiPatch(id,{device_id:'',device_info:''}).then(function(){
+/* إعادة تعيين الجهاز */
+async function doResetDev(id, code) {
+  if (!confirm(`إعادة تعيين الجهاز للكود ${code}؟`)) return;
+  try {
+    await sbPatch('subscription_codes', id, { device_id: '', device_info: '' });
+    await loadCodes();
     toast('✅ تم إعادة تعيين الجهاز');
-    loadCodes();
-  }).catch(function(e){toast('❌ فشل: '+e.message,'err');});
+  } catch(e) { err('❌ فشل: ' + e.message); }
 }
 
-function doExtend(id,code,months){
-  var c=STATE.codes.find(function(x){return x.id===id;});if(!c)return;
-  var base=new Date(c.expires_at)>new Date()?new Date(c.expires_at):new Date();
-  base.setMonth(base.getMonth()+months);
-  apiPatch(id,{expires_at:base.toISOString(),is_active:true}).then(function(){
-    toast('✅ تم تمديد '+code+' '+months+' شهر');
-    loadCodes();
-  }).catch(function(e){toast('❌ فشل: '+e.message,'err');});
+/* تمديد */
+async function doExtend(id, code, months) {
+  const c = ALL_CODES.find(x => x.id === id); if (!c) return;
+  const base = new Date(c.expires_at) > new Date() ? new Date(c.expires_at) : new Date();
+  base.setMonth(base.getMonth() + months);
+  try {
+    await sbPatch('subscription_codes', id, { expires_at: base.toISOString(), is_active: true });
+    await loadCodes();
+    toast(`✅ تم تمديد ${code} ${months} شهر`);
+  } catch(e) { err('❌ فشل: ' + e.message); }
 }
 
-function copyCode(code){
-  if(navigator.clipboard)navigator.clipboard.writeText(code).then(function(){toast('📋 تم نسخ: '+code);});
+/* نسخ */
+function doCopy(code) {
+  if (navigator.clipboard) navigator.clipboard.writeText(code).then(() => toast(`📋 تم نسخ: ${code}`));
 }
 
-/* ══════════════════════════════════════════════
-   FORM — plan selection & preview
-══════════════════════════════════════════════ */
-function selectPlan(btn){
-  document.querySelectorAll('.plan-btn').forEach(function(b){b.classList.remove('selected');});
-  btn.classList.add('selected');
-  STATE.selPlan=btn.dataset.plan;
-  STATE.selMonths=parseInt(btn.dataset.months);
+/* ════════════════════════════════════════════════
+   FORM HELPERS
+════════════════════════════════════════════════ */
+function selectPlan(btn) {
+  document.querySelectorAll('.plan-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  SEL_PLAN   = btn.dataset.plan;
+  SEL_MONTHS = parseInt(btn.dataset.months);
   updatePreview();
 }
 
-document.getElementById('f-code').addEventListener('input',updatePreview);
-function updatePreview(){
-  var code=document.getElementById('f-code').value.trim();
-  var prev=document.getElementById('exp-preview');
-  if(code){prev.style.display='block';prev.textContent='📅 ينتهي في: '+expLabel(STATE.selMonths);}
-  else{prev.style.display='none';}
-}
-
-/* ══════════════════════════════════════════════
-   USERS PAGE
-══════════════════════════════════════════════ */
-function loadUsers(){
-  var body=document.getElementById('users-body');
-  body.innerHTML='<div style="color:#3E3C6A;text-align:center;padding:20px">⏳ جاري التحميل...</div>';
-  apiGetAll().then(function(data){
-    var active=data.filter(function(c){return c.is_active&&new Date(c.expires_at)>new Date()&&c.last_used_at;});
-    if(active.length===0){body.innerHTML='<div style="text-align:center;padding:20px;color:#21203A;font-size:13px">لا يوجد مستخدمون نشطون بعد</div>';return;}
-    active.sort(function(a,b){return new Date(b.last_used_at)-new Date(a.last_used_at);});
-    var rows=active.map(function(c){
-      var dl=dLeft(c.expires_at);
-      return '<tr>'
-        +'<td><b style="font-family:monospace;letter-spacing:1px;color:#A78BFA;font-size:13px">'+c.code+'</b></td>'
-        +'<td>'+(c.label||'<span style="color:#21203A">—</span>')+'</td>'
-        +'<td><span style="font-size:11px;color:#4A4870">'+dFmt(c.last_used_at)+'</span></td>'
-        +'<td><b style="color:#10B981">'+(c.use_count||0)+' مرة</b></td>'
-        +'<td>'+(c.device_id?'<span class="badge badge-g" style="font-size:10px">📱 مُقيَّد</span>':'<span class="badge badge-d" style="font-size:10px">مفتوح</span>')+'</td>'
-        +'<td><span style="color:'+(dl<30?'#F59E0B':'#10B981')+';font-weight:700">'+dl+' يوم</span></td>'
-      +'</tr>';
-    });
-    body.innerHTML='<div class="tbl-wrap"><table>'
-      +'<thead><tr><th>الكود</th><th>العميل</th><th>آخر دخول</th><th>الدخول</th><th>الجهاز</th><th>ينتهي بعد</th></tr></thead>'
-      +'<tbody>'+rows.join('')+'</tbody></table></div>';
-  }).catch(function(){body.innerHTML='<div style="color:#EF4444;text-align:center;padding:20px">❌ فشل التحميل</div>';});
-}
-
-/* ══════════════════════════════════════════════
-   NOTIFICATIONS
-══════════════════════════════════════════════ */
-function loadTokenUI(){
-  var tok=localStorage.getItem('cc-ghtok');
-  if(tok){
-    document.getElementById('token-badge').className='badge badge-g';
-    document.getElementById('token-badge').textContent='✓ مُعيَّن';
-    document.getElementById('token-set-section').style.display='block';
-    document.getElementById('token-input-section').style.display='none';
-    document.getElementById('token-masked').textContent='🔒 '+tok.slice(0,8)+'•••••••••••'+tok.slice(-4);
-  }else{
-    document.getElementById('token-badge').className='badge badge-y';
-    document.getElementById('token-badge').textContent='⚠️ مطلوب';
-    document.getElementById('token-set-section').style.display='none';
-    document.getElementById('token-input-section').style.display='block';
+function updatePreview() {
+  const code = document.getElementById('f-code').value.trim();
+  const prev = document.getElementById('f-prev');
+  if (code) {
+    prev.style.display = 'block';
+    prev.textContent   = `📅 ينتهي في: ${expLabel(SEL_MONTHS)}`;
+  } else {
+    prev.style.display = 'none';
   }
 }
 
-function saveToken(){
-  var t=document.getElementById('token-inp').value.trim();
-  if(!t)return;
-  localStorage.setItem('cc-ghtok',t);
-  document.getElementById('token-inp').value='';
+/* ════════════════════════════════════════════════
+   USERS PAGE
+════════════════════════════════════════════════ */
+async function loadUsers() {
+  const body = document.getElementById('users-body');
+  body.innerHTML = '<div style="color:#3E3C6A;text-align:center;padding:20px">⏳ جاري التحميل...</div>';
+  try {
+    const data   = await sbGet('subscription_codes', 'select=*&order=last_used_at.desc.nullslast');
+    const active = data.filter(c => c.is_active && new Date(c.expires_at) > new Date() && c.last_used_at);
+
+    if (!active.length) {
+      body.innerHTML = '<div style="text-align:center;padding:20px;color:#21203A;font-size:13px">لا يوجد مستخدمون نشطون بعد</div>';
+      return;
+    }
+
+    const rows = active.map(c => {
+      const dl = dLeft(c.expires_at);
+      return `<tr>
+        <td><b style="font-family:monospace;letter-spacing:1px;color:#A78BFA;font-size:13px">${c.code}</b></td>
+        <td>${c.label || '<span style="color:#21203A">—</span>'}</td>
+        <td><span style="font-size:11px;color:#4A4870">${dFmt(c.last_used_at)}</span></td>
+        <td><b style="color:#10B981">${c.use_count || 0} مرة</b></td>
+        <td>${c.device_id ? '<span class="bdg bdg-g" style="font-size:10px">📱 مُقيَّد</span>' : '<span class="bdg bdg-d" style="font-size:10px">مفتوح</span>'}</td>
+        <td><span style="color:${dl < 30 ? '#F59E0B' : '#10B981'};font-weight:700">${dl} يوم</span></td>
+      </tr>`;
+    });
+
+    body.innerHTML = `
+      <div class="tw"><table>
+        <thead><tr><th>الكود</th><th>العميل</th><th>آخر دخول</th><th>الدخول</th><th>الجهاز</th><th>ينتهي بعد</th></tr></thead>
+        <tbody>${rows.join('')}</tbody>
+      </table></div>`;
+  } catch(e) {
+    body.innerHTML = `<div style="color:#EF4444;text-align:center;padding:20px">❌ فشل: ${e.message}</div>`;
+  }
+}
+
+/* ════════════════════════════════════════════════
+   NOTIFICATIONS
+════════════════════════════════════════════════ */
+function loadTokenUI() {
+  const tok = localStorage.getItem('cc-ghtok');
+  if (tok) {
+    document.getElementById('tok-bdg').className = 'bdg bdg-g';
+    document.getElementById('tok-bdg').textContent = '✓ مُعيَّن';
+    document.getElementById('tok-set').style.display = 'block';
+    document.getElementById('tok-inp').style.display = 'none';
+    document.getElementById('tok-masked').textContent = '🔒 ' + tok.slice(0,8) + '•••••••••••' + tok.slice(-4);
+  } else {
+    document.getElementById('tok-bdg').className = 'bdg bdg-y';
+    document.getElementById('tok-bdg').textContent = '⚠️ مطلوب';
+    document.getElementById('tok-set').style.display = 'none';
+    document.getElementById('tok-inp').style.display = 'block';
+  }
+}
+
+function saveToken() {
+  const t = document.getElementById('tok-val').value.trim();
+  if (!t) return;
+  localStorage.setItem('cc-ghtok', t);
+  document.getElementById('tok-val').value = '';
   loadTokenUI();
   toast('✅ تم حفظ الـ Token');
 }
 
-function removeToken(){
+function removeToken() {
   localStorage.removeItem('cc-ghtok');
   loadTokenUI();
-  toast('تم حذف الـ Token','warn');
+  toast('تم حذف الـ Token', '#F59E0B');
 }
 
-function toggleTokenVis(){
-  var inp=document.getElementById('token-inp');
-  var btn=document.getElementById('tok-eye');
-  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
-  else{inp.type='password';btn.textContent='👁';}
+function toggleTokVis() {
+  const i = document.getElementById('tok-val');
+  const b = document.getElementById('tok-eye');
+  i.type = i.type === 'password' ? 'text' : 'password';
+  b.textContent = i.type === 'password' ? '👁' : '🙈';
 }
 
-document.getElementById('notif-title').addEventListener('input',function(){
-  var t=this.value.trim();
-  var prev=document.getElementById('notif-preview');
-  if(t){
-    prev.style.display='block';
-    prev.innerHTML='<div style="font-size:10px;color:#3E3C6A;margin-bottom:4px">معاينة:</div>'
-      +'<div style="display:flex;gap:8px"><span style="font-size:18px">📢</span><div><b>'+t+'</b>'
-      +(document.getElementById('notif-body').value?'<div style="font-size:12px;color:#5A5880;margin-top:2px">'+document.getElementById('notif-body').value+'</div>':'')
-      +'</div></div>';
-  }else{prev.style.display='none';}
-});
+function updateNotifPreview() {
+  const t = document.getElementById('n-title').value.trim();
+  const b = document.getElementById('n-body').value;
+  const p = document.getElementById('n-prev');
+  if (t) {
+    p.style.display = 'block';
+    p.innerHTML = `<div style="font-size:10px;color:#3E3C6A;margin-bottom:4px">معاينة:</div>
+      <div style="display:flex;gap:8px"><span style="font-size:18px">📢</span>
+      <div><b>${t}</b>${b ? `<div style="font-size:12px;color:#5A5880;margin-top:2px">${b}</div>` : ''}</div></div>`;
+  } else { p.style.display = 'none'; }
+}
 
-function sendNotif(){
-  var title=document.getElementById('notif-title').value.trim();
-  var body=document.getElementById('notif-body').value.trim();
-  var tok=localStorage.getItem('cc-ghtok');
-  if(!title){toast('أدخل العنوان','warn');return;}
-  if(!tok){toast('أدخل GitHub Token أولاً','err');return;}
-  var btn=document.getElementById('send-btn');
-  btn.textContent='⏳ جاري الإرسال...';btn.disabled=true;
-  var n={id:'n_'+Date.now(),title:title,body:body,sentAt:new Date().toISOString()};
-  var content=btoa(unescape(encodeURIComponent(JSON.stringify(n,null,2))));
-  /* Get SHA first */
-  fetch(GH_API,{headers:{'Authorization':'token '+tok,'Accept':'application/vnd.github.v3+json'}})
-  .then(function(r){return r.status===404?null:r.ok?r.json().then(function(d){return d.sha;}):Promise.reject('ERR');})
-  .then(function(sha){
-    var payload={message:'إشعار: '+title,content:content};
-    if(sha)payload.sha=sha;
-    return fetch(GH_API,{method:'PUT',headers:{'Authorization':'token '+tok,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(payload)});
-  }).then(function(r){
-    btn.textContent='📨 إرسال لجميع العملاء';btn.disabled=false;
-    if(r.ok){
-      var log=JSON.parse(localStorage.getItem('cc-nlog')||'[]');
-      log.unshift(Object.assign({},n,{at:new Date().toISOString()}));
-      localStorage.setItem('cc-nlog',JSON.stringify(log.slice(0,50)));
-      document.getElementById('notif-title').value='';
-      document.getElementById('notif-body').value='';
-      document.getElementById('notif-preview').style.display='none';
-      toast('✅ تم الإرسال — يصل للعملاء خلال ساعة');
+async function sendNotif() {
+  const title = document.getElementById('n-title').value.trim();
+  const body  = document.getElementById('n-body').value.trim();
+  const tok   = localStorage.getItem('cc-ghtok');
+  if (!title) { err('أدخل العنوان'); return; }
+  if (!tok)   { err('أدخل GitHub Token أولاً'); return; }
+
+  const btn = document.getElementById('n-send-btn');
+  btn.textContent = '⏳ جاري الإرسال...'; btn.disabled = true;
+
+  try {
+    const n       = { id: 'n_' + Date.now(), title, body, sentAt: new Date().toISOString() };
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(n, null, 2))));
+
+    /* Get SHA */
+    const shaRes = await fetch(GH, { headers: { Authorization: 'token ' + tok, Accept: 'application/vnd.github.v3+json' } });
+    const sha    = shaRes.status === 404 ? null : shaRes.ok ? (await shaRes.json()).sha : null;
+
+    const payload = { message: 'إشعار: ' + title, content };
+    if (sha) payload.sha = sha;
+
+    const putRes = await fetch(GH, {
+      method: 'PUT',
+      headers: { Authorization: 'token ' + tok, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (putRes.ok) {
+      const log = JSON.parse(localStorage.getItem('cc-nlog') || '[]');
+      log.unshift({ ...n, at: new Date().toISOString() });
+      localStorage.setItem('cc-nlog', JSON.stringify(log.slice(0, 50)));
+      document.getElementById('n-title').value = '';
+      document.getElementById('n-body').value  = '';
+      document.getElementById('n-prev').style.display = 'none';
       renderNotifLog();
-    }else{r.json().then(function(e){toast('❌ '+(e.message||'خطأ'),'err');});}
-  }).catch(function(e){
-    btn.textContent='📨 إرسال لجميع العملاء';btn.disabled=false;
-    toast('❌ خطأ في GitHub Token','err');
-  });
+      toast('✅ تم الإرسال — يصل للعملاء خلال ساعة');
+    } else {
+      const e = await putRes.json();
+      err('❌ ' + (e.message || 'خطأ في GitHub'));
+    }
+  } catch(e) { err('❌ خطأ: ' + e.message); }
+  finally { btn.textContent = '📨 إرسال لجميع العملاء'; btn.disabled = false; }
 }
 
-function renderNotifLog(){
-  var log=JSON.parse(localStorage.getItem('cc-nlog')||'[]');
-  var card=document.getElementById('notif-log-card');
-  if(!log.length){card.style.display='none';return;}
-  card.style.display='block';
-  document.getElementById('log-count').textContent=log.length;
-  document.getElementById('log-body').innerHTML=log.map(function(n){
-    return '<tr><td><b>'+n.title+'</b></td><td><span style="color:#4A4870">'+(n.body||'—')+'</span></td><td><span style="font-size:11px;color:#3E3C6A">'+dFmt(n.sentAt||n.at)+'</span></td></tr>';
-  }).join('');
+function renderNotifLog() {
+  const log  = JSON.parse(localStorage.getItem('cc-nlog') || '[]');
+  const card = document.getElementById('n-log-card');
+  if (!log.length) { card.style.display = 'none'; return; }
+  card.style.display = 'block';
+  document.getElementById('n-log-cnt').textContent = log.length;
+  document.getElementById('n-log-body').innerHTML  = log.map(n =>
+    `<tr><td><b>${n.title}</b></td><td><span style="color:#4A4870">${n.body||'—'}</span></td><td><span style="font-size:11px;color:#3E3C6A">${dFmt(n.sentAt||n.at)}</span></td></tr>`
+  ).join('');
 }
 
-function clearLog(){
-  if(!confirm('مسح سجل الإشعارات؟'))return;
+function clearLog() {
+  if (!confirm('مسح سجل الإشعارات؟')) return;
   localStorage.removeItem('cc-nlog');
   renderNotifLog();
-  toast('تم المسح','warn');
+  toast('تم المسح', '#F59E0B');
 }
 
-/* ══════════════════════════════════════════════
-   SETTINGS — test code
-══════════════════════════════════════════════ */
-function testCode(){
-  var code=document.getElementById('test-code').value.trim().toUpperCase();
-  if(!code)return;
-  var res=document.getElementById('test-result');
-  res.style.display='block';
-  res.innerHTML='<div style="color:#3E3C6A">⏳ جاري التحقق...</div>';
-  fetch(SUPA_URL+'/rest/v1/subscription_codes?code=eq.'+encodeURIComponent(code)+'&select=*',{headers:apiHeaders()})
-  .then(function(r){return r.json();}).then(function(d){
-    if(!d||!d.length){
-      res.innerHTML='<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:9px 13px;font-size:12px;color:#EF4444">❌ الكود غير موجود</div>';
-    }else{
-      var c=d[0];
-      res.innerHTML='<div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:9px 13px;font-size:12px">'
-        +'<div style="color:#10B981;font-weight:700;margin-bottom:4px">✅ الكود صحيح</div>'
-        +'<div style="color:#4A4870;line-height:2">'
-        +'الكود: <b style="color:#A78BFA">'+c.code+'</b> · '
-        +'الحالة: <b style="color:'+(c.is_active?'#10B981':'#EF4444')+'">'+(c.is_active?'نشط ✅':'موقوف ⛔')+'</b> · '
-        +'الخطة: '+c.plan+' · '
-        +'الاستخدام: '+(c.use_count||0)+' مرة · '
-        +'الجهاز: '+(c.device_id?'مُقيَّد':'مفتوح')+' · '
-        +'ينتهي: '+dFmt(c.expires_at)
-        +'</div></div>';
+/* ════════════════════════════════════════════════
+   SETTINGS — اختبار كود
+════════════════════════════════════════════════ */
+async function testCode() {
+  const code = document.getElementById('test-c').value.trim().toUpperCase();
+  if (!code) return;
+  const res = document.getElementById('test-res');
+  res.style.display = 'block';
+  res.innerHTML = '<div style="color:#3E3C6A">⏳ جاري التحقق...</div>';
+  try {
+    const data = await sbGet('subscription_codes', `code=eq.${encodeURIComponent(code)}&select=*`);
+    if (!data.length) {
+      res.innerHTML = '<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:9px 13px;font-size:12px;color:#EF4444">❌ الكود غير موجود</div>';
+    } else {
+      const c = data[0];
+      res.innerHTML = `<div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:9px 13px;font-size:12px">
+        <div style="color:#10B981;font-weight:700;margin-bottom:4px">✅ الكود صحيح</div>
+        <div style="color:#4A4870;line-height:2">
+          الكود: <b style="color:#A78BFA">${c.code}</b> ·
+          الحالة: <b style="color:${c.is_active?'#10B981':'#EF4444'}">${c.is_active?'نشط ✅':'موقوف ⛔'}</b> ·
+          الخطة: ${c.plan} ·
+          الاستخدام: ${c.use_count||0} مرة ·
+          الجهاز: ${c.device_id?'مُقيَّد':'مفتوح'} ·
+          ينتهي: ${dFmt(c.expires_at)}
+        </div>
+      </div>`;
     }
-  }).catch(function(){res.innerHTML='<div style="color:#EF4444">❌ خطأ في الاتصال</div>';});
+  } catch(e) { res.innerHTML = `<div style="color:#EF4444">❌ ${e.message}</div>`; }
 }
 
-/* ══════════════════════════════════════════════
-   AUTO LOGIN from session
-══════════════════════════════════════════════ */
-(function(){
-  var s=sessionStorage.getItem('cc-sess');
-  if(s){
-    try{
-      var sess=JSON.parse(s);
-      STATE.token=sess.token;
-      STATE.email=sess.email;
-      showApp();
-    }catch(e){
-      document.getElementById('login-page').style.display='flex';
-    }
-  }else{
-    document.getElementById('login-page').style.display='flex';
+/* ════════════════════════════════════════════════
+   AUTO-LOGIN من الجلسة المحفوظة
+════════════════════════════════════════════════ */
+(async function init() {
+  const sess = sessionStorage.getItem('cc-adm');
+  if (sess) {
+    try {
+      const s = JSON.parse(sess);
+      REFRESH_TOKEN = s.refresh;
+      /* جدد الـ token فوراً من الـ refresh token */
+      const ok = await refreshToken();
+      if (ok) {
+        document.getElementById('t-email').textContent = s.email;
+        document.getElementById('s-email').textContent = s.email;
+        document.getElementById('login-pg').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        await loadCodes();
+        loadTokenUI();
+        renderNotifLog();
+        return;
+      }
+    } catch(e) { /* فشل التجديد */ }
   }
+  document.getElementById('login-pg').style.display = 'flex';
 })();
 </script>
 </body>
