@@ -303,10 +303,12 @@ function CodesPage(p) {
       setBusy(null);
       if(r.ok){
         show(!current?'✅ تم تفعيل الكود':'⛔ تم إيقاف الكود', !current?'ok':'warn');
-        load(); /* RELOAD → UI updates */
+        setFilter('all'); /* Show all codes so user sees the change */
+        load();
       }else{
         show('❌ '+r.err,'err');
-        load(); /* Reload anyway to show real state */
+        setFilter('all');
+        load();
       }
     });
   }
@@ -319,9 +321,11 @@ function CodesPage(p) {
       setBusy(null);
       if(r.ok){
         show('🗑 تم حذف '+code,'err');
-        load(); /* RELOAD → UI updates */
+        setFilter('all');
+        load();
       }else{
         show('❌ '+r.err,'err');
+        setFilter('all');
         load();
       }
     });
