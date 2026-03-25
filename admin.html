@@ -7,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <title>لوحة إدارة AdVax — CraftCost Pro</title>
   <style>
-    /* your existing CSS (unchanged – it's great) */
+    /* [تم الاحتفاظ بنفس CSS الجميل من الملف السابق، لم يتغير] */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Cairo',sans-serif;direction:rtl;background:#07060F;color:#E0DEF0;min-height:100vh}
     input,select,textarea,button{font-family:'Cairo',sans-serif;font-size:14px}
@@ -226,13 +226,16 @@
 
 <script>
   /* ════════════════════════════════════════════════
-     Supabase configuration – DO NOT CHANGE
+     Supabase configuration — UPDATED FOR NEW PROJECT
   ════════════════════════════════════════════════ */
-  const SB_URL = 'https://jqkmtqbhxsuvvumudgrj.supabase.co';
-  const SB_KEY = 'sb_publishable_0KbQ1aL7rWoJCkk84OUVKQ_Krc4nvwS';
+  const SB_URL = 'https://qqimywkiiuavxsgghphl.supabase.co';
+  const SB_KEY = 'sb_publishable_yDghZOx0TQn7W1rLm1yTIA_g7knMj-P';
   const GH_NOTIF_URL = 'https://api.github.com/repos/Advax/craftcost-notification/contents/latest.json';
   const supabase = window.supabase.createClient(SB_URL, SB_KEY);
 
+  /* باقي الكود (دوال المساعدة، المصادقة، CRUD، ...) مطابق تماماً للملف السابق 
+     لم يتغير سوى SB_URL و SB_KEY أعلاه */
+  
   /* ════════════════════════════════════════════════
      Global variables
   ════════════════════════════════════════════════ */
@@ -467,29 +470,29 @@
                   '<span class="bdg bdg-g">✅ نشط</span>';
 
       return `<tr class="${dimCls}">
-        <td>
+         <td>
           <div style="display:flex;align-items:center;gap:5px">
             <b style="font-family:monospace;font-size:13px;letter-spacing:2px;color:#A78BFA">${c.code}</b>
             <button style="background:none;color:#21203A;font-size:10px;padding:2px 5px;cursor:pointer" onclick="navigator.clipboard.writeText('${c.code}');toast('تم النسخ')">📋</button>
           </div>
-        </td>
-        <td><div style="font-weight:600">${c.label || '—'}</div></td>
-        <td><span class="bdg bdg-p" style="font-size:10px">${c.plan || 'monthly'}</span></td>
-        <td>
+         </td>
+         <td><div style="font-weight:600">${c.label || '—'}</div></td>
+         <td><span class="bdg bdg-p" style="font-size:10px">${c.plan || 'monthly'}</span></td>
+         <td>
           <div style="font-size:11px;font-weight:600">${dFmt(c.expires_at)}</div>
           <div style="font-size:10px;color:${exp ? '#EF4444' : '#21203A'}">${exp ? 'منتهي' : dl + ' يوم'}</div>
-        </td>
-        <td>${hasDev ? `<button class="btn b-y" style="padding:3px 7px;font-size:10px" onclick="doResetDev('${c.id}','${c.code}')">🔄 فك الجهاز</button>` : '<span class="bdg bdg-d" style="font-size:10px">لم يُستخدم</span>'}</td>
-        <td><div style="font-weight:700;color:#10B981">${c.use_count || 0}</div></td>
-        <td>${badge}</td>
-        <td>
+         </td>
+         <td>${hasDev ? `<button class="btn b-y" style="padding:3px 7px;font-size:10px" onclick="doResetDev('${c.id}','${c.code}')">🔄 فك الجهاز</button>` : '<span class="bdg bdg-d" style="font-size:10px">لم يُستخدم</span>'}</td>
+         <td><div style="font-weight:700;color:#10B981">${c.use_count || 0}</div></td>
+         <td>${badge}</td>
+         <td>
           <div style="display:flex;gap:3px">
             <button class="btn ${c.is_active ? 'b-r' : 'b-g'}" style="padding:5px;font-size:10px" onclick="doToggle('${c.id}',${c.is_active})">${c.is_active ? 'إيقاف' : 'تفعيل'}</button>
             <button class="btn b-o" style="padding:5px;font-size:10px" onclick="doExtend('${c.id}','${c.code}',1)">+شهر</button>
             <button class="btn b-r" style="padding:5px;font-size:10px" onclick="doDelete('${c.id}','${c.code}')">🗑</button>
           </div>
-        </td>
-      </tr>`;
+         </td>
+       </tr>`;
     });
 
     body.innerHTML = `<div class="tw"><table><thead><tr><th>الكود</th><th>العميل</th><th>الخطة</th><th>ينتهي</th><th>الجهاز</th><th>دخول</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
@@ -579,7 +582,6 @@
     btn.disabled = true;
     btn.textContent = '⏳ جاري الإرسال...';
 
-    // Prepare notification object
     const notif = {
       id: Date.now().toString(),
       title: title,
@@ -588,12 +590,10 @@
     };
 
     try {
-      // First get current file (if exists) to preserve previous notifications? We'll just overwrite.
+      let sha = null;
       const response = await fetch(GH_NOTIF_URL, {
         headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
       });
-
-      let sha = null;
       if (response.ok) {
         const file = await response.json();
         sha = file.sha;
