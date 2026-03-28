@@ -229,6 +229,14 @@ function useToast(){
   },[]);
   return{list,show};
 }
+function Toasts({list}){
+  if(!list||!list.length)return null;
+  const C={ok:'#10B981',err:'#EF4444',warn:'#F59E0B',info:'#3B82F6'};
+  return h('div',{style:{position:'fixed',bottom:20,left:'50%',transform:'translateX(-50%)',display:'flex',flexDirection:'column',gap:8,zIndex:9999,pointerEvents:'none',alignItems:'center'}},
+    list.map(t=>h('div',{key:t.id,className:'toast',style:{background:C[t.type]||C.ok}},t.msg))
+  );
+}
+
 /* ══════════════════════════════
    📢 In-App Notification Banner
 ══════════════════════════════ */
