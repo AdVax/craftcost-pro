@@ -1,0 +1,40 @@
+{
+  "name": "CraftCost Pro",
+  "short_name": "CraftCost",
+  "description": "تطبيق حساب تكاليف منتجات الهاند ميد",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "orientation": "portrait",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["business", "finance", "productivity"],
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "مواد خام جديدة",
+      "url": "./index.html#materials",
+      "description": "إضافة مادة خام جديدة"
+    },
+    {
+      "name": "بيعة جديدة",
+      "url": "./index.html#sales",
+      "description": "تسجيل بيعة جديدة"
+    }
+  ]
+}
