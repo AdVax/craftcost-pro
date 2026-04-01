@@ -195,12 +195,96 @@ textarea.form-control{resize:vertical;min-height:80px;line-height:1.6}
 .sale-profit-box{background:#f0fff8;border-radius:11px;padding:11px 14px;margin-bottom:12px;font-size:13px;font-weight:700;display:none}
 .stock-info{font-size:12px;color:#888;margin-top:-8px;margin-bottom:12px}
 input[type=file]{display:none}
+/* ---- DARK MODE ---- */
+body.dark{background:#0f0f1a;color:#e0e0f0}
+body.dark .header{box-shadow:0 2px 16px rgba(0,0,0,.5)}
+body.dark .drawer{background:#16162a}
+body.dark .drawer-nav{background:#16162a}
+body.dark .nav-item{color:#aaa}
+body.dark .nav-item:active{background:#1e1e36}
+body.dark .nav-item.active{background:linear-gradient(135deg,rgba(102,126,234,.2),rgba(118,75,162,.15));color:#a0aaff}
+body.dark .nav-divider{background:#252545}
+body.dark .drawer-footer{border-top-color:#252545}
+body.dark .card{background:#1c1c30;box-shadow:0 2px 14px rgba(0,0,0,.3)}
+body.dark .material-card{background:#1c1c30;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+body.dark .recipe-card{background:#1c1c30;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+body.dark .list-card{background:#1c1c30;box-shadow:0 2px 9px rgba(0,0,0,.3)}
+body.dark .inv-item{background:#1c1c30;box-shadow:0 2px 9px rgba(0,0,0,.3)}
+body.dark .waste-card{background:#1c1c30;box-shadow:0 2px 9px rgba(0,0,0,.3)}
+body.dark .settings-section{background:#1c1c30;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+body.dark .settings-section h3{border-bottom-color:#252545}
+body.dark .quick-btn{background:#1c1c30;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+body.dark .quick-btn span{color:#ccc}
+body.dark .modal{background:#1c1c30}
+body.dark .modal-header{border-bottom-color:#252545}
+body.dark .modal-footer{border-top-color:#252545}
+body.dark .modal-title{color:#e0e0f0}
+body.dark .modal-close{background:#252545;color:#ccc}
+body.dark .form-label{color:#aaa}
+body.dark .form-control{background:#11111e;border-color:#2a2a45;color:#e0e0f0}
+body.dark .form-control:focus{background:#16162a;border-color:#667eea}
+body.dark textarea.form-control{background:#11111e}
+body.dark .search-input{background:#11111e;border-color:#2a2a45;color:#e0e0f0}
+body.dark .search-wrap i{color:#666}
+body.dark .tabs{background:#11111e}
+body.dark .tab-btn{color:#666}
+body.dark .tab-btn.active{background:#1c1c30;color:#a0aaff}
+body.dark .cost-box{background:#11111e}
+body.dark .cost-row{color:#aaa}
+body.dark .cost-row b{color:#e0e0f0}
+body.dark .cost-row.total{border-top-color:#252545;color:#e0e0f0}
+body.dark .prod-preview{background:#11111e}
+body.dark .preview-row{border-bottom-color:#252545;color:#aaa}
+body.dark .chart-wrap{background:#11111e}
+body.dark .chart-title{color:#aaa}
+body.dark .ing-row{background:#11111e}
+body.dark .ing-row select,.dark .ing-row input{background:#1c1c30;border-color:#2a2a45;color:#e0e0f0}
+body.dark .confirm-box{background:#1c1c30}
+body.dark .confirm-box h3{color:#e0e0f0}
+body.dark .confirm-box p{color:#aaa}
+body.dark .btn-outline-gray{background:#1c1c30;border-color:#333355;color:#aaa}
+body.dark .btn-outline{background:#1c1c30;border-color:#667eea;color:#a0aaff}
+body.dark .tag{background:#11111e;color:#888}
+body.dark .section-title{color:#e0e0f0}
+body.dark .material-name{color:#e0e0f0}
+body.dark .info-row{color:#888}
+body.dark .info-row b{color:#ccc}
+body.dark .list-card-title{color:#e0e0f0}
+body.dark .recipe-name{color:#e0e0f0}
+body.dark .recipe-notes-box{background:#1a1808;color:#ccc}
+body.dark .alert-warn{background:#2a2000;color:#e5c84a}
+body.dark .alert-danger{background:#2a0a0a;color:#f08080}
+body.dark .alert-info{background:#0f1030;color:#a0b0ff}
+body.dark .sale-profit-box{background:#0a2a1a!important;color:#55efc4!important}
+body.dark .progress-bar{background:#252545}
+body.dark .price-calc-box{background:#11111e;border-color:#2a2a45}
+body.dark .price-calc-box .calc-label{color:#aaa}
+/* ORDER CARDS */
+.order-card{background:#fff;border-radius:15px;padding:14px;margin-bottom:11px;box-shadow:0 2px 10px rgba(0,0,0,.06);border-right:4px solid #667eea;position:relative}
+.order-card.done{border-right-color:#00b894;opacity:.7}
+.order-badge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:700;display:inline-flex;align-items:center;gap:5px}
+.order-badge.pending{background:rgba(102,126,234,.12);color:#667eea}
+.order-badge.done{background:rgba(0,184,148,.12);color:#00b894}
+.order-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+body.dark .order-card{background:#1c1c30;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+body.dark .ord-title{color:#e0e0f0!important}
+/* PRICE CALC BOX */
+.price-calc-box{border:1.5px dashed #c0c5f0;border-radius:12px;padding:13px;margin-bottom:15px;background:#f5f6ff}
+.price-calc-box .calc-title{font-size:12px;font-weight:800;color:#667eea;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.price-calc-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.price-calc-row input{flex:1;padding:9px 11px;border:1.5px solid #e0e0f0;border-radius:9px;font-family:'Tajawal',sans-serif;font-size:13px;background:#fff;color:#2d3436;outline:none;min-width:0}
+.price-calc-row input:focus{border-color:#667eea}
+.calc-label{font-size:11px;color:#888;font-weight:600;white-space:nowrap}
+.calc-result{font-size:13px;font-weight:800;color:#667eea;background:rgba(102,126,234,.1);border-radius:8px;padding:8px 12px;text-align:center;margin-top:4px;display:none}
 </style>
 </head>
 <body>
 
 <header class="header">
-  <button class="hamburger" onclick="openDrawer()"><i class="fas fa-bars"></i></button>
+  <div style="display:flex;align-items:center;gap:6px">
+    <button class="hamburger" onclick="openDrawer()"><i class="fas fa-bars"></i></button>
+    <button class="hamburger" id="darkToggleBtn" onclick="toggleDark()" title="وضع ليلي"><i class="fas fa-moon"></i></button>
+  </div>
   <div class="header-title" id="headerTitle">الرئيسية</div>
   <div class="header-right">
     <button class="back-btn" id="backBtn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
@@ -276,10 +360,20 @@ input[type=file]{display:none}
           <option value="مل">مل</option><option value="لتر">لتر</option>
           <option value="قطعة">قطعة</option><option value="متر">متر</option>
         </select></div>
-      <div class="form-group"><label class="form-label">الكمية الحالية</label><input type="number" class="form-control" id="m-qty" value="0" min="0" step="0.01"></div>
-      <div class="form-group"><label class="form-label">سعر الوحدة</label><input type="number" class="form-control" id="m-price" value="0" min="0" step="0.01"></div>
+      <div class="form-group"><label class="form-label">الكمية الحالية</label><input type="number" class="form-control" id="m-qty" placeholder="0" min="0" step="0.01"></div>
+      <!-- حاسبة السعر -->
+      <div class="price-calc-box">
+        <div class="calc-title"><i class="fas fa-calculator"></i> حاسبة سعر الوحدة (اختياري)</div>
+        <div class="price-calc-row">
+          <div style="flex:1"><div class="calc-label">الكمية المشتراة</div><input type="number" id="calc-total-qty" placeholder="مثال: 200" min="0" step="0.01" oninput="calcUnitPrice()"></div>
+          <div style="font-size:18px;color:#aaa;padding-top:18px">÷</div>
+          <div style="flex:1"><div class="calc-label">السعر الإجمالي</div><input type="number" id="calc-total-price" placeholder="مثال: 7363" min="0" step="0.01" oninput="calcUnitPrice()"></div>
+        </div>
+        <div class="calc-result" id="calc-result-box"></div>
+      </div>
+      <div class="form-group"><label class="form-label">سعر الوحدة</label><input type="number" class="form-control" id="m-price" placeholder="0" min="0" step="0.01"></div>
       <div class="form-group"><label class="form-label">حد التنبيه</label><input type="number" class="form-control" id="m-threshold" value="10" min="0"></div>
-      <div class="form-group"><label class="form-label">نسبة الهدر المتوقعة %</label><input type="number" class="form-control" id="m-waste" value="5" min="0" max="100" step="0.5"></div>
+      <div class="form-group"><label class="form-label">نسبة الهدر المتوقعة %</label><input type="number" class="form-control" id="m-waste" placeholder="0" min="0" max="100" step="0.5"></div>
       <div class="form-group"><label class="form-label">تاريخ آخر شراء</label><input type="date" class="form-control" id="m-date"></div>
     </div>
     <div class="modal-footer">
@@ -319,7 +413,7 @@ input[type=file]{display:none}
     </div>
     <div class="modal-body">
       <div id="qty-mat-name" style="font-size:15px;font-weight:800;margin-bottom:14px;color:#2d3436"></div>
-      <div class="form-group"><label class="form-label">الكمية المضافة</label><input type="number" class="form-control" id="q-qty" min="0" step="0.01" value="0"></div>
+      <div class="form-group"><label class="form-label">الكمية المضافة</label><input type="number" class="form-control" id="q-qty" min="0" step="0.01" placeholder="0"></div>
       <div id="qty-current-info" style="font-size:12px;color:#aaa;margin-top:-8px;margin-bottom:10px"></div>
       <div class="form-group"><label class="form-label">تاريخ الشراء</label><input type="date" class="form-control" id="q-date"></div>
     </div>
@@ -346,9 +440,9 @@ input[type=file]{display:none}
         <div id="ing-container"></div>
         <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="addIngRow()"><i class="fas fa-plus"></i> إضافة مكون</button>
       </div>
-      <div class="form-group"><label class="form-label">ساعات العمل</label><input type="number" class="form-control" id="r-labor" value="0" min="0" step="0.5"></div>
-      <div class="form-group"><label class="form-label">تكلفة التغليف</label><input type="number" class="form-control" id="r-pack" value="0" min="0" step="0.01"></div>
-      <div class="form-group"><label class="form-label">تكلفة الشحن</label><input type="number" class="form-control" id="r-ship" value="0" min="0" step="0.01"></div>
+      <div class="form-group"><label class="form-label">ساعات العمل</label><input type="number" class="form-control" id="r-labor" placeholder="0" min="0" step="0.5"></div>
+      <div class="form-group"><label class="form-label">تكلفة التغليف</label><input type="number" class="form-control" id="r-pack" placeholder="0" min="0" step="0.01"></div>
+      <div class="form-group"><label class="form-label">تكلفة الشحن</label><input type="number" class="form-control" id="r-ship" placeholder="0" min="0" step="0.01"></div>
       <div class="form-group"><label class="form-label">هامش الربح %</label><input type="number" class="form-control" id="r-margin" value="30" min="0" step="1"></div>
       <div class="form-group"><label class="form-label">ملاحظات ونصائح</label><textarea class="form-control" id="r-notes" placeholder="أي ملاحظات..."></textarea></div>
     </div>
@@ -399,7 +493,7 @@ input[type=file]{display:none}
       <div class="form-group"><label class="form-label">الكمية</label>
         <input type="number" class="form-control" id="sale-qty" value="1" min="1" oninput="updateSaleProfit()"></div>
       <div class="form-group"><label class="form-label">سعر البيع للوحدة</label>
-        <input type="number" class="form-control" id="sale-price" value="0" min="0" step="0.01" oninput="updateSaleProfit()"></div>
+        <input type="number" class="form-control" id="sale-price" placeholder="0" min="0" step="0.01" oninput="updateSaleProfit()"></div>
       <div class="sale-profit-box" id="sale-profit-box"></div>
       <div class="form-group"><label class="form-label">منصة البيع</label>
         <select class="form-control" id="sale-platform">
@@ -416,6 +510,31 @@ input[type=file]{display:none}
     <div class="modal-footer">
       <button class="btn btn-outline-gray" onclick="closeModal('ovl-sale')">إلغاء</button>
       <button class="btn btn-success" onclick="saveSale()"><i class="fas fa-check"></i> تسجيل البيعة</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ORDER -->
+<div class="modal-overlay" id="ovl-order" onclick="ovlClose(event,'ovl-order')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="orderModalTitle">طلب جديد</div>
+      <button class="modal-close" onclick="closeModal('ovl-order')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">اسم المنتج المطلوب *</label>
+        <select class="form-control" id="ord-recipe"><option value="">-- اختر وصفة --</option></select></div>
+      <div class="form-group"><label class="form-label">اسم الزبون (اختياري)</label>
+        <input type="text" class="form-control" id="ord-customer" placeholder="اسم الزبون..."></div>
+      <div class="form-group"><label class="form-label">الكمية المطلوبة</label>
+        <input type="number" class="form-control" id="ord-qty" placeholder="1" min="1"></div>
+      <div class="form-group"><label class="form-label">ملاحظات</label>
+        <textarea class="form-control" id="ord-notes" placeholder="أي تفاصيل إضافية..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline-gray" onclick="closeModal('ovl-order')">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveOrder()"><i class="fas fa-plus"></i> إضافة الطلب</button>
     </div>
   </div>
 </div>
@@ -449,6 +568,7 @@ var matSearchVal = '';
 var recSearchVal = '';
 var invTab = 'raw';
 var pageHistory = [];
+var isDark = false;
 
 var PAGE_TITLES = {home:'الرئيسية',materials:'المواد الخام',recipes:'الوصفات والمنتجات',production:'الإنتاج',sales:'المبيعات',inventory:'المخزون',waste:'الهدر',reports:'التقارير',settings:'الإعدادات'};
 
@@ -462,6 +582,7 @@ function getRecipes(){return getData('cc_recipes')||[];}
 function getProductions(){return getData('cc_productions')||[];}
 function getSales(){return getData('cc_sales')||[];}
 function getWaste(){return getData('cc_waste')||[];}
+function getOrders(){return getData('cc_orders')||[];}
 function findById(arr,id){for(var i=0;i<arr.length;i++){if(arr[i].id===id)return arr[i];}return null;}
 
 function getMonthKey(d){var dt=d||new Date();return dt.getFullYear()+'-'+(dt.getMonth()+1);}
@@ -586,6 +707,7 @@ function executeConfirm(){var cb=confirmCb;closeConfirm();if(cb)cb();}
 // ---- HOME ----
 function renderHome(){
   var s=getSettings();var sales=getSales();var mats=getMaterials();var prods=getProductions();
+  var orders=getOrders();
   var now=new Date();var mk=getMonthKey(now);
   var mProfit=0,mRevenue=0,mUnits=0;
   for(var i=0;i<sales.length;i++){
@@ -596,6 +718,8 @@ function renderHome(){
   for(var j=0;j<mats.length;j++){if(mats[j].quantity<=mats[j].alertThreshold)alertCount++;}
   var readyQty=0;
   for(var k=0;k<prods.length;k++)readyQty+=prods[k].remaining;
+  var pendingOrders=0;
+  for(var oi=0;oi<orders.length;oi++){if(orders[oi].status==='pending')pendingOrders++;}
 
   var h='';
   h+='<div class="welcome-card"><h2>أهلاً، '+s.name+'! 👋</h2><p>هذا ملخص نشاطك التجاري لهذا الشهر</p></div>';
@@ -604,7 +728,8 @@ function renderHome(){
   h+='<div class="stat-card" style="background:linear-gradient(135deg,#00b894,#00cec9)"><div class="stat-icon"><i class="fas fa-shopping-bag"></i></div><div class="stat-value">'+mUnits+'</div><div class="stat-label">منتجات مباعة</div></div>';
   var ac=alertCount>0?'linear-gradient(135deg,#e17055,#d63031)':'linear-gradient(135deg,#fdcb6e,#f0a500)';
   h+='<div class="stat-card" style="background:'+ac+'"><div class="stat-icon"><i class="fas fa-bell"></i></div><div class="stat-value">'+alertCount+'</div><div class="stat-label">تنبيهات مخزون</div></div>';
-  h+='<div class="stat-card" style="background:linear-gradient(135deg,#a29bfe,#6c5ce7)"><div class="stat-icon"><i class="fas fa-box-open"></i></div><div class="stat-value">'+readyQty+'</div><div class="stat-label">منتجات جاهزة</div></div>';
+  var oc=pendingOrders>0?'linear-gradient(135deg,#fd79a8,#e84393)':'linear-gradient(135deg,#a29bfe,#6c5ce7)';
+  h+='<div class="stat-card" style="background:'+oc+'"><div class="stat-icon"><i class="fas fa-clipboard-list"></i></div><div class="stat-value">'+pendingOrders+'</div><div class="stat-label">طلبات معلقة</div></div>';
   h+='</div>';
 
   if(alertCount>0){
@@ -616,6 +741,31 @@ function renderHome(){
         var ico=mat.quantity<=0?'fa-times-circle':'fa-exclamation-circle';
         h+='<div class="alert '+cls+'"><i class="fas '+ico+'"></i><span><b>'+mat.name+'</b> — المتوفر: '+mat.quantity+' '+mat.unit+'</span></div>';
       }
+    }
+  }
+
+  // ---- ORDERS SECTION ----
+  h+='<div class="section-title" style="margin-top:4px"><i class="fas fa-clipboard-list"></i> الطلبات';
+  h+='<button class="btn btn-primary btn-sm" style="margin-right:auto" onclick="openOrderModal()"><i class="fas fa-plus"></i> طلب جديد</button></div>';
+  var pendingList=orders.filter(function(o){return o.status==='pending';});
+  if(pendingList.length===0){
+    h+='<div class="empty-state" style="padding:22px 0"><i class="fas fa-clipboard-check"></i><p>لا توجد طلبات معلقة</p><small>اضغط "طلب جديد" لإضافة طلب</small></div>';
+  } else {
+    for(var oi2=0;oi2<pendingList.length;oi2++){
+      var ord=pendingList[oi2];
+      h+='<div class="order-card">';
+      h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px">';
+      h+='<div><div style="font-size:15px;font-weight:800;color:#2d3436" class="ord-title">'+ord.recipeName+'</div>';
+      if(ord.customerName)h+='<div style="font-size:12px;color:#888;margin-top:2px"><i class="fas fa-user" style="font-size:10px"></i> '+ord.customerName+'</div>';
+      h+='<div style="font-size:11px;color:#aaa;margin-top:2px">'+fmtDate(ord.date)+'</div></div>';
+      h+='<span class="order-badge pending"><i class="fas fa-clock"></i> معلق</span>';
+      h+='</div>';
+      h+='<div style="font-size:13px;color:#555;margin-bottom:10px">الكمية: <b>'+ord.qty+'</b>'+(ord.notes?' — '+ord.notes:'')+'</div>';
+      h+='<div class="order-actions">';
+      h+='<button class="btn btn-success btn-sm" onclick="completeOrder(\''+ord.id+'\')"><i class="fas fa-industry"></i> تم الصنع</button>';
+      h+='<button class="btn btn-primary btn-sm" onclick="completeSell(\''+ord.id+'\')"><i class="fas fa-cash-register"></i> تم الصنع والبيع</button>';
+      h+='<button class="btn btn-danger btn-sm" onclick="deleteOrder(\''+ord.id+'\')"><i class="fas fa-trash"></i></button>';
+      h+='</div></div>';
     }
   }
 
@@ -689,9 +839,11 @@ function openAddMatModal(){
   editMatId=null;
   document.getElementById('matModalTitle').textContent='إضافة مادة خام';
   document.getElementById('m-name').value='';document.getElementById('m-cat').value='';
-  document.getElementById('m-unit').value='غرام';document.getElementById('m-qty').value='0';
-  document.getElementById('m-price').value='0';document.getElementById('m-threshold').value='10';
-  document.getElementById('m-waste').value='5';document.getElementById('m-date').value=todayStr();
+  document.getElementById('m-unit').value='غرام';document.getElementById('m-qty').value='';
+  document.getElementById('m-price').value='';document.getElementById('m-threshold').value='10';
+  document.getElementById('m-waste').value='';document.getElementById('m-date').value=todayStr();
+  document.getElementById('calc-total-qty').value='';document.getElementById('calc-total-price').value='';
+  document.getElementById('calc-result-box').style.display='none';
   openModal('ovl-material');
 }
 function openEditMatModal(id){
@@ -702,6 +854,8 @@ function openEditMatModal(id){
   document.getElementById('m-unit').value=mat.unit;document.getElementById('m-qty').value=mat.quantity;
   document.getElementById('m-price').value=mat.pricePerUnit;document.getElementById('m-threshold').value=mat.alertThreshold;
   document.getElementById('m-waste').value=mat.wastePercent;document.getElementById('m-date').value=mat.lastPurchaseDate||'';
+  document.getElementById('calc-total-qty').value='';document.getElementById('calc-total-price').value='';
+  document.getElementById('calc-result-box').style.display='none';
   openModal('ovl-material');
 }
 function saveMaterial(){
@@ -734,7 +888,7 @@ function openAddQtyModal(id){
   var mats=getMaterials();var mat=findById(mats,id);if(!mat)return;
   addQtyMatId=id;
   document.getElementById('qty-mat-name').textContent=mat.name;
-  document.getElementById('q-qty').value='0';
+  document.getElementById('q-qty').value='';
   document.getElementById('qty-current-info').textContent='الكمية الحالية: '+mat.quantity+' '+mat.unit;
   document.getElementById('q-date').value=todayStr();
   openModal('ovl-qty');
@@ -793,8 +947,8 @@ function openAddRecipeModal(){
   editRecipeId=null;ingRows=[];
   document.getElementById('recModalTitle').textContent='إنشاء وصفة جديدة';
   document.getElementById('r-name').value='';document.getElementById('r-cat').value='';
-  document.getElementById('r-labor').value='0';document.getElementById('r-pack').value='0';
-  document.getElementById('r-ship').value='0';document.getElementById('r-margin').value='30';
+  document.getElementById('r-labor').value='';document.getElementById('r-pack').value='';
+  document.getElementById('r-ship').value='';document.getElementById('r-margin').value='30';
   document.getElementById('r-notes').value='';
   openModal('ovl-recipe');renderIngRows();
 }
@@ -1011,29 +1165,6 @@ function renderSales(){
   document.getElementById('page-sales').innerHTML=h;
 }
 
-function openSaleModal(){
-  var stock=getAvailableStock();
-  var sel=document.getElementById('sale-product');
-  sel.innerHTML='<option value="">-- اختر منتج --</option>';
-  var hasItems=false;
-  for(var recId in stock){
-    if(!stock.hasOwnProperty(recId))continue;
-    hasItems=true;
-    var opt=document.createElement('option');
-    opt.value=recId;
-    opt.textContent=stock[recId].name+' (متوفر: '+stock[recId].qty+')';
-    opt.setAttribute('data-stock',stock[recId].qty);
-    opt.setAttribute('data-cost',stock[recId].unitCost);
-    sel.appendChild(opt);
-  }
-  if(!hasItems){showToast('لا توجد منتجات مصنعة جاهزة للبيع. قم بتسجيل إنتاج أولاً.','error');return;}
-  document.getElementById('sale-qty').value='1';
-  document.getElementById('sale-price').value='0';
-  document.getElementById('sale-stock-info').textContent='';
-  document.getElementById('sale-profit-box').style.display='none';
-  document.getElementById('sale-date').value=todayStr();
-  openModal('ovl-sale');
-}
 function updateSaleInfo(){
   var sel=document.getElementById('sale-product');
   var info=document.getElementById('sale-stock-info');
@@ -1089,6 +1220,12 @@ function saveSale(){
     revenue:Math.round(revenue*100)/100,totalCost:Math.round(totalCostDeducted*100)/100,
     profit:Math.round(profit*100)/100,platform:platform,date:date};
   var sales=getSales();sales.push(sale);saveData('cc_sales',sales);
+  // إذا كان البيع من طلب، احذف الطلب
+  if(window._pendingOrderId){
+    var orders=getOrders();var n2=[];
+    for(var oi=0;oi<orders.length;oi++){if(orders[oi].id!==window._pendingOrderId)n2.push(orders[oi]);}
+    saveData('cc_orders',n2);window._pendingOrderId=null;
+  }
   showToast('تم تسجيل البيعة بنجاح!','success');closeModal('ovl-sale');renderSales();
 }
 function delSale(id){
@@ -1302,7 +1439,7 @@ function saveSettings(){
 
 function exportData(){
   var data={settings:getSettings(),materials:getMaterials(),recipes:getRecipes(),
-    productions:getProductions(),sales:getSales(),waste:getWaste(),exported:new Date().toISOString()};
+    productions:getProductions(),sales:getSales(),waste:getWaste(),orders:getOrders(),exported:new Date().toISOString()};
   var json=JSON.stringify(data,null,2);
   var blob=new Blob([json],{type:'application/json'});
   var url=URL.createObjectURL(blob);
@@ -1325,6 +1462,7 @@ function importData(e){
       if(data.sales)saveData('cc_sales',data.sales);
       if(data.waste)saveData('cc_waste',data.waste);
       if(data.settings)saveData('cc_settings',data.settings);
+      if(data.orders)saveData('cc_orders',data.orders);
       showToast('تم استيراد البيانات بنجاح','success');
       renderPage(currentPage);
     }catch(err){showToast('فشل الاستيراد: الملف غير صالح','error');}
@@ -1337,13 +1475,180 @@ function clearAllData(){
   showConfirm('⚠️','حذف جميع البيانات','سيتم حذف كل البيانات نهائياً ولا يمكن التراجع!','حذف الكل',function(){
     localStorage.removeItem('cc_materials');localStorage.removeItem('cc_recipes');
     localStorage.removeItem('cc_productions');localStorage.removeItem('cc_sales');
-    localStorage.removeItem('cc_waste');
+    localStorage.removeItem('cc_waste');localStorage.removeItem('cc_orders');
     showToast('تم حذف جميع البيانات','success');renderPage(currentPage);
+  });
+}
+
+// ---- DARK MODE ----
+function toggleDark(){
+  isDark=!isDark;
+  document.body.classList.toggle('dark',isDark);
+  var btn=document.getElementById('darkToggleBtn');
+  if(btn)btn.innerHTML=isDark?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';
+  localStorage.setItem('cc_dark',isDark?'1':'0');
+}
+function applyDarkPref(){
+  isDark=localStorage.getItem('cc_dark')==='1';
+  document.body.classList.toggle('dark',isDark);
+  var btn=document.getElementById('darkToggleBtn');
+  if(btn)btn.innerHTML=isDark?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';
+}
+
+// ---- PRICE CALCULATOR ----
+function calcUnitPrice(){
+  var tq=parseFloat(document.getElementById('calc-total-qty').value);
+  var tp=parseFloat(document.getElementById('calc-total-price').value);
+  var box=document.getElementById('calc-result-box');
+  if(tq>0&&tp>0){
+    var up=Math.round((tp/tq)*1000)/1000;
+    document.getElementById('m-price').value=up;
+    box.style.display='block';
+    box.textContent='سعر الوحدة = '+up+' ('+tp+' ÷ '+tq+')';
+  } else {
+    box.style.display='none';
+  }
+}
+
+// ---- ORDERS ----
+function openOrderModal(){
+  var recipes=getRecipes();
+  var sel=document.getElementById('ord-recipe');
+  sel.innerHTML='<option value="">-- اختر وصفة --</option>';
+  for(var i=0;i<recipes.length;i++){
+    var opt=document.createElement('option');
+    opt.value=recipes[i].id;opt.textContent=recipes[i].name;
+    sel.appendChild(opt);
+  }
+  document.getElementById('ord-customer').value='';
+  document.getElementById('ord-qty').value='';
+  document.getElementById('ord-notes').value='';
+  openModal('ovl-order');
+}
+
+function saveOrder(){
+  var recipeId=document.getElementById('ord-recipe').value;
+  var recipeName='';
+  if(recipeId){
+    var rec=findById(getRecipes(),recipeId);
+    if(rec)recipeName=rec.name;
+  }
+  if(!recipeName){showToast('يرجى اختيار منتج','error');return;}
+  var qty=parseInt(document.getElementById('ord-qty').value)||1;
+  var order={
+    id:genId(),
+    recipeId:recipeId,
+    recipeName:recipeName,
+    customerName:document.getElementById('ord-customer').value.trim(),
+    qty:qty,
+    notes:document.getElementById('ord-notes').value.trim(),
+    status:'pending',
+    date:todayStr()
+  };
+  var orders=getOrders();orders.push(order);
+  saveData('cc_orders',orders);
+  showToast('تمت إضافة الطلب','success');
+  closeModal('ovl-order');
+  renderHome();
+}
+
+function completeOrder(id){
+  var orders=getOrders();var ord=findById(orders,id);if(!ord)return;
+  var rec=findById(getRecipes(),ord.recipeId);
+  if(!rec){showToast('الوصفة غير موجودة، تأكد من إضافتها أولاً','error');return;}
+  var qty=ord.qty;
+  showConfirm('🏭','تأكيد الصنع','سيتم خصم المواد الخام وإضافة '+qty+' وحدة من "'+ord.recipeName+'" للمخزون','تأكيد',function(){
+    var mats=getMaterials();var wasteRecords=[];var canProduce=true;
+    for(var i=0;i<rec.ingredients.length;i++){
+      var ing=rec.ingredients[i];var mat=findById(mats,ing.matId);if(!mat)continue;
+      var needed=Math.round(ing.qty*qty*(1+mat.wastePercent/100)*1000)/1000;
+      if(mat.quantity<needed){canProduce=false;showToast('المواد غير كافية: '+mat.name,'error');return;}
+    }
+    if(!canProduce)return;
+    for(var j=0;j<rec.ingredients.length;j++){
+      var ing2=rec.ingredients[j];var mat2=findById(mats,ing2.matId);if(!mat2)continue;
+      var wq=Math.round(ing2.qty*qty*(mat2.wastePercent/100)*1000)/1000;
+      var td=Math.round((ing2.qty*qty+wq)*1000)/1000;
+      mat2.quantity=Math.max(0,Math.round((mat2.quantity-td)*1000)/1000);
+      if(wq>0)wasteRecords.push({id:genId(),materialId:mat2.id,materialName:mat2.name,
+        quantity:wq,value:Math.round(wq*mat2.pricePerUnit*100)/100,
+        wastePercent:mat2.wastePercent,productionName:rec.name,date:todayStr()});
+    }
+    saveData('cc_materials',mats);
+    var waste=getWaste();for(var w=0;w<wasteRecords.length;w++)waste.push(wasteRecords[w]);
+    saveData('cc_waste',waste);
+    var costs=calcRecipeCost(rec);
+    var prod={id:genId(),recipeId:ord.recipeId,recipeName:ord.recipeName,qty:qty,remaining:qty,
+      unitCost:Math.round(costs.total*100)/100,totalCost:Math.round(costs.total*qty*100)/100,date:todayStr()};
+    var prods=getProductions();prods.push(prod);saveData('cc_productions',prods);
+    var orders2=getOrders();
+    for(var oi=0;oi<orders2.length;oi++){if(orders2[oi].id===id){orders2.splice(oi,1);break;}}
+    saveData('cc_orders',orders2);
+    showToast('تم الصنع وإضافة '+qty+' وحدة للمخزون','success');
+    renderHome();
+  });
+}
+
+function completeSell(id){
+  var ord=findById(getOrders(),id);if(!ord)return;
+  var stock=getAvailableStock();
+  if(!stock[ord.recipeId]||stock[ord.recipeId].qty<ord.qty){
+    showToast('ليس في المخزون ما يكفي — قم بالصنع أولاً ثم البيع','error');return;
+  }
+  // mark order for deletion after sale
+  window._pendingOrderId=id;
+  showPage('sales');
+  setTimeout(function(){
+    var sel=document.getElementById('sale-product');
+    if(sel){
+      for(var i=0;i<sel.options.length;i++){
+        if(sel.options[i].value===ord.recipeId){sel.selectedIndex=i;break;}
+      }
+      document.getElementById('sale-qty').value=ord.qty;
+      updateSaleInfo();
+    }
+    openSaleModal();
+  },150);
+}
+
+var _origSaveSale=null;
+function openSaleModal(){
+  var stock=getAvailableStock();
+  var sel=document.getElementById('sale-product');
+  sel.innerHTML='<option value="">-- اختر منتج --</option>';
+  var hasItems=false;
+  for(var recId in stock){
+    if(!stock.hasOwnProperty(recId))continue;
+    hasItems=true;
+    var opt=document.createElement('option');
+    opt.value=recId;
+    opt.textContent=stock[recId].name+' (متوفر: '+stock[recId].qty+')';
+    opt.setAttribute('data-stock',stock[recId].qty);
+    opt.setAttribute('data-cost',stock[recId].unitCost);
+    sel.appendChild(opt);
+  }
+  if(!hasItems){showToast('لا توجد منتجات مصنعة جاهزة للبيع. قم بتسجيل إنتاج أولاً.','error');return;}
+  document.getElementById('sale-qty').value='1';
+  document.getElementById('sale-price').value='';
+  document.getElementById('sale-stock-info').textContent='';
+  document.getElementById('sale-profit-box').style.display='none';
+  document.getElementById('sale-date').value=todayStr();
+  openModal('ovl-sale');
+}
+
+function deleteOrder(id){
+  showConfirm('🗑️','إلغاء الطلب','هل تريد حذف هذا الطلب؟','حذف',function(){
+    var orders=getOrders();
+    var n=[];for(var i=0;i<orders.length;i++){if(orders[i].id!==id)n.push(orders[i]);}
+    saveData('cc_orders',n);
+    showToast('تم حذف الطلب','success');
+    renderHome();
   });
 }
 
 // ---- INIT ----
 document.addEventListener('DOMContentLoaded', function(){
+  applyDarkPref();
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js').catch(function(){});
   }
