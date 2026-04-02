@@ -1,5 +1,5 @@
 // CraftCost Pro Service Worker v1.1.0
-var CACHE_NAME = 'craftcost-v1.2';
+var CACHE_NAME = 'craftcost-v1.3';
 var CORE_ASSETS = [
   './index.html',
   './manifest.json',
