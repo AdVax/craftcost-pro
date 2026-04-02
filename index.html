@@ -539,6 +539,77 @@ body.dark .ord-title{color:#e0e0f0!important}
   </div>
 </div>
 
+<!-- MODAL MANUAL WASTE -->
+<div class="modal-overlay" id="ovl-waste" onclick="ovlClose(event,'ovl-waste')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">تسجيل هدر يدوي</div>
+      <button class="modal-close" onclick="closeModal('ovl-waste')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">المادة الخام *</label>
+        <select class="form-control" id="wst-mat" onchange="updateWasteMat()"><option value="">-- اختر مادة --</option></select></div>
+      <div id="wst-mat-info" style="font-size:12px;color:#aaa;margin-top:-8px;margin-bottom:12px"></div>
+      <div class="form-group"><label class="form-label">الكمية المهدرة *</label>
+        <input type="number" class="form-control" id="wst-qty" placeholder="0" min="0" step="0.01" oninput="updateWasteValue()"></div>
+      <div class="form-group"><label class="form-label">السبب / الملاحظة</label>
+        <input type="text" class="form-control" id="wst-reason" placeholder="مثال: تلف، سقوط، انتهاء صلاحية..."></div>
+      <div id="wst-val-preview" style="font-size:13px;font-weight:700;color:#e17055;background:#fff5f5;border-radius:10px;padding:10px 13px;display:none;margin-top:4px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline-gray" onclick="closeModal('ovl-waste')">إلغاء</button>
+      <button class="btn btn-danger" onclick="saveManualWaste()"><i class="fas fa-trash-alt"></i> تسجيل الهدر</button>
+    </div>
+  </div>
+</div>
+<!-- MODAL PROD ACTIONS -->
+<div class="modal-overlay" id="ovl-prod-action" onclick="ovlClose(event,'ovl-prod-action')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">إجراءات المنتج المصنّع</div>
+      <button class="modal-close" onclick="closeModal('ovl-prod-action')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="prod-action-info" style="font-size:14px;font-weight:700;color:#2d3436;margin-bottom:4px"></div>
+      <div id="prod-action-sub" style="font-size:12px;color:#aaa;margin-bottom:18px"></div>
+      <div class="form-group"><label class="form-label">الكمية المراد التأثير عليها</label>
+        <input type="number" class="form-control" id="pa-qty" value="1" min="1"></div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
+        <button class="btn btn-warning btn-block" onclick="doProdAction('waste')"><i class="fas fa-trash-alt"></i> تسجيل كهدر</button>
+        <button class="btn btn-outline btn-block" id="disassembleBtn" onclick="doProdAction('disassemble')"><i class="fas fa-tools"></i> تفكيك وإعادة المواد الخام</button>
+        <button class="btn btn-danger btn-block" onclick="doProdAction('delete')"><i class="fas fa-times-circle"></i> حذف فقط (بدون إعادة مواد)</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline-gray btn-block" onclick="closeModal('ovl-prod-action')">إلغاء</button>
+    </div>
+  </div>
+</div>
+<!-- MODAL SALE RETURN -->
+<div class="modal-overlay" id="ovl-return" onclick="ovlClose(event,'ovl-return')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">استرجاع بضاعة مُعادة</div>
+      <button class="modal-close" onclick="closeModal('ovl-return')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="ret-sale-info" style="font-size:14px;font-weight:700;color:#2d3436;margin-bottom:5px"></div>
+      <div id="ret-sale-sub" style="font-size:12px;color:#aaa;margin-bottom:16px"></div>
+      <div class="form-group"><label class="form-label">كمية المُعادة</label>
+        <input type="number" class="form-control" id="ret-qty" value="1" min="1" oninput="updateReturnPreview()"></div>
+      <div id="ret-preview" style="background:#f8f9ff;border-radius:12px;padding:13px;display:none;margin-top:4px">
+        <div id="ret-preview-content" style="font-size:13px;color:#555;line-height:1.9"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline-gray" onclick="closeModal('ovl-return')">إلغاء</button>
+      <button class="btn btn-primary" onclick="confirmReturn()"><i class="fas fa-undo-alt"></i> تأكيد الاسترجاع</button>
+    </div>
+  </div>
+</div>
 <div class="toast-wrap" id="toastWrap"></div>
 
 <div class="confirm-overlay" id="confirmOverlay">
@@ -651,7 +722,7 @@ function showPageInternal(pid){
   var items=document.querySelectorAll('.nav-item');
   for(var j=0;j<items.length;j++)items[j].classList.toggle('active',items[j].getAttribute('data-page')===pid);
   var fab=document.getElementById('mainFab');
-  var fp=['materials','recipes','sales'];var sf=false;
+  var fp=['materials','recipes','sales','waste'];var sf=false;
   for(var k=0;k<fp.length;k++){if(fp[k]===pid){sf=true;break;}}
   if(sf)fab.classList.add('visible');else fab.classList.remove('visible');
   updateBackBtn();
@@ -674,6 +745,7 @@ function onFabClick(){
   if(currentPage==='materials')openAddMatModal();
   else if(currentPage==='recipes')openAddRecipeModal();
   else if(currentPage==='sales')openSaleModal();
+  else if(currentPage==='waste')openManualWasteModal();
 }
 
 // ---- MODALS ----
@@ -1152,7 +1224,10 @@ function renderSales(){
       h+='<div class="list-card"><div class="list-card-top">';
       h+='<div><div class="list-card-title">'+s.recipeName+'</div><span class="plat-badge">'+s.platform+'</span></div>';
       h+='<div style="text-align:left"><div class="list-card-date">'+fmtDate(s.date)+'</div>';
-      h+='<button class="btn btn-danger btn-sm" style="margin-top:5px" onclick="delSale(\''+s.id+'\')"><i class="fas fa-trash"></i></button></div>';
+      h+='<div style="display:flex;gap:5px;margin-top:5px">';
+      h+='<button class="btn btn-outline btn-sm" onclick="openReturnModal(\''+s.id+'\')"><i class="fas fa-undo-alt"></i> استرجاع</button>';
+      h+='<button class="btn btn-danger btn-sm" onclick="delSale(\''+s.id+'\')"><i class="fas fa-trash"></i></button>';
+      h+='</div></div>';
       h+='</div>';
       h+='<div class="meta-row" style="margin-top:7px">';
       h+='<div class="meta-item">الكمية: <b>'+s.qty+'</b></div>';
@@ -1288,7 +1363,11 @@ function getProdInvHTML(){
     h+='<div style="text-align:left"><div style="font-weight:800;font-size:16px">'+item.qty+' وحدة</div>';
     if(costs)h+='<div style="font-size:11px;color:#667eea">سعر مقترح: '+fmt(costs.suggested)+'</div>';
     h+='</div></div>';
-    h+='<div style="font-size:12px;color:#888;margin-top:7px">قيمة المخزون: <b style="color:#2d3436">'+fmt(invVal)+'</b></div>';
+    h+='<div style="font-size:12px;color:#888;margin-top:7px;margin-bottom:10px">قيمة المخزون: <b style="color:#2d3436">'+fmt(invVal)+'</b></div>';
+    var hasRecipe=!!rec;
+    h+='<div class="mat-actions">';
+    h+='<button class="btn btn-warning btn-sm" onclick="openProdActionModal(\''+recId+'\',\''+item.name+'\','+item.qty+','+item.unitCost+','+hasRecipe+')"><i class="fas fa-cog"></i> إجراءات</button>';
+    h+='</div>';
     h+='</div>';
   }
   h+='<div class="card" style="margin-top:4px"><div class="cost-row total"><span>إجمالي قيمة المنتجات</span><b>'+fmt(totalVal)+'</b></div></div>';
@@ -1307,16 +1386,22 @@ function renderWaste(){
   if(mVal>50)h+='<div class="alert alert-warn"><i class="fas fa-lightbulb"></i><span>مستوى الهدر مرتفع هذا الشهر. راجع نسب الهدر في إعدادات المواد الخام وحاول تقليلها.</span></div>';
   h+='<div class="section-title" style="margin-top:4px"><i class="fas fa-list"></i> سجل الهدر التفصيلي</div>';
   if(waste.length===0){
-    h+='<div class="empty-state"><i class="fas fa-recycle"></i><p>لا يوجد هدر مسجل بعد</p><small>يُسجَّل الهدر تلقائياً عند الإنتاج</small></div>';
+    h+='<div class="empty-state"><i class="fas fa-recycle"></i><p>لا يوجد هدر مسجل بعد</p><small>اضغط + لإضافة هدر يدوي</small></div>';
   } else {
     var sorted=waste.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);});
     for(var j=0;j<sorted.length;j++){
       var w=sorted[j];
+      var manualBadge=w.manual?'<span style="font-size:10px;background:#eef0ff;color:#667eea;border-radius:10px;padding:2px 7px;font-weight:700;margin-right:5px">يدوي</span>':'';
       h+='<div class="waste-card"><div class="list-card-top">';
-      h+='<div><div style="font-weight:800;font-size:14px">'+w.materialName+'</div><div style="font-size:11px;color:#aaa">من إنتاج: '+w.productionName+'</div></div>';
+      h+='<div><div style="font-weight:800;font-size:14px">'+w.materialName+manualBadge+'</div>';
+      h+='<div style="font-size:11px;color:#aaa">'+(w.manual?(w.reason||'هدر يدوي'):'من إنتاج: '+w.productionName)+'</div></div>';
       h+='<div style="text-align:left"><div style="font-weight:800;color:#e17055">'+fmt(w.value)+'</div><div style="font-size:11px;color:#aaa">'+fmtDate(w.date)+'</div></div>';
       h+='</div>';
-      h+='<div class="meta-row" style="margin-top:7px"><div class="meta-item">الكمية المهدرة: <b>'+w.quantity+'</b></div><div class="meta-item">نسبة الهدر: <b>'+w.wastePercent+'%</b></div></div>';
+      h+='<div class="meta-row" style="margin-top:7px">';
+      h+='<div class="meta-item">الكمية المهدرة: <b>'+w.quantity+' '+(w.unit||'')+'</b></div>';
+      if(!w.manual)h+='<div class="meta-item">نسبة الهدر: <b>'+w.wastePercent+'%</b></div>';
+      h+='</div>';
+      h+='<div style="margin-top:9px"><button class="btn btn-danger btn-sm" onclick="delWasteRecord(\''+w.id+'\')"><i class="fas fa-trash"></i> حذف السجل</button></div>';
       h+='</div>';
     }
   }
@@ -1644,6 +1729,218 @@ function deleteOrder(id){
     showToast('تم حذف الطلب','success');
     renderHome();
   });
+}
+
+// ---- MANUAL WASTE ----
+function openManualWasteModal(){
+  var mats=getMaterials();
+  var sel=document.getElementById('wst-mat');
+  sel.innerHTML='<option value="">-- اختر مادة --</option>';
+  for(var i=0;i<mats.length;i++){
+    var opt=document.createElement('option');
+    opt.value=mats[i].id;
+    opt.textContent=mats[i].name+' ('+mats[i].quantity+' '+mats[i].unit+')';
+    sel.appendChild(opt);
+  }
+  document.getElementById('wst-qty').value='';
+  document.getElementById('wst-reason').value='';
+  document.getElementById('wst-mat-info').textContent='';
+  document.getElementById('wst-val-preview').style.display='none';
+  openModal('ovl-waste');
+}
+function updateWasteMat(){
+  var matId=document.getElementById('wst-mat').value;
+  var info=document.getElementById('wst-mat-info');
+  if(!matId){info.textContent='';return;}
+  var mat=findById(getMaterials(),matId);
+  if(mat)info.textContent='متوفر: '+mat.quantity+' '+mat.unit+' — سعر الوحدة: '+fmt(mat.pricePerUnit);
+  updateWasteValue();
+}
+function updateWasteValue(){
+  var matId=document.getElementById('wst-mat').value;
+  var qty=parseFloat(document.getElementById('wst-qty').value)||0;
+  var box=document.getElementById('wst-val-preview');
+  if(!matId||qty<=0){box.style.display='none';return;}
+  var mat=findById(getMaterials(),matId);
+  if(!mat){box.style.display='none';return;}
+  var val=Math.round(qty*mat.pricePerUnit*100)/100;
+  box.style.display='block';
+  box.textContent='القيمة المهدرة: '+fmt(val)+' (سيتم خصم '+qty+' '+mat.unit+' من المخزون)';
+}
+function saveManualWaste(){
+  var matId=document.getElementById('wst-mat').value;
+  var qty=parseFloat(document.getElementById('wst-qty').value)||0;
+  var reason=document.getElementById('wst-reason').value.trim();
+  if(!matId){showToast('يرجى اختيار المادة','error');return;}
+  if(qty<=0){showToast('يرجى إدخال كمية أكبر من صفر','error');return;}
+  var mats=getMaterials();
+  var mat=findById(mats,matId);
+  if(!mat)return;
+  if(mat.quantity<qty){showToast('الكمية المهدرة أكبر من المتوفر ('+mat.quantity+' '+mat.unit+')','error');return;}
+  var val=Math.round(qty*mat.pricePerUnit*100)/100;
+  // خصم من المخزون
+  mat.quantity=Math.round((mat.quantity-qty)*1000)/1000;
+  saveData('cc_materials',mats);
+  // تسجيل الهدر
+  var waste=getWaste();
+  waste.push({id:genId(),materialId:matId,materialName:mat.name,unit:mat.unit,
+    quantity:qty,value:val,wastePercent:0,productionName:'',
+    reason:reason||'هدر يدوي',manual:true,date:todayStr()});
+  saveData('cc_waste',waste);
+  showToast('تم تسجيل الهدر بنجاح','success');
+  closeModal('ovl-waste');renderWaste();
+}
+function delWasteRecord(id){
+  showConfirm('🗑️','حذف سجل الهدر','سيتم حذف هذا السجل فقط — لن تُعاد الكمية للمخزون.','حذف',function(){
+    var waste=getWaste();var n=[];
+    for(var i=0;i<waste.length;i++){if(waste[i].id!==id)n.push(waste[i]);}
+    saveData('cc_waste',n);showToast('تم حذف السجل','success');renderWaste();
+  });
+}
+
+// ---- PROD INVENTORY ACTIONS ----
+var _prodActionData={};
+function openProdActionModal(recipeId,name,qty,unitCost,hasRecipe){
+  _prodActionData={recipeId:recipeId,name:name,qty:qty,unitCost:unitCost,hasRecipe:hasRecipe};
+  document.getElementById('prod-action-info').textContent=name;
+  document.getElementById('prod-action-sub').textContent='الكمية المتوفرة: '+qty+' وحدة — تكلفة الوحدة: '+fmt(unitCost);
+  document.getElementById('pa-qty').value=1;
+  document.getElementById('pa-qty').max=qty;
+  var disBtn=document.getElementById('disassembleBtn');
+  if(disBtn){
+    disBtn.disabled=!hasRecipe;
+    disBtn.style.opacity=hasRecipe?'1':'0.4';
+    if(!hasRecipe)disBtn.title='الوصفة محذوفة، لا يمكن التفكيك';
+  }
+  openModal('ovl-prod-action');
+}
+function doProdAction(action){
+  var qty=parseInt(document.getElementById('pa-qty').value)||1;
+  var d=_prodActionData;
+  if(qty<=0||qty>d.qty){showToast('كمية غير صحيحة','error');return;}
+  if(action==='waste'){
+    showConfirm('🗑️','تسجيل كهدر','سيتم خصم '+qty+' وحدة من "'+d.name+'" وتسجيلها كهدر. لن تُعاد المواد الخام.','تأكيد',function(){
+      _deductProdStock(d.recipeId,qty);
+      var waste=getWaste();
+      waste.push({id:genId(),materialId:'',materialName:d.name+' (منتج مصنّع)',unit:'وحدة',
+        quantity:qty,value:Math.round(d.unitCost*qty*100)/100,wastePercent:0,
+        productionName:d.name,reason:'هدر منتج مصنّع',manual:true,date:todayStr()});
+      saveData('cc_waste',waste);
+      closeModal('ovl-prod-action');
+      showToast('تم تسجيل الهدر','success');renderInventory();
+    });
+  } else if(action==='disassemble'){
+    if(!d.hasRecipe){showToast('الوصفة غير موجودة، لا يمكن التفكيك','error');return;}
+    var rec=findById(getRecipes(),d.recipeId);
+    if(!rec){showToast('الوصفة غير موجودة','error');return;}
+    var matLines='';
+    for(var i=0;i<rec.ingredients.length;i++){
+      var ing=rec.ingredients[i];var mat=findById(getMaterials(),ing.matId);
+      if(mat)matLines+='\n• '+mat.name+': +'+(ing.qty*qty)+' '+mat.unit;
+    }
+    showConfirm('🔧','تفكيك المنتج','سيتم إعادة المواد الخام التالية:'+matLines,'تفكيك',function(){
+      _deductProdStock(d.recipeId,qty);
+      var mats=getMaterials();
+      for(var j=0;j<rec.ingredients.length;j++){
+        var ing2=rec.ingredients[j];var mat2=findById(mats,ing2.matId);
+        if(mat2)mat2.quantity=Math.round((mat2.quantity+ing2.qty*qty)*1000)/1000;
+      }
+      saveData('cc_materials',mats);
+      closeModal('ovl-prod-action');
+      showToast('تم التفكيك وإعادة المواد الخام','success');renderInventory();
+    });
+  } else if(action==='delete'){
+    showConfirm('⚠️','حذف من المخزون','سيتم حذف '+qty+' وحدة من "'+d.name+'" نهائياً بدون إعادة المواد الخام.','حذف',function(){
+      _deductProdStock(d.recipeId,qty);
+      closeModal('ovl-prod-action');
+      showToast('تم الحذف من المخزون','success');renderInventory();
+    });
+  }
+}
+function _deductProdStock(recipeId,qty){
+  var prods=getProductions();var remaining=qty;
+  for(var i=0;i<prods.length;i++){
+    if(prods[i].recipeId===recipeId&&prods[i].remaining>0&&remaining>0){
+      var take=Math.min(prods[i].remaining,remaining);
+      prods[i].remaining-=take;remaining-=take;
+    }
+  }
+  saveData('cc_productions',prods);
+}
+
+// ---- SALE RETURN ----
+var _returnSaleId=null;
+function openReturnModal(saleId){
+  var sale=findById(getSales(),saleId);if(!sale)return;
+  _returnSaleId=saleId;
+  document.getElementById('ret-sale-info').textContent=sale.recipeName+' — '+fmtDate(sale.date);
+  document.getElementById('ret-sale-sub').textContent='كمية مباعة: '+sale.qty+' وحدة — إيراد: '+fmt(sale.revenue);
+  document.getElementById('ret-qty').value=1;
+  document.getElementById('ret-qty').max=sale.qty;
+  document.getElementById('ret-preview').style.display='none';
+  openModal('ovl-return');
+  updateReturnPreview();
+}
+function updateReturnPreview(){
+  var sale=findById(getSales(),_returnSaleId);if(!sale)return;
+  var qty=parseInt(document.getElementById('ret-qty').value)||1;
+  qty=Math.min(qty,sale.qty);
+  var refundRev=Math.round((sale.revenue/sale.qty)*qty*100)/100;
+  var refundProfit=Math.round((sale.profit/sale.qty)*qty*100)/100;
+  var box=document.getElementById('ret-preview');
+  var con=document.getElementById('ret-preview-content');
+  box.style.display='block';
+  con.innerHTML=
+    '✅ سيعود للمخزون: <b>'+qty+' وحدة</b><br>'+
+    '💰 سيُخصم من الإيرادات: <b style="color:#e17055">'+fmt(refundRev)+'</b><br>'+
+    '📉 سيُخصم من الأرباح: <b style="color:#e17055">'+fmt(refundProfit)+'</b>';
+}
+function confirmReturn(){
+  var sale=findById(getSales(),_returnSaleId);if(!sale)return;
+  var qty=parseInt(document.getElementById('ret-qty').value)||1;
+  qty=Math.min(qty,sale.qty);
+  if(qty<=0){showToast('كمية غير صحيحة','error');return;}
+  // أعد للمخزون
+  var prods=getProductions();
+  var restored=false;
+  for(var i=prods.length-1;i>=0;i--){
+    if(prods[i].recipeId===sale.recipeId){
+      prods[i].remaining+=qty;restored=true;break;
+    }
+  }
+  if(!restored){
+    // أنشئ سجل إنتاج جديد إذا ما وُجد
+    prods.push({id:genId(),recipeId:sale.recipeId,recipeName:sale.recipeName,
+      qty:qty,remaining:qty,unitCost:Math.round(sale.totalCost/sale.qty*100)/100,
+      totalCost:Math.round(sale.totalCost/sale.qty*qty*100)/100,date:todayStr()});
+  }
+  saveData('cc_productions',prods);
+  // اخصم ماليًا
+  var sales=getSales();
+  var refundRev=Math.round((sale.revenue/sale.qty)*qty*100)/100;
+  var refundCost=Math.round((sale.totalCost/sale.qty)*qty*100)/100;
+  var refundProfit=Math.round((sale.profit/sale.qty)*qty*100)/100;
+  if(qty===sale.qty){
+    // احذف البيعة كاملاً
+    var n=[];for(var j=0;j<sales.length;j++){if(sales[j].id!==_returnSaleId)n.push(sales[j]);}
+    saveData('cc_sales',n);
+  } else {
+    // خصّص جزئياً
+    for(var k=0;k<sales.length;k++){
+      if(sales[k].id===_returnSaleId){
+        sales[k].qty-=qty;
+        sales[k].revenue=Math.round((sales[k].revenue-refundRev)*100)/100;
+        sales[k].totalCost=Math.round((sales[k].totalCost-refundCost)*100)/100;
+        sales[k].profit=Math.round((sales[k].profit-refundProfit)*100)/100;
+        break;
+      }
+    }
+    saveData('cc_sales',sales);
+  }
+  _returnSaleId=null;
+  closeModal('ovl-return');
+  showToast('تم الاسترجاع — '+qty+' وحدة أُعيدت للمخزون','success');
+  renderSales();
 }
 
 // ---- INIT ----
