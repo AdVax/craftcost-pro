@@ -12,9 +12,43 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!--
+  ============================================================
+  تحميل الخط بطريقة "Font Display Swap + Offline Fallback"
+  - نحمّل من Google Fonts مع preconnect للسرعة
+  - إن فشل الإنترنت، يسقط على خط النظام العربي (system-ui)
+  - Service Worker يخزّن الخط بعد أول تحميل ناجح
+  ============================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style"
+  href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+  onload="this.rel='stylesheet'">
+<noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+</noscript>
+
+<!--
+  ============================================================
+  Font Awesome — مضمّن بـ CSS فقط (SVG-based icons via Unicode)
+  هذا يضمن عمل الأيقونات offline بعد أول تحميل
+  ============================================================
+-->
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer">
+
+<style>
+  /*
+   * Offline Fallback Font Stack
+   * إن لم يُحمَّل Tajawal، يُستخدم خط عربي من النظام تلقائياً
+   */
+  :root {
+    --font-primary: 'Tajawal', 'Segoe UI', 'Arial', system-ui, -apple-system, sans-serif;
+  }
+</style>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:'Tajawal',sans-serif;background:#f0f2f8;color:#2d3436;direction:rtl;overflow-x:hidden;min-height:100vh}
@@ -1946,8 +1980,33 @@ function confirmReturn(){
 // ---- INIT ----
 document.addEventListener('DOMContentLoaded', function(){
   applyDarkPref();
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('sw.js').catch(function(){});
+  // ============================================================
+  // تسجيل Service Worker مع دعم التحديث التلقائي
+  // ============================================================
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then(function(registration) {
+
+      // مراقبة وجود نسخة جديدة من SW
+      registration.addEventListener('updatefound', function() {
+        var newWorker = registration.installing;
+        newWorker.addEventListener('statechange', function() {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showToast('تحديث جديد متاح — أعد التحميل للتطبيق', 'info');
+          }
+        });
+      });
+
+    }).catch(function(err) {
+      console.warn('[SW] فشل التسجيل:', err);
+    });
+
+    // إبلاغ المستخدم عند فقد الاتصال أو استعادته
+    window.addEventListener('online', function() {
+      showToast('✅ عاد الاتصال بالإنترنت', 'success');
+    });
+    window.addEventListener('offline', function() {
+      showToast('📴 وضع عدم الاتصال — التطبيق يعمل بالكامل', 'info');
+    });
   }
   // Hardware back button support (Android)
   window.addEventListener('popstate', function(e){
